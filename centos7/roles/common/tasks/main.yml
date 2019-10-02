@@ -1,0 +1,79 @@
+---
+#------------------------------------------------------------------------------------------
+# LOCALIZATION
+   - name: Timezone
+     timezone: name=Europe/Moscow
+   - name: Locale [ALWAYS]
+     command: localectl set-locale LANG=ru_RU.UTF-8 LC_MESSAGES=en_US.UTF-8
+   - name: Keymap [ALWAYS]
+     command: localectl --no-convert set-keymap us,ru
+
+#------------------------------------------------------------------------------------------
+# PACKAGES
+   - name: Updates
+     yum: name='*' state=latest
+     register: need_for_restart
+   - name: Utilites
+     yum: name={{ item }} state=latest
+     with_items:
+     - sudo
+#
+     - mc 
+     - unzip
+#    - p7zip
+#    - p7zip-plugins
+     - cifs-utils
+     - tree
+#     - ncdu
+#
+     - lsof 
+     - traceroute 
+     - bind-utils
+     - wget
+#
+     - man
+     - vim
+     - less
+     - tmux
+     - bash-completion
+#
+     - lshw 
+     - iotop
+     - sysstat
+     - pciutils
+     - usbutils
+     - lsscsi
+#   - name: SSHD 1
+#     yum: name=openssh-server state=latest
+#   - name: SSHD 2
+#     service: name=sshd enabled=yes state=started
+#------------------------------------------------------------------------------------------
+# AUTOUPDATE
+   - name: AUTER
+     block:
+       - name: Installation EPEL
+         yum: name=epel-release state=present
+       - name: Installing updater
+         yum: name=auter state=latest
+#      - name: Enabling only security updates
+#        replace: dest=/etc/auter/auter.conf regexp='PACKAGEMANAGEROPTIONS=""' replace='PACKAGEMANAGEROPTIONS="--security"'
+       - name: Enabling autoreboot
+         replace: dest=/etc/auter/auter.conf regexp='AUTOREBOOT="no"' replace='AUTOREBOOT="yes"'
+       - name: Enabling autoupdate every 2:30 AM
+         lineinfile: "dest=/etc/cron.d/auter line='30 2 * * *    root /usr/bin/auter --apply'"
+     when: autoupdate
+
+#------------------------------------------------------------------------------------------
+# MTA 
+   - name: Setting email box for root
+     lineinfile: "dest=/etc/aliases line='root:   {{ email }}'"
+   - name: Installing MTA
+     yum: name=postfix state=latest
+#------------------------------------------------------------------------------------------
+#   - name: LXC provisioning
+#     block:
+#       - name: Display all variables/facts known for a host
+#         debug:
+#           msg:
+#           - "ABC"
+#     when: ansible_virtualization_type == "lxc"

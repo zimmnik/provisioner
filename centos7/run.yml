@@ -1,0 +1,15 @@
+---
+- name: "local host provisioning"
+  hosts: localhost
+  connection: local
+  vars:
+   hostname: somename
+   email: somename@mail.box
+#----------------------------------------
+  roles:
+    - { role: common, autoupdate: true }
+    #- { role: gui }
+#----------------------------------------
+  tasks: 
+#    - name: Setup hostname
+#      hostname: name={{ hostname }}
