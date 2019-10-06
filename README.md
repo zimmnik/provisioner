@@ -10,14 +10,14 @@ Supported Linux Distributions
 #### Usage
 
     # Update packages and reboot
-    yum update && reboot
+    yum -y update && reboot
 
     # Install ansible and download playbooks 
-    yum install ansible git && \
+    yum -y install ansible git && \
     git clone https://github.com/zimmnik/provisioner.git
 
-    # Choose playbook and edit variables
-    cd provisioner/centos7 && vi run.yml
+    # Edit variables
+    cd provisioner && vi centos7/run.yml
 
     # Run playbook
-    ansible-playbook run.yml
+    ansible-playbook centos7/run.yml

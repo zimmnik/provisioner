@@ -49,25 +49,25 @@
 #     service: name=sshd enabled=yes state=started
 #------------------------------------------------------------------------------------------
 # AUTOUPDATE
-   - name: Auter
+   - name: Autoupdate
      block:
-       - name: EPEL
+       - name: Autoupdate 1
          yum: name=epel-release state=present
-       - name: Update
+       - name: Autoupdate 2
          yum: name=auter state=latest
 #      - name: Enabling only security updates
 #        replace: dest=/etc/auter/auter.conf regexp='PACKAGEMANAGEROPTIONS=""' replace='PACKAGEMANAGEROPTIONS="--security"'
-       - name: Enabling autoreboot
+       - name: Autoupdate 3
          replace: dest=/etc/auter/auter.conf regexp='AUTOREBOOT="no"' replace='AUTOREBOOT="yes"'
-       - name: Enabling autoupdate every 2:30 AM
+       - name: Autoupdate 4
          lineinfile: "dest=/etc/cron.d/auter line='30 2 * * *    root /usr/bin/auter --apply'"
      when: autoupdate
 
 #------------------------------------------------------------------------------------------
 # MTA 
-   - name: Setting email box for root
+   - name: MTA 1
      lineinfile: "dest=/etc/aliases line='root:   {{ email }}'"
-   - name: Installing MTA
+   - name: MTA 2
      yum: name=postfix state=latest
 #------------------------------------------------------------------------------------------
 #   - name: LXC provisioning

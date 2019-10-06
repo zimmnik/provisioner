@@ -1,7 +1,7 @@
 ---
 - name: "local host provisioning"
   hosts: localhost
-  connection: local
+  gather_facts: no
   vars:
    hostname: somename
    email: somename@mail.box
@@ -11,5 +11,7 @@
     #- { role: gui }
 #----------------------------------------
   tasks: 
+#    - name: DEBUG
+#      debug: msg={{ hostname }}
 #    - name: Setup hostname
 #      hostname: name={{ hostname }}
