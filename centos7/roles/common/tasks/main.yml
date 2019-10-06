@@ -10,12 +10,9 @@
 
 #------------------------------------------------------------------------------------------
 # PACKAGES
-   - name: Updates
-     yum: name='*' state=latest
-     register: need_for_restart
-   - name: Update packages
+   - name: Utilites
      yum:
-       state: present
+       state: latest
        name:
          - sudo
 #
@@ -44,17 +41,19 @@
          - pciutils
          - usbutils
          - lsscsi
-#   - name: SSHD 1
-#     yum: name=openssh-server state=latest
+#------------------------------------------------------------------------------------------
+# SSHD
+   - name: Openssh
+     yum: name=openssh-server state=latest
 #   - name: SSHD 2
 #     service: name=sshd enabled=yes state=started
 #------------------------------------------------------------------------------------------
 # AUTOUPDATE
-   - name: AUTER
+   - name: Auter
      block:
-       - name: Installation EPEL
+       - name: EPEL
          yum: name=epel-release state=present
-       - name: Installing updater
+       - name: Update
          yum: name=auter state=latest
 #      - name: Enabling only security updates
 #        replace: dest=/etc/auter/auter.conf regexp='PACKAGEMANAGEROPTIONS=""' replace='PACKAGEMANAGEROPTIONS="--security"'

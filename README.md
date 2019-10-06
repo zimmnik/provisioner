@@ -8,6 +8,8 @@ Supported Linux Distributions
 -   **CentOS/RHEL** 7
 
 #### Usage
+    # Update packates
+    sudo yum update
 
     # Install dependencies 
     sudo yum install ansible git
