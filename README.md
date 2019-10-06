@@ -9,8 +9,7 @@ Supported Linux Distributions
 
 #### Bare metal installation
 
-    Kickstart file for custom partition layout:
-   
+    Kickstart file for custom partition layout: 
     ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/centos7/kickstart/custom.cfg    
 
 #### Usage on installed system
