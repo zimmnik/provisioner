@@ -13,36 +13,37 @@
    - name: Updates
      yum: name='*' state=latest
      register: need_for_restart
-   - name: Utilites
-     yum: name={{ item }} state=latest
-     with_items:
-     - sudo
+   - name: Update packages
+     yum:
+       state: present
+       name:
+         - sudo
 #
-     - mc 
-     - unzip
-#    - p7zip
-#    - p7zip-plugins
-     - cifs-utils
-     - tree
-#     - ncdu
+         - mc 
+         - unzip
+#        - p7zip
+#        - p7zip-plugins
+         - cifs-utils
+         - tree
+#         - ncdu
 #
-     - lsof 
-     - traceroute 
-     - bind-utils
-     - wget
+         - lsof 
+         - traceroute 
+         - bind-utils
+         - wget
 #
-     - man
-     - vim
-     - less
-     - tmux
-     - bash-completion
+         - man
+         - vim
+         - less
+         - tmux
+         - bash-completion
 #
-     - lshw 
-     - iotop
-     - sysstat
-     - pciutils
-     - usbutils
-     - lsscsi
+         - lshw 
+         - iotop
+         - sysstat
+         - pciutils
+         - usbutils
+         - lsscsi
 #   - name: SSHD 1
 #     yum: name=openssh-server state=latest
 #   - name: SSHD 2
