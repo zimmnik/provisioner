@@ -11,9 +11,9 @@
 # LOCALIZATION
    - name: Timezone
      timezone: name=Europe/Moscow
-   - name: Locale [ALWAYS]
+   - name: Locale [ALWAYS CHANGED]
      command: localectl set-locale LANG=ru_RU.UTF-8 LC_MESSAGES=en_US.UTF-8
-   - name: Keymap [ALWAYS]
+   - name: Keymap [ALWAYS CHANGED]
      command: localectl --no-convert set-keymap us,ru
 
 #------------------------------------------------------------------------------------------
@@ -51,12 +51,12 @@
          - lsscsi
 
 #------------------------------------------------------------------------------------------
-# SSHD
-   - name: Openssh
+# SSH
+   - name: SSH 1
      yum: name=openssh-server state=latest
-#   - name: SSHD 2
-#     service: name=sshd enabled=yes state=started
-#
+   - name: SSH 2
+     service: name=sshd enabled=yes state=started
+
 #------------------------------------------------------------------------------------------
 # AUTOUPDATE
    - name: Autoupdate
