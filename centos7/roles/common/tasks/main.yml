@@ -1,5 +1,13 @@
 ---
 #------------------------------------------------------------------------------------------
+# HOSTNAME
+   - name: Hostname
+     block:
+       - name: Setup hostname
+         hostname: name={{ hostname }}
+     when: not ansible_virtualization_type == "lxc"
+
+#------------------------------------------------------------------------------------------
 # LOCALIZATION
    - name: Timezone
      timezone: name=Europe/Moscow
@@ -41,12 +49,14 @@
          - pciutils
          - usbutils
          - lsscsi
+
 #------------------------------------------------------------------------------------------
 # SSHD
    - name: Openssh
      yum: name=openssh-server state=latest
 #   - name: SSHD 2
 #     service: name=sshd enabled=yes state=started
+#
 #------------------------------------------------------------------------------------------
 # AUTOUPDATE
    - name: Autoupdate
@@ -69,11 +79,3 @@
      lineinfile: "dest=/etc/aliases line='root:   {{ email }}'"
    - name: MTA 2
      yum: name=postfix state=latest
-#------------------------------------------------------------------------------------------
-#   - name: LXC provisioning
-#     block:
-#       - name: Display all variables/facts known for a host
-#         debug:
-#           msg:
-#           - "ABC"
-#     when: ansible_virtualization_type == "lxc"
