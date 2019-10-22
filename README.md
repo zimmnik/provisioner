@@ -26,3 +26,6 @@ Supported Linux Distributions
 
     # Run playbook
     ansible-playbook centos7/run.yml
+    
+    # Setup user password
+    passwd someusername
