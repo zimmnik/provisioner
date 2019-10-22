@@ -82,4 +82,3 @@
 # SYSTEMD
     - name: SYSTEMD [ALWAYS CHANGED]
       command: systemctl set-default graphical.target
-

@@ -2,7 +2,7 @@
 - name: "local host provisioning"
   hosts: localhost
   vars:
-   hostname: somename
+   hostname: somehostname
    email: somename@mail.box
 #----------------------------------------
   roles:
@@ -10,5 +10,8 @@
     #- { role: gui }
 #----------------------------------------
   tasks: 
+    - name: USER
+      user: name=someusername groups=wheel append=yes
+
 #    - name: DEBUG
 #      debug: msg={{ hostname }}

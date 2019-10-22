@@ -56,6 +56,8 @@
      yum: name=openssh-server state=latest
    - name: SSH 2
      service: name=sshd enabled=yes state=started
+   - name: SSH 3
+     lineinfile: dest=/etc/ssh/sshd_config line='UseDNS no'
 
 #------------------------------------------------------------------------------------------
 # AUTOUPDATE
