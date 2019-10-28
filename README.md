@@ -29,3 +29,6 @@ Supported Linux Distributions
     
     # Setup user password
     passwd someusername
+    
+    # run gui
+    systemctl isolate graphical.target
