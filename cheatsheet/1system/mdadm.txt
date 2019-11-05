@@ -1,0 +1,29 @@
+Replacing disks on software raid (mdadm)
+
+    Disable pc
+    Disconnect another storages
+    Replace bad disk
+    Booting from livecd amd64
+
+if disk more 2TB (use GPT):
+
+    sgdisk --backup=table /dev/old_worked_disk
+    sgdisk --load-backup=table /dev/new_clean_disk
+
+if disk less 2TB (use MBR):
+
+    sfdisk -d /dev/old_worked_disk > table
+    sfdisk /dev/new_clean_disk < table
+    cat /proc/mdstat
+    mdadm --manage /dev/mdXXX -a /dev/new_clean_disk_partition
+    watch cat /proc/mdstat
+
+only if raid is bootable:
+
+    mount /dev/mdXXX_with_system /mnt/temp
+    mount /dev/mdXXX_with_boot /mnt/temp/boot
+    for i in {dev,sys,proc}; do mount -o bind /$i /mnt/temp/$i; done
+    chroot /mnt/temp /bin/bash
+    grep -v rootfs /proc/mounts > /etc/mtab
+    mv /boot/grub/device.map /boot/grub/device.map.backup
+    grub-install --no-floppy /dev/new_clean_disk

@@ -1,0 +1,13 @@
+sudo yum -y grouplist hidden -v | less
+sudo yum -y install epel-release
+sudo yum -y install mock
+sudo usermod -aG mock zorg
+
+yumdownloader --source awesome
+mock -r fedora-19-x86_64 --init
+cd /etc/mock/
+mock -r fedora-19-x86_64 ~/awesome-3.5.5-1.fc19.src.rpm 
+cd /var/lib/mock/fedora-19-x86_64/result
+
+sudo yum -y install @base-x @fonts
+sudo yum -y localinstall awesome-3.5.5-1.fc19.x86_64.rpm 
