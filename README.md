@@ -5,7 +5,8 @@ Provisioner is a bundle ansible praybooks. It allows to quickly configure linux 
 Supported Linux Distributions
 -----------------------------
 
--   **CentOS/RHEL** 7
+-   **CentOS** 7
+-   **CentOS** 8 (Beta)
 
 #### Bare metal installation
 
