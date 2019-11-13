@@ -8,10 +8,10 @@ Supported Linux Distributions
 -   **CentOS** 7
 -   **CentOS** 8 (Beta)
 
-#### Bare metal installation
+#### Bare metal installation (CentOS 7 only, see [bugreport](https://bugzilla.redhat.com/show_bug.cgi?id=1712776)
 
     Kickstart file for custom partition layout: 
-    inst.noverifyssl inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/centos7/kickstart/custom.cfg    
+    inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/centos7/kickstart/custom.cfg    
 
 #### Usage on installed system
 
