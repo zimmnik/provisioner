@@ -8,7 +8,7 @@ Supported Linux Distributions
 -   **CentOS** 7
 -   **CentOS** 8 (Beta)
 
-#### Bare metal installation (CentOS 7 only, see [bugreport](https://bugzilla.redhat.com/show_bug.cgi?id=1712776)
+#### Bare metal installation (CentOS 7 only, see [bugreport](https://bugzilla.redhat.com/show_bug.cgi?id=1712776))
 
     Kickstart file for custom partition layout: 
     inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/centos7/kickstart/custom.cfg    
