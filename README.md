@@ -19,7 +19,7 @@ Supported Linux Distributions
 
     # Install ansible and download playbooks 
     yum -y install ansible git && \
-    git clone https://github.com/zimmnik/provisioner.git
+    git clone https://gitlab.com/zimmnik/provisioner.git
 
     # Edit variables
     cd provisioner && vi centos7/run.yml
