@@ -1,0 +1,84 @@
+---
+#------------------------------------------------------------------------------------------
+# PACKAGES
+    - name: Installation EPEL repository
+      yum: name=epel-release state=latest
+    - name: Installing GUI
+      yum:
+        state: latest
+        name:
+# XORG
+          - "@base-x"
+# DISPLAY AND WINDOW MANAGER
+#         - gnome-session-wayland-session
+          - gnome-session-xsession
+          - control-center
+          - krb5-libs
+          - gnome-tweak-tool
+          - dconf-editor
+          - centos-logos
+#F        - dmz-cursor-themes
+# MOUNT AND FILE MANAGER
+          - gvfs-mtp
+          - gvfs-smb
+          - gvfs-fuse
+          - file-roller-nautilus
+#F        - gvfs-archive
+# UTILITES
+          - seahorse
+          - gnome-terminal
+          - gnome-screenshot
+# INTERNET
+          - firefox
+# MEDIA
+          - pulseaudio-utils
+# OFFICE
+          - eog
+          - gedit
+          - evince-nautilus
+
+#------------------------------------------------------------------------------------------
+# LAYOUT
+    - name: Keymap [ALWAYS CHANGED]
+      command: localectl --no-convert set-x11-keymap us,ru
+
+#------------------------------------------------------------------------------------------
+# THEME
+    - name: THEME 1
+      file: path=/etc/skel/.config/gtk-3.0/ state=directory
+    - name: THEME 2
+      blockinfile:
+        dest: /etc/skel/.config/gtk-3.0/settings.ini
+        create: yes
+        block: |
+          [Settings]
+          gtk-application-prefer-dark-theme=1
+    - name: THEME 3
+      copy: src=01-default-gui-settings dest=/etc/dconf/db/local.d/01-default-gui-settings
+      notify:
+        - dconf_update
+
+#------------------------------------------------------------------------------------------
+# FONTS
+    - name: FONTS 1
+      copy: src=fonts/ dest=/usr/share/fonts/
+      register: fonts
+    - name: FONTS 2
+      command: fc-cache -f /usr/share/fonts/
+      when: fonts.changed
+    - name: FONTS 3
+      copy: src=03-fonts-settings dest=/etc/dconf/db/local.d/03-fonts-settings
+      notify:
+        - dconf_update
+
+#------------------------------------------------------------------------------------------
+# VNC
+    - name: VNC SERVER
+      copy: src=04-vino-settings dest=/etc/dconf/db/local.d/04-vino-settings
+      notify:
+        - dconf_update
+
+#------------------------------------------------------------------------------------------
+# SYSTEMD
+    - name: SYSTEMD [ALWAYS CHANGED]
+      command: systemctl set-default graphical.target

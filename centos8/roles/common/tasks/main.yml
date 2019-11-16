@@ -1,0 +1,71 @@
+---
+#------------------------------------------------------------------------------------------
+# HOSTNAME
+   - name: Hostname
+     block:
+       - name: Setup hostname
+         hostname: name={{ hostname }}
+     when: not ansible_virtualization_type == "lxc"
+
+#------------------------------------------------------------------------------------------
+# LOCALIZATION
+   - name: Timezone
+     timezone: name=Europe/Moscow
+   - name: Locale [ALWAYS CHANGED]
+     command: localectl set-locale LANG=ru_RU.UTF-8 LC_MESSAGES=en_US.UTF-8
+   - name: Keymap [ALWAYS CHANGED]
+     command: localectl --no-convert set-keymap us,ru
+
+#------------------------------------------------------------------------------------------
+# PACKAGES
+   - name: EPEL
+     yum: name=epel-release state=latest
+   - name: Utilites
+     yum:
+       state: latest
+       name:
+         - sudo
+#
+         - mc 
+         - unzip
+         - p7zip
+         - p7zip-plugins
+         - cifs-utils
+         - tree
+         - ncdu
+#
+         - lsof 
+         - traceroute 
+         - bind-utils
+         - curl
+#
+         - man
+         - vim
+         - less
+         - tmux
+         - bash-completion
+#
+         - lshw 
+         - iotop
+         - sysstat
+         - pciutils
+         - usbutils
+         - lsscsi
+
+#------------------------------------------------------------------------------------------
+# SSH
+   - name: SSH 1
+     yum: name=openssh-server state=latest
+   - name: SSH 2
+     service: name=sshd enabled=yes state=started
+   - name: SSH 3
+     lineinfile: dest=/etc/ssh/sshd_config line='UseDNS no'
+
+#------------------------------------------------------------------------------------------
+# MTA 
+   - name: MTA 1
+     lineinfile: "dest=/etc/aliases line='root:   {{ email }}'"
+   - name: MTA 2
+     yum: name=postfix state=latest
+   - name: MTA 3
+     service: name=postfix enabled=yes state=started
