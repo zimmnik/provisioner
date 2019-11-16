@@ -17,7 +17,8 @@ Supported Linux Distributions
     # Update packages and reboot
     yum -y update && reboot
 
-    # Install ansible and download playbooks 
+    # Install ansible and download playbooks
+    yum -y install epel-release && \
     yum -y install ansible git && \
     git clone https://gitlab.com/zimmnik/provisioner.git
 
