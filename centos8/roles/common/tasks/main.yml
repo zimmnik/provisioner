@@ -69,3 +69,8 @@
      yum: name=postfix state=latest
    - name: MTA 3
      service: name=postfix enabled=yes state=started
+
+#------------------------------------------------------------------------------------------
+# KDUMP
+   - name: KDUMP
+     service: name=kdumpctl enabled=no state=stopped
