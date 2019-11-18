@@ -16,6 +16,8 @@ Supported Linux Distributions
 
     # Update packages and reboot
     yum -y update && reboot
+    
+    # Fix waringins and errors 
 
     # Install ansible and download playbooks
     yum -y install epel-release && \
@@ -31,5 +33,5 @@ Supported Linux Distributions
     # Setup user password
     passwd someusername
     
-    # run gui
+    # Start gui
     systemctl isolate graphical.target
