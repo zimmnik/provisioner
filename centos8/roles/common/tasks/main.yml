@@ -36,11 +36,13 @@
         - centos-logos
         #F- dmz-cursor-themes
         # MOUNT AND FILE MANAGER
+        - nautilus
         - gvfs-mtp
         - gvfs-smb
+        - gvfs-gphoto2
         - gvfs-fuse
         - file-roller-nautilus
-        #F- gvfs-archive
+        - gvfs-archive
         # UTILITES
         - seahorse
         - gnome-terminal
