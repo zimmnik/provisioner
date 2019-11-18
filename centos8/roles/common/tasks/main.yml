@@ -37,6 +37,7 @@
         #F- dmz-cursor-themes
         # MOUNT AND FILE MANAGER
         - nautilus
+        - gnome-terminal-nautilus
         - gvfs-mtp
         - gvfs-smb
         - gvfs-gphoto2
