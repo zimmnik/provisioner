@@ -2,7 +2,6 @@
   hosts: localhost
   vars:
    hostname: somehostname
-   email: somename@mail.box
   #----------------------------------------
   roles: [ common ]
   tasks: 

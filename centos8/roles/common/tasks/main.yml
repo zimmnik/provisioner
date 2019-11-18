@@ -7,13 +7,17 @@
 
 - name: Utilites
   dnf:
-    name: ['man', 'vim', 'less', 'tree', 'bash-completion'] state=latest
+    state: latest
+    name: ['man', 'vim', 'less', 'tree', 'bash-completion']
 
 - name: SSH
   block:
-    - yum: name=openssh-server state=latest
-    - service: name=sshd enabled=yes state=started
-    - lineinfile: dest=/etc/ssh/sshd_config line='UseDNS no'
+    - name: SSH 1
+      yum: name=openssh-server state=latest
+    - name: SSH 2
+      service: name=sshd enabled=yes state=started
+    - name: SSH 3
+      lineinfile: dest=/etc/ssh/sshd_config line='UseDNS no'
 
 - block:
   - name: GNOME DE
@@ -50,18 +54,23 @@
 
   - name: SYSTEMD TARGET
     block:
-      - command: systemctl get-default
+      - name: SYSTEMD TARGET 1
+        command: systemctl get-default
         register: contents
-      - command: systemctl set-default graphical.target
+      - name: SYSTEMD TARGET 2
+        command: systemctl set-default graphical.target
         when: contents.stdout != "graphical.target"
 
   - name: FONTS
     block:
-      - copy: src=fonts/ dest=/usr/share/fonts/
+      - name: FONTS 1
+        copy: src=fonts/ dest=/usr/share/fonts/
         register: fonts
-      - command: fc-cache -f /usr/share/fonts/
+      - name: FONTS 2
+        command: fc-cache -f /usr/share/fonts/
         when: fonts.changed
-      - copy: src=03-fonts-settings dest=/etc/dconf/db/local.d/03-fonts-settings
+      - name: FONTS 3
+        copy: src=03-fonts-settings dest=/etc/dconf/db/local.d/03-fonts-settings
         notify:
           - dconf_update
 
