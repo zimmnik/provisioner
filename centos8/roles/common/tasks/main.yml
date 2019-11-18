@@ -61,6 +61,22 @@
         command: systemctl set-default graphical.target
         when: contents.stdout != "graphical.target"
 
+  - name: THEME
+    block:
+      - name: THEME 1
+        file: path=/etc/skel/.config/gtk-3.0/ state=directory
+      - name: THEME 2
+        blockinfile:
+          dest: /etc/skel/.config/gtk-3.0/settings.ini
+          create: yes
+          block: |
+            [Settings]
+            gtk-application-prefer-dark-theme=1
+      - name: THEME 3
+        copy: src=01-default-gui-settings dest=/etc/dconf/db/local.d/01-default-gui-settings
+        notify:
+          - dconf_update
+
   - name: FONTS
     block:
       - name: FONTS 1
