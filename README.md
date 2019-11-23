@@ -1,12 +1,12 @@
 # provisioner
 
-Provisioner is a bundle ansible praybooks. It allows to quickly configure linux systems.
+Provisioner is a bundle ansible playbooks. It allows to quickly configure linux systems.
 
 Supported Linux Distributions
 -----------------------------
 
--   **CentOS** 7
--   **CentOS** 8 (Beta)
+-   **CentOS** 7 (Beta)
+-   **CentOS** 8
 
 #### Kickstart installation (CentOS 7 only, see [bugreport](https://bugzilla.redhat.com/show_bug.cgi?id=1712776))
 
@@ -18,6 +18,8 @@ Supported Linux Distributions
     yum -y update && reboot
     
     # Fix waringins and errors 
+    journalctl -b0
+    ...
 
     # Install ansible and download playbooks
     yum -y install epel-release && \
@@ -25,13 +27,13 @@ Supported Linux Distributions
     git clone https://gitlab.com/zimmnik/provisioner.git
 
     # Edit variables
-    cd provisioner && vi centos7/run.yml
+    cd provisioner && vi centos8/run.yml
 
     # Run playbook
-    ansible-playbook centos7/run.yml
+    ansible-playbook --tags="all,gnome_de" centos8/run.yml
     
     # Setup user password
-    passwd someusername
+    passwd ...
     
     # Start gui
     systemctl isolate graphical.target
