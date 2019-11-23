@@ -1,9 +1,0 @@
-sour='source_text'
-targ='target_text'
-dirr='path'
-grep --color -oiIrn "$sour" $dirr | awk -F':' '{print $1, $2, $0}' |
-while read file string all
-        do
-        what=$(echo "${all}" | cut -d: -f3-)
-        sed -i -e "${string}s@${what}@${targ}@gi" "${file}"
-done
