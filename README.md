@@ -26,10 +26,10 @@ Supported Linux Distributions
     cd provisioner && vi run.yml
 
     # Run playbook
-    ansible-playbook --tags=minimal,gnome_de run.yml
+    ansible-playbook --tags=all,gnome_de run.yml
     
     # Setup user password
     passwd ...
     
-    # Start gui
+    # Start GUI
     systemctl isolate graphical
