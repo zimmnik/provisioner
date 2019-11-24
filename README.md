@@ -1,6 +1,6 @@
 # provisioner
 
-Provisioner is a bundle ansible playbooks. It allows to quickly configure linux systems.
+Provisioner is a bundle ansible playbooks that allow to quickly configure CentOS systems.
 
 Supported Linux Distributions
 -----------------------------
