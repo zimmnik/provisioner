@@ -1,0 +1,24 @@
+extensions
+drop-down terminal
+!keepassx
+!chromium + xtranslate + ublock + vimium + settings + bookmarks
+ssh + keys + config
+git + config
+tmux + config
+bash + config + aliases
+vim + config
+autoupdate
+mta
+kubectl
+podman
+mc + config
+window hotkey
+workspace hotkey
+!tearing+flickering+displays
+time+ntp+rtc
+layout+hotkey+locale+vconsole
+mta
+
+autobackup
+monitoring
+docs
