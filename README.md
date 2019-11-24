@@ -10,8 +10,7 @@ Supported Linux Distributions
 
 #### Kickstart installation (CentOS 7 only, see [bugreport](https://bugzilla.redhat.com/show_bug.cgi?id=1712776))
 
-    ks=https://gitlab.com/zimmnik/provisioner/raw/master/kickstart/custom.cfg
-
+    ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/custom.cfg
 #### Usage on installed system
 
     # Update packages and reboot
@@ -20,7 +19,7 @@ Supported Linux Distributions
     # Install ansible and playbooks
     yum -y install epel-release && \
     yum -y install ansible git && \
-    git clone https://gitlab.com/zimmnik/provisioner.git
+    git clone https://github.com/zimmnik/provisioner.git
 
     # Edit variables
     cd provisioner && vi run.yml
