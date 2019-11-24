@@ -1,51 +1,53 @@
-- name: Bugfixes
-  block:
-    - name: https://access.redhat.com/solutions/3881701
-      lineinfile: dest=/etc/dracut.conf.d/sg_fix.conf line='add_drivers+="sg"'
-  when: ansible_distribution_major_version == "8"
-
-- name: Hostname
-  hostname: name={{ hostname }}
-  when: not ansible_virtualization_type == "lxc"
-
-- name: Timezone
-  timezone: name=Europe/Moscow
-
-- name: Utilites
-  yum:
-    state: latest
-    name:
-      - ncdu
-      - tree
-      - mc
-      - unzip
-      - p7zip
-      - p7zip-plugins
-      - cifs-utils
-      - lsof
-      - bind-utils
-      - curl
-      - man
-      - vim
-      - less
-      - tmux
-      - bash-completion
-
-- name: SSH
-  block:
-    - name: SSH 1
-      yum: name=openssh-server state=latest
-    - name: SSH 2
-      service: name=sshd enabled=yes state=started
-    - name: SSH 3
-      lineinfile: dest=/etc/ssh/sshd_config line='UseDNS no'
-
-- block:
-  - name: X11 CentOS 7
+- block: MINIMAL
+  - name: Bugfixes
+    block:
+      - name: sg error workaround (CentOS 8 only, https://access.redhat.com/solutions/3881701)
+        lineinfile: dest=/etc/dracut.conf.d/sg_fix.conf line='add_drivers+="sg"' create=yes
+    when: ansible_distribution_major_version == "8"
+  
+  - name: Hostname
+    hostname: name={{ hostname }}
+    when: not ansible_virtualization_type == "lxc"
+  
+  - name: Timezone
+    timezone: name=Europe/Moscow
+  
+  - name: Utilites
+    yum:
+      state: latest
+      name:
+        - ncdu
+        - tree
+        - mc
+        - unzip
+        - p7zip
+        - p7zip-plugins
+        - cifs-utils
+        - lsof
+        - bind-utils
+        - curl
+        - man
+        - vim
+        - less
+        - tmux
+        - bash-completion
+  
+  - name: SSH
+    block:
+      - name: SSH 1
+        yum: name=openssh-server state=latest
+      - name: SSH 2
+        service: name=sshd enabled=yes state=started
+      - name: SSH 3
+        lineinfile: dest=/etc/ssh/sshd_config line='UseDNS no'
+  tags: [ minimal ]
+  
+- block: GNOME_DE
+  - name: X11 (CentOS 7 only)
     yum: name="@X Window System" state=latest
     when: ansible_distribution_major_version == "7"
 
-  - name: X11 CentOS 8
+  - name: X11 (CentOS 8 only)
     yum: name="@base-x" state=latest
     when: ansible_distribution_major_version == "8"
 
