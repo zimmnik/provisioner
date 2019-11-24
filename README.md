@@ -27,10 +27,10 @@ Supported Linux Distributions
     git clone https://gitlab.com/zimmnik/provisioner.git
 
     # Edit variables
-    cd provisioner && vi centos8/run.yml
+    cd provisioner && vi un.yml
 
     # Run playbook
-    ansible-playbook --tags="all,gnome_de" centos8/run.yml
+    ansible-playbook --tags="all,gnome_de" run.yml
     
     # Setup user password
     passwd ...

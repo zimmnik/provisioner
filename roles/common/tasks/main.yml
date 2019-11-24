@@ -1,3 +1,9 @@
+- name: Bugfixes
+  block:
+    - name: https://access.redhat.com/solutions/3881701
+      lineinfile: dest=/etc/dracut.conf.d/sg_fix.conf line='add_drivers+="sg"'
+  when: ansible_distribution_major_version == "8"
+
 - name: Hostname
   hostname: name={{ hostname }}
   when: not ansible_virtualization_type == "lxc"
@@ -6,9 +12,24 @@
   timezone: name=Europe/Moscow
 
 - name: Utilites
-  dnf:
+  yum:
     state: latest
-    name: ['man', 'vim', 'less', 'tree', 'bash-completion']
+    name:
+      - ncdu
+      - tree
+      - mc
+      - unzip
+      - p7zip
+      - p7zip-plugins
+      - cifs-utils
+      - lsof
+      - bind-utils
+      - curl
+      - man
+      - vim
+      - less
+      - tmux
+      - bash-completion
 
 - name: SSH
   block:
@@ -20,21 +41,25 @@
       lineinfile: dest=/etc/ssh/sshd_config line='UseDNS no'
 
 - block:
+  - name: X11 CentOS 7
+    yum: name="@X Window System" state=latest
+    when: ansible_distribution_major_version == "7"
+
+  - name: X11 CentOS 8
+    yum: name="@base-x" state=latest
+    when: ansible_distribution_major_version == "8"
+
   - name: GNOME DE
     yum:
       state: latest
       name:
-        # XORG
-        - "@base-x"
         # DISPLAY AND WINDOW MANAGER
-        #- gnome-session-wayland-session
         - gnome-session-xsession
         - control-center
         - krb5-libs
         - gnome-tweak-tool
         - dconf-editor
         - centos-logos
-        #F- dmz-cursor-themes
         # MOUNT AND FILE MANAGER
         - nautilus
         - gnome-terminal-nautilus
@@ -43,7 +68,6 @@
         - gvfs-gphoto2
         - gvfs-fuse
         - file-roller-nautilus
-        - gvfs-archive
         # UTILITES
         - seahorse
         - gnome-terminal
@@ -99,3 +123,4 @@
       - dconf_update
 
   tags: [ never, gnome_de ]
+  when: not ansible_virtualization_type == "lxc"

@@ -1,3 +1,0 @@
----
-- name: dconf_update
-  command: dconf update
