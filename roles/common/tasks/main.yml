@@ -1,6 +1,6 @@
-- name: Bugfixes
-  block:
-    - name: https://access.redhat.com/solutions/3881701
+- name: Workarounds
+  block: 
+    - name: Workaround 1 (https://access.redhat.com/solutions/3881701)
       lineinfile: create=yes dest=/etc/dracut.conf.d/sg_fix.conf line='add_drivers+="sg"'
   when: ansible_distribution_major_version == "8"
 
