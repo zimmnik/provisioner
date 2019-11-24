@@ -1,7 +1,7 @@
-extensions
-drop-down terminal
-!keepassx
-!chromium + xtranslate + ublock + vimium + settings + bookmarks
+extensions unite + dash to dock
+drop-down terminal guake? shell-extension? + autostart
+!keepassx + config + db + autostart
+!chromium + xtranslate + ublock + vimium + settings + bookmarks + darkmode?
 ssh + keys + config
 git + config
 tmux + config
@@ -19,6 +19,18 @@ time+ntp+rtc
 layout+hotkey+locale+vconsole
 mta
 
+data folder
+ssd trim
+kdump
+esr + java
+firewall gui
+xnview, gthumb?
+office
+mpv + smplayer
+qbuttorent + transmission client
+tor
+telegram client?
+gvim
 autobackup
 monitoring
 docs
