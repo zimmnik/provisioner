@@ -1,9 +1,14 @@
+bios
+ipkvm
+installation (kickstart?)
+provisioner (ansible)
+
 #system
+network
 autoupdate
 time+ntp+rtc
 kdump
-monitoring
-docs
+accounts and passwords
 
 #de
 extensions unite?  desktop icons? topicons? workspace_indicator?
@@ -30,10 +35,10 @@ podman
 ssd trim
 
 #data
+storage (raid, san)
+data folder
 mc + config
 git + config
-data folder
-autobackup + alert
 
 #inet
 mta
@@ -47,3 +52,8 @@ esr + java
 firewall gui
 xrdp vnc server
 freerdp
+
+#post production
+autobackup + alert
+monitoring
+docs
