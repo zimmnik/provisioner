@@ -7,8 +7,9 @@ Supported Linux Distributions
 
 -   **CentOS** 7
 -   **CentOS** 8
+-   **Fedora** 31
 
-#### Kickstart installation (CentOS 7 only, see [bugreport](https://bugzilla.redhat.com/show_bug.cgi?id=1712776))
+#### Kickstart installation (except CentOS 8, see [bugreport](https://bugzilla.redhat.com/show_bug.cgi?id=1712776))
 
     ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/custom.cfg
 #### Usage on installed system
@@ -16,8 +17,10 @@ Supported Linux Distributions
     # Update packages and reboot
     yum -y update && reboot
 
+    # CentOS only 
+    yum -y install epel-release
+
     # Install ansible and playbooks
-    yum -y install epel-release && \
     yum -y install ansible git && \
     git clone https://github.com/zimmnik/provisioner.git
 
