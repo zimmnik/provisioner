@@ -37,7 +37,7 @@
 - block:
   - name: X11 CentOS 7
     yum: name="@X Window System" state=latest
-    when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7") or
+    when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7")
 
   - name: X11 CentOS 8
     yum: name="@base-x" state=latest
