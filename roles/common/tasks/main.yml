@@ -2,9 +2,6 @@
   hostname: name={{ hostname }}
   when: not ansible_virtualization_type == "lxc"
 
-- name: Timezone
-  timezone: name=Europe/Moscow
-
 - name: Utilites
   yum:
     state: latest
@@ -30,19 +27,16 @@
     - name: SSH 1
       yum: name=openssh-server state=latest
     - name: SSH 2
-      service: name=sshd enabled=yes state=started
-    - name: SSH 3
-      lineinfile: dest=/etc/ssh/sshd_config line='UseDNS no'
+      service: name=sshd enabled=yes state=restarted
 
 - block:
-  - name: X11 CentOS 7
-    yum: name="@X Window System" state=latest
-    when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7")
-
-  - name: X11 CentOS 8
-    yum: name="@base-x" state=latest
-    when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "8") or
-          (ansible_facts['distribution'] == "Fedora" and ansible_facts['distribution_major_version'] == "31")
+  - name: X11
+    block:
+      - yum: name="@X Window System" state=latest
+        when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7")
+      - yum: name="@base-x" state=latest
+        when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "8") or
+              (ansible_facts['distribution'] == "Fedora" and ansible_facts['distribution_major_version'] == "31")
 
   - name: GNOME DE
     yum:
@@ -95,7 +89,7 @@
             [Settings]
             gtk-application-prefer-dark-theme=1
       - name: THEME 3
-        copy: src=01-default-gui-settings dest=/etc/dconf/db/local.d/01-default-gui-settings
+        copy: src=01-theme dest=/etc/dconf/db/local.d/01-theme
         notify:
           - dconf_update
 
@@ -108,14 +102,9 @@
         command: fc-cache -f /usr/share/fonts/
         when: fonts.changed
       - name: FONTS 3
-        copy: src=03-fonts-settings dest=/etc/dconf/db/local.d/03-fonts-settings
+        copy: src=02-fonts dest=/etc/dconf/db/local.d/02-fonts
         notify:
           - dconf_update
-
-  - name: VNC SERVER
-    copy: src=04-vino-settings dest=/etc/dconf/db/local.d/04-vino-settings
-    notify:
-      - dconf_update
 
   tags: [ never, gnome_de ]
   when: not ansible_virtualization_type == "lxc"

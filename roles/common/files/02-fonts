@@ -7,8 +7,3 @@ titlebar-font='Ubuntu Medium 11'
 
 monospace-font-name='Bitstream Vera Sans Mono 11'
 font-name='Ubuntu 11'
-
-[org/gnome/settings-daemon/plugins/xsettings]
-
-antialiasing='grayscale'
-hinting='none'
