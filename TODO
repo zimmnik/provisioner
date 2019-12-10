@@ -1,14 +1,21 @@
 bios
 ipkvm
+partitioning (efi, dm-crypt, lvm, swap)
 installation (kickstart?)
 provisioner (ansible)
 
 #system
-network
+network, usb_modem, hostname, vpn, dns, proxy, firewall
 autoupdate
 time+ntp+rtc
 kdump
 accounts and passwords
+locale
+hibernate
+tuned + tlp
+monitoring (cpu_load, mem_load)
+docs
+monitoring (mb_temp, coolers, cpu_temp, hwraid, smart, ups)
 
 #de
 extensions unite?  desktop icons? topicons? workspace_indicator?
@@ -18,31 +25,35 @@ window hotkey
 workspace hotkey
 tmux + config
 bash + config + aliases
+!tearing+flickering+displays+framebuffer+grub_video
+touchpad
 
 #office
-xnview, gthumb?
 gvim + vim + config
+lo office + cups + sane (simplescan)
+
+#media
+xnview, gthumb?
 mpv + smplayer
-lo office
+pulse
 
 #virt
 kubectl
 virtualbox
 podman
 
-#hardware
-!tearing+flickering+displays
-ssd trim
-
 #data
-storage (raid, san)
+storage (raid, zfs, san, fstab)
+ssd trim
 data folder
 mc + config
 git + config
+monitoring (free_space, io_load, net_load, softraid, lvm, crypt)
+autobackup + alert (rsync, fsarchiver, duplicity, dar)
 
 #inet
 mta
-ssh + keys + config
+ssh server + client + keys + config
 !chromium + xtranslate + ublock + vimium + settings + bookmarks + darkmode?
 !keepassx + config + db + autostart
 telegram client?
@@ -54,6 +65,3 @@ xrdp vnc server
 freerdp
 
 #post production
-autobackup + alert
-monitoring
-docs

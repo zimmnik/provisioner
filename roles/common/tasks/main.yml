@@ -1,5 +1,7 @@
 - name: Hostname
   hostname: name={{ hostname }}
+  notify:
+    - nm_restart
   when: not ansible_virtualization_type == "lxc"
 
 - name: Utilites
@@ -32,9 +34,11 @@
 - block:
   - name: X11
     block:
-      - yum: name="@X Window System" state=latest
+      - name: X11 1
+        yum: name="@X Window System" state=latest
         when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7")
-      - yum: name="@base-x" state=latest
+      - name: X11 2
+        yum: name="@base-x" state=latest
         when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "8") or
               (ansible_facts['distribution'] == "Fedora" and ansible_facts['distribution_major_version'] == "31")
 
@@ -63,10 +67,13 @@
         - gnome-screenshot
         # INTERNET
         - firefox
-        # OFFICE
+        # MEDIA
         - eog
+        # OFFICE
         - gedit
         - evince
+    notify:
+      - nm_restart
 
   - name: SYSTEMD TARGET
     block:

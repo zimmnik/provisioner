@@ -1,3 +1,5 @@
 ---
 - name: dconf_update
   command: dconf update
+- name: nm_restart
+  service: name=NetworkManager state=restarted
