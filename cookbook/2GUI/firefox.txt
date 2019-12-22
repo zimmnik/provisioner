@@ -1,0 +1,2 @@
+# Fix tearing
+layers.acceleration.force-enabled true

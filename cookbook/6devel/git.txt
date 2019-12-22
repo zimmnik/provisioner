@@ -1,0 +1,34 @@
+#------------------------------------------------------------------------------------
+# Git setup
+git config --global user.email "name@mail.box" && \
+git config --global user.name "FirstName LastName" && \
+git config --global credential.helper store && \
+git config --global push.default simple && \
+git config --global alias.ci commit \
+git config --global alias.hist "log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short"
+
+#------------------------------------------------------------------------------------
+# Create repo and push to gitlab
+git init && echo reponame > README.md && git add . && git commit -m "Initial commit"
+git remote add origin https://gitlab.domain/username/reponame.git
+git push -u --force origin master
+
+#------------------------------------------------------------------------------------
+# Dirty clean project
+git clone https://gitlab.company.sit/group/projectname.git
+cd projectname/
+URL=$(grep url .git/config | cut -d " " -f3)
+rm -rf .git && git init && git add . && git commit -m "Initial commit"
+git remote add origin $URL && git push -u --force origin master
+cd ..
+
+
+
+#------------------------------------------------------------------------------------
+# Add tag and push
+echo "PROJECTNAME v0.2.1-build3" > README.md 
+git add -A
+git ci -m "Version updated to v0.2.1-build3"
+git tag v0.2.1-build3
+git push origin : v0.2.1-build3
+

@@ -1,0 +1,50 @@
+# ECC RAM only
+https://pthree.org/2012/12/04/zfs-administration-part-i-vdevs/
+https://github.com/zfsonlinux/zfs/wiki/FAQ#selecting-dev-names-when-creating-a-pool
+http://open-zfs.org/wiki/Performance_tuning#RAID-Z_stripe_width
+https://habr.com/en/post/314506/
+
+sudo yum localinstall http://download.zfsonlinux.org/epel/zfs-release.el7_6.noarch.rpm
+sudo gpg --quiet --with-fingerprint /etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux
+sudo vim /etc/yum.repos.d/zfs.repo
+sudo yum install zfs
+
+sudo modprobe zfs
+sudo zpool import tank
+
+zfs get mountpoint
+sudo zfs set mountpoint=/foo_mount tank
+sudo zfs mount tank
+
+zpool status tank
+
+#remove pool
+zpool destroy tank
+
+#create raid0
+zpool create tank sde sdf sdg sdh
+
+#create raid1
+zpool create tank mirror sde sdf sdg sdh
+
+#create raid10
+zpool create tank mirror sde sdf mirror sdg sdh
+
+#create raid10 + ZIL mirror(write cache) + 2 disks L2ARC sripe (read cache)
+zpool create tank mirror /tmp/file1 /tmp/file2 mirror /tmp/file3 /tmp/file4 log mirror sde sdf cache sdg sdh
+
+#create raidz1
+zpool create tank raidz1 sde sdf sdg
+
+#create raidz2
+zpool create tank -o ashift=12 -o atime=off -o compression=on -m /mnt/data raidz2 sde sdf sdg
+
+#create raidz3
+zpool create tank raidz3 sde sdf sdg
+
+#create raid1z1
+zpool create tank raidz1 sde sdf sdg raidz1 sdh sdi sdj raidz1 sdk sdl sdm raidz1 sdn sdo sdp
+
+#Further, I've seen recommendations on the sizes that the disks should be, saying not to exceed 1 TB per disk for RAIDZ-1, 2 TB per disk for RAIDZ-2 and 3 TB per disk for RAIDZ-3. For sizes exceeding these values, you should use 2-way or 3-way mirrors with striping.
+
+sudo sh -c 'echo "options zfs zfs_arc_max=17179869184" >> /etc/modprobe.d/zfs.conf'

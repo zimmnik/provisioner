@@ -1,0 +1,21 @@
+# Desktop icons & Workspace indicators
+yum -y install gnome-shell-extension-desktop-icons gnome-shell-extension-workspace-indicator
+
+# Quake mode
+git clone https://github.com/repsac-by/gnome-shell-extension-quake-mode.git
+cp -rt ~/.local/share/gnome-shell/extensions gnome-shell-extension-quake-mode/quake-mode@repsac-by.github.com
+gnome-shell-extension-prefs quake-mode@repsac-by.github.com
+gnome-shell-extension-tool -e quake-mode@repsac-by.github.com
+
+# Unity
+sudo yum -y install x11-utils
+cd ~/Desktop
+curl -O https://github.com/hardpixel/unite-shell/releases/download/v32/unite-shell-v32.zip
+mkdir ~/.local/share/gnome-shell/extensions/temp
+cd ~/.local/share/gnome-shell/extensions/
+unzip -q ~/Desktop/unite-shell-v32.zip -d temp
+mv temp/ `cat temp/metadata.json | jq '.uuid' | tr -d '"'`
+
+# Setup
+Alt + F2 r
+gnome-tweaks --> extensions
