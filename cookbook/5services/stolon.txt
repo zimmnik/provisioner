@@ -22,8 +22,15 @@ sudo helm delete --purge stolon && sudo kubectl delete ns testing
 #---------------------------------------------------------------------------------------------------------------------------
 # GET STOLON SETTINGS https://github.com/sorintlab/stolon/blob/master/doc/cluster_spec.md
 k run -it stolonctl --serviceaccount='postgre-stolon' --image=sorintlab/stolon:v0.14.0-pg11 --restart=Never --rm=true -- bash
+export STOLONCTL_STORE_BACKEND=kubernetes
+export STOLONCTL_CLUSTER_NAME=postgre-stolon
+export STOLONCTL_KUBE_RESOURCE_KIND=configmap
+
 apt update && apt -y install less jq
-stolonctl --cluster-name postgre-stolon --store-backend=kubernetes --kube-resource-kind=configmap clusterdata read | jq '.' | less
+stolonctl clusterdata read | jq '.' | less
+stolonctl status
+stolonctl spec
+
 exit
 
 #---------------------------------------------------------------------------------------------------------------------------
@@ -32,7 +39,6 @@ k run -it debug --image=postgres:11 --restart=Never --rm=true -- bash
 psql --host postgre-stolon-proxy --port 5432 postgres -U stolon -W
 SELECT client_addr, state, sync_state, sent_lsn, write_lsn,flush_lsn, replay_lsn FROM pg_stat_replication;
 exit
-
 #---------------------------------------------------------------------------------------------------------------------------
 # KILL MASTER TEST https://github.com/sorintlab/stolon/tree/master/examples/kubernetes
 
@@ -70,3 +76,47 @@ exit
 # REVERT BACK
 k apply -f sts.yaml 
 st
+
+#---------------------------------------------------------------------------------------------------------------------------
+# BACKUP AND RESTORE
+
+# Run pod
+k run -it debug --image=postgres:11 --restart=Never --rm=true -- bash
+
+# Add settings
+export PGHOST=postgre-stolon-proxy
+export PGUSER=stolon
+export PGDATABASE=postgres
+
+# Create db, table and one entry
+psql << 'EOF'
+\conninfo
+\list
+CREATE DATABASE demo;
+\c demo
+\conninfo
+CREATE TABLE demotable (id int primary key not null, value text not null);
+INSERT INTO demotable VALUES (1, '');
+SELECT * FROM demotable;
+EOF
+
+# Make backup
+pg_dump --format=directory --file=/mnt/backup demo
+
+# Make some undesirable changes
+psql << 'EOF'
+\c demo
+\conninfo
+INSERT INTO demotable VALUES (2, 'BAD');
+SELECT * FROM demotable;
+EOF
+
+# Restore backup
+pg_restore --if-exists --create --clean -d postgres /mnt/backup
+
+# Our latest changes must disappear
+psql << 'EOF'
+\c demo
+SELECT * FROM demotable;
+EOF
+
