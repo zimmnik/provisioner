@@ -1,0 +1,8 @@
+sudo dnf -y install @"Container Management" podman-docker
+sudo touch /etc/containers/nodocker
+
+sudo docker run --name debug -d -P nginx
+sudo docker port -l
+sudo docker rm -f debug
+
+sudo docker run -it --rm -v ~/Desktop/temp:/mnt:Z python:2 bash
