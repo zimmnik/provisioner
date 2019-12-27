@@ -1,46 +1,22 @@
-bios
-ipkvm
-partitioning (efi, dm-crypt, lvm, swap)
-installation (kickstart?)
-provisioner (ansible)
-
 #system
-network, usb_modem, hostname, vpn, dns, proxy, firewall
 autoupdate
 time+ntp+rtc
 kdump
 accounts and passwords
 locale
-hibernate
-tuned + tlp
 monitoring (cpu_load, mem_load)
 docs
 monitoring (mb_temp, coolers, cpu_temp, hwraid, smart, ups)
+ssh server + client + keys + config
+mta
 
 #de
-extensions unite?  desktop icons? topicons? workspace_indicator?
-drop-down terminal guake? shell-extension? + autostart
+extensions unite? dash-a-dock? desktop icons? topicons? workspace_indicator?
+drop-down terminal
 layout+hotkey+locale+vconsole
-window hotkey
-workspace hotkey
 tmux + config
 bash + config + aliases
-!tearing+flickering+displays+framebuffer+grub_video
-touchpad
-
-#office
-gvim + vim + config
-lo office + cups + sane (simplescan)
-
-#media
-xnview, gthumb?
-mpv + smplayer
-pulse
-
-#virt
-kubectl
-virtualbox
-podman
+!tearing+flickering+displays
 
 #data
 storage (raid, zfs, san, fstab)
@@ -50,18 +26,3 @@ mc + config
 git + config
 monitoring (free_space, io_load, net_load, softraid, lvm, crypt)
 autobackup + alert (rsync, fsarchiver, duplicity, dar)
-
-#inet
-mta
-ssh server + client + keys + config
-!chromium + xtranslate + ublock + vimium + settings + bookmarks + darkmode?
-!keepassx + config + db + autostart
-telegram client?
-qbuttorent + transmission client
-tor
-esr + java
-firewall gui
-xrdp vnc server
-freerdp
-
-#post production

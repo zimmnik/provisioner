@@ -1,3 +1,7 @@
+keepassx + config + db + autostart
+bookmarks
+settings
+simpletranslate + ublock + vimium
 # Fix tearing
 layers.acceleration.force-enabled true
 
@@ -7,4 +11,3 @@ https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm \
 https://download1.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-8.noarch.rpm && \
 sudo dnf config-manager --enable PowerTools
 sudo yum -y install ffmpeg
-
