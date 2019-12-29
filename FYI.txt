@@ -1,28 +1,7 @@
 #system
 autoupdate
-time+ntp+rtc
-kdump
-accounts and passwords
-locale
-monitoring (cpu_load, mem_load)
-docs
-monitoring (mb_temp, coolers, cpu_temp, hwraid, smart, ups)
-ssh server + client + keys + config
 mta
 
-#de
-extensions unite? dash-a-dock? desktop icons? topicons? workspace_indicator?
-drop-down terminal
-layout+hotkey+locale+vconsole
-tmux + config
-bash + config + aliases
-!tearing+flickering+displays
-
 #data
-storage (raid, zfs, san, fstab)
 ssd trim
-data folder
-mc + config
-git + config
-monitoring (free_space, io_load, net_load, softraid, lvm, crypt)
 autobackup + alert (rsync, fsarchiver, duplicity, dar)

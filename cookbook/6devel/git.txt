@@ -4,7 +4,7 @@ git config --global user.email "name@mail.box" && \
 git config --global user.name "FirstName LastName" && \
 git config --global credential.helper store && \
 git config --global push.default simple && \
-git config --global alias.ci commit \
+git config --global alias.ci commit && \
 git config --global alias.hist "log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short"
 
 #------------------------------------------------------------------------------------

@@ -1,21 +1,27 @@
-# Desktop icons & Workspace indicators
-yum -y install gnome-shell-extension-desktop-icons gnome-shell-extension-workspace-indicator
+sed -i '/^#Wayland/ s/#//g' /etc/gdm/custom.conf
+
+cd ~/Desktop
+mkdir -p ~/.local/share/gnome-shell/extensions
 
 # Quake mode
 git clone https://github.com/repsac-by/gnome-shell-extension-quake-mode.git
+cd gnome-shell-extension-quake-mode/ && git checkout 6cc6ca7f0267c6a2604e874b47b21c5be86946fd && cd ..
 cp -rt ~/.local/share/gnome-shell/extensions gnome-shell-extension-quake-mode/quake-mode@repsac-by.github.com
+rm -rf gnome-shell-extension-quake-mode/
+Alt + F2 r
 gnome-shell-extension-prefs quake-mode@repsac-by.github.com
 gnome-shell-extension-tool -e quake-mode@repsac-by.github.com
 
 # Unity
-sudo yum -y install x11-utils
-cd ~/Desktop
-curl -O https://github.com/hardpixel/unite-shell/releases/download/v32/unite-shell-v32.zip
-mkdir ~/.local/share/gnome-shell/extensions/temp
-cd ~/.local/share/gnome-shell/extensions/
-unzip -q ~/Desktop/unite-shell-v32.zip -d temp
-mv temp/ `cat temp/metadata.json | jq '.uuid' | tr -d '"'`
+sudo yum -y install xorg-x11-utils && \
+git clone https://github.com/hardpixel/unite-shell.git && \
+cd unite-shell/ && git checkout v34 && cd .. && \
+cp -rt ~/.local/share/gnome-shell/extensions unite-shell/unite@hardpixel.eu && \
+rm -rf unite-shell
 
-# Setup
+#Desktop icons
+sudo setcap -r /usr/bin/gnome-shell && \
+sudo yum -y install gnome-shell-extension-desktop-icons
+
 Alt + F2 r
-gnome-tweaks --> extensions
+gnome-shell-extension-prefs
