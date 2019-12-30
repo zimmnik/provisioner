@@ -1,0 +1,2 @@
+apt update && apt -y install dar par2 dar-static
+mkdir /stor && cp /usr/bin/dar_static /stor/
