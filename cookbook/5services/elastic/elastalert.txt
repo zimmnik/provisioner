@@ -66,5 +66,4 @@ plugins.enabled=true,\
 plugins.values={"elastalert-kibana-plugin\,1.0.3\,https://github.com/bitsensor/elastalert-kibana-plugin/releases/download/1.0.3/elastalert-kibana-plugin-1.0.3-6.7.0.zip"}
 
 
-sudo kubectl run elastalert-debug --restart=Never --image=centos -- bash -c 'for i in {1..99}; do echo "TEST|cbsmq|#
-MQ_XX_ERR_RDBL |F${i}"; done' && sleep 5 &&  sudo kubectl delete pod elastalert-debug
+sudo kubectl run elastalert-debug --restart=Never --image=centos -- bash -c 'for i in {1..99}; do echo "TEST|cbsmq|#MQ_XX_ERR_RDBL |F${i}"; done' && sleep 5 &&  sudo kubectl delete pod elastalert-debug
