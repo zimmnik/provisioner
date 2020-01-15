@@ -48,3 +48,8 @@ zpool create tank raidz1 sde sdf sdg raidz1 sdh sdi sdj raidz1 sdk sdl sdm raidz
 #Further, I've seen recommendations on the sizes that the disks should be, saying not to exceed 1 TB per disk for RAIDZ-1, 2 TB per disk for RAIDZ-2 and 3 TB per disk for RAIDZ-3. For sizes exceeding these values, you should use 2-way or 3-way mirrors with striping.
 
 sudo sh -c 'echo "options zfs zfs_arc_max=17179869184" >> /etc/modprobe.d/zfs.conf'
+
+zfs snapshot rpool/data/subvol-104-disk-2@backup
+zfs list -t snapshot
+zfs destroy rpool/data/subvol-104-disk-2@backup
+

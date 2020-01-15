@@ -1,3 +1,4 @@
+@weekly	25	backup		bash -c "/usr/local/bin/backup.sh | tee >(systemd-cat -t backup)"
 10 15 * * mon root bash -c "/usr/local/bin/backup.sh | tee >(systemd-cat -t backup)"
 
 #!/bin/bash
@@ -27,6 +28,8 @@ rm -rf previous/ && mkdir incomplete/
 /home/username/.mozilla/ \
 /home/username/.ssh/ >> /dev/null
 fsarchiver -A -Z 15 -j 4 -c $PASS \
+--exclude=/var/lib/containers \
+--exclude=/home/zorg/.local/share/containers \
 savefs incomplete/system-backup-$DATE.fsa \
 /dev/disk/by-id/ata-PLEXTOR_PX-256M5M_P02310105851-part1 \
 /dev/my_machine/backup >> /dev/null 2>&1 
