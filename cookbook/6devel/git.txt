@@ -32,3 +32,9 @@ git ci -m "Version updated to v0.2.1-build3"
 git tag v0.2.1-build3
 git push origin : v0.2.1-build3
 
+#------------------------------------------------------------------------------------
+# Undo commit http://www-cs-students.stanford.edu/~blynn/gitmagic/ch05.html#_8230_and_then_some
+git rebase -i HEAD~2
+#delete the second line within the editor window that pops up
+git push origin +master --force
+
