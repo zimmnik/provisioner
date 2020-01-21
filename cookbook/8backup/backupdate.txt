@@ -24,7 +24,7 @@ which curl
 which tar
 }
 locking () {
-echo -e "\nlocking"
+echo -e "\n$(date -Iminutes) locking"
 if [[ -f /tmp/backupdate.lock ]]; then
   echo "backup already running or crashed"
   return 1
@@ -34,7 +34,7 @@ else
 fi
 }
 unlocking () {
-echo -e "\nunlocking"
+echo -e "\n$(date -Iminutes) unlocking"
 rm -v /tmp/backupdate.lock
 }
 copy_script () {
@@ -93,7 +93,7 @@ umount_remote
 
 #---------------------------------------------------------------------------------------------
 run_7z () {
-7za a -ssc -p$(cat /usr/local/bin/backup_password.txt) latest/data-backup-$DATE.7z \
+time 7za a -ssc -p$(cat /usr/local/bin/backup_password.txt) latest/data-backup-$DATE.7z \
 /mnt/data-snap/Desktop/ \
 /mnt/data-snap/doc/ \
 /mnt/root-snap/home/$USER/.config/chromium/Default/ \
@@ -107,7 +107,7 @@ if ! [[ -f fsarchiver-static-0.8.5.x86_64 ]]; then
   tar --extract --file=fsarchiver-static-0.8.5.x86_64.tar.gz --strip-components 1 --no-same-owner
   rm -v fsarchiver-static-0.8.5.x86_64.tar.gz 
 fi
-./fsarchiver-static-0.8.5.x86_64 \
+time ./fsarchiver-static-0.8.5.x86_64 \
 --allow-rw-mounted --zstd=19 --jobs=4 --cryptpass $(cat /usr/local/bin/backup_password.txt) \
 --exclude=/var/lib/containers \
 --exclude=/home/$USER/.local/share/containers \

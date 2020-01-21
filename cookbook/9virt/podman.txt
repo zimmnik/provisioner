@@ -1,8 +1,8 @@
 sudo dnf -y install @"Container Management" podman-docker
 sudo touch /etc/containers/nodocker
 
-sudo docker run -it --rm -v ~/Desktop/temp:/mnt:Z python:2 bash
+docker run -it --rm -v ~/Desktop/temp:/mnt:Z python:2 bash
 
-sudo podman run --name nginx -dP -v ~/Desktop/provisioner/kickstart:/usr/share/nginx/html:Z,ro nginx:stable
-sudo podman port -l
-sudo docker rm -f nginx
+docker run --name nginx -dP -v ~/Desktop/provisioner/kickstart:/usr/share/nginx/html:Z,ro nginx:stable
+docker port -l
+docker rm -f nginx
