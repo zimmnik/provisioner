@@ -1,6 +1,9 @@
 sudo dnf -y install @"Container Management" podman-docker
 sudo touch /etc/containers/nodocker
 
+sudo sysctl -w "net.ipv4.ping_group_range=0 2000000"
+docker run -it --rm debian ping ya.ru
+
 docker run -it --rm -v ~/Desktop/temp:/mnt:Z python:2 bash
 
 docker run --name nginx -dP -v ~/Desktop/provisioner/kickstart:/usr/share/nginx/html:Z,ro nginx:stable

@@ -65,6 +65,7 @@ cd / && umount -v /mnt/backup_local
 #---------------------------------------------------------------------------------------------
 mount_remote () {
 sshfs backup@zimmnik.ru:/stor/backup/colly /mnt/backup_remote -p 2222 -o IdentityFile=/root/.ssh/fs.key
+echo "mount: backup@zimmnik.ru:/stor/backup/$SYSNAME mounted on /mnt/backup_remote"
 }
 umount_remote () {
 cd / && umount -v /mnt/backup_remote
@@ -136,7 +137,7 @@ mount_local
   par2create -r100 -n1 -t4 -T4 -q latest/data-backup-$DATE.7z
   mount_remote
     cd /mnt/backup_remote/data/latest && pwd
-    cp -v /mnt/backup_local/data/latest/data-backup-$DATE.7z .
+    time cp -v /mnt/backup_local/data/latest/data-backup-$DATE.7z .
   umount_remote
 umount_local
 }
@@ -150,7 +151,7 @@ mount_local
   par2create -r100 -n1 -t4 -T4 -q latest/system-backup-$DATE.fsa
   mount_remote
     cd /mnt/backup_remote/system/latest && pwd
-    cp -v /mnt/backup_local/system/latest/system-backup-$DATE.fsa .
+    time cp -v /mnt/backup_local/system/latest/system-backup-$DATE.fsa .
   umount_remote
 umount_local
 }
@@ -202,7 +203,7 @@ locking
 make_mount_folders
 make_folders_structure
 copy_script
-if [[ $(date +%u) -eq 1 ]]; then
+if [[ $(date +%u) -eq 5 ]]; then
   rotate_local
   rotate_remote
   backup_data
