@@ -22,6 +22,10 @@ rm -rf .git && git init && git add . && git commit -m "Initial commit"
 git remote add origin $URL && git push -u --force origin master
 cd ..
 
+#------------------------------------------------------------------------------------
+# Clone project
+git pull && URL=$(grep url .git/config | cut -d " " -f3 | sed "s/dfcssg/afs/"); echo $URL
+git remote remove origin && git remote add origin $URL && git push -u --force origin master
 
 
 #------------------------------------------------------------------------------------

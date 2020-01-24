@@ -16,6 +16,7 @@ echo "alias kg='kubectl config get-contexts'"
 echo "alias kgs='kubectl config use-context'"
 
 kubectl config set-cluster dev --insecure-skip-tls-verify=true --server=https://1.1.9.38:6443
+kubectl config set-cluster corp --insecure-skip-tls-verify=false --certificate-authority=$HOME/.kube/corp_ca.crt
 kubectl config set-credentials dev-admin --username=kube --password=password
 kubectl config set-context dev-default --user=dev-admin --namespace=default --cluster=dev
 kubectl config use dev-default
