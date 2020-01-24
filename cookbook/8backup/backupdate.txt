@@ -134,7 +134,7 @@ mount_local
         rm -r /mnt/root-snap /mnt/data-snap
     lvremove -A y -f /dev/$SYSNAME/data-snap
   lvremove -A y -f /dev/$SYSNAME/root-snap
-  par2create -r100 -n1 -t4 -T4 -q latest/data-backup-$DATE.7z
+  time par2create -r100 -n1 -t4 -T4 -q latest/data-backup-$DATE.7z
   mount_remote
     cd /mnt/backup_remote/data/latest && pwd
     time cp -v /mnt/backup_local/data/latest/data-backup-$DATE.7z .
@@ -148,7 +148,7 @@ mount_local
   lvcreate -s -n root-snap -L4G /dev/$SYSNAME/root
     run_fsarchiver
   lvremove -A y -f /dev/$SYSNAME/root-snap
-  par2create -r100 -n1 -t4 -T4 -q latest/system-backup-$DATE.fsa
+  time par2create -r100 -n1 -t4 -T4 -q latest/system-backup-$DATE.fsa
   mount_remote
     cd /mnt/backup_remote/system/latest && pwd
     time cp -v /mnt/backup_local/system/latest/system-backup-$DATE.fsa .
@@ -194,6 +194,7 @@ echo -e "\nupdate_system"
 yum --assumeyes --disablerepo=kubernetes upgrade
 #https://gitlab.gnome.org/World/ShellExtensions/desktop-icons/issues/137#note_677618
 setcap -r /usr/bin/gnome-shell > /dev/null 2>&1 || true
+echo "Rebooting"
 sleep 60 && reboot
 }
 
@@ -203,7 +204,7 @@ locking
 make_mount_folders
 make_folders_structure
 copy_script
-if [[ $(date +%u) -eq 5 ]]; then
+if [[ $(date +%u) -eq 1 ]]; then
   rotate_local
   rotate_remote
   backup_data
