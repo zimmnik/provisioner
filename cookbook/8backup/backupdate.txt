@@ -1,5 +1,5 @@
 #!/bin/bash
-#VERSION=1.0
+#VERSION=1.0.1
 
 #ANACRONTAB
 #START_HOURS_RANGE=0-7
@@ -48,11 +48,6 @@ mount_remote
   cp -fv /usr/local/bin/backupdate.sh .
 umount_remote
 }
-make_mount_folders () {
-echo -e "\nmake_mount_folders"
-mkdir -v /mnt/backup_local || true
-mkdir -v /mnt/backup_remote || true
-}
 
 #---------------------------------------------------------------------------------------------
 mount_local () {
@@ -82,6 +77,8 @@ mkdir -v system/previous || true
 
 make_folders_structure () {
 echo -e "\nmake_folders_structure"
+mkdir -v /mnt/backup_local || true
+mkdir -v /mnt/backup_remote || true
 mount_local
   cd /mnt/backup_local && pwd
   make_stage_folders
@@ -122,12 +119,12 @@ savefs latest/system-backup-$DATE.fsa \
 backup_data () {
 echo -e "\nbackup_data"
 mount_local
-  cd /mnt/backup_local/data && pwd
   lvcreate -s -n root-snap -L4G /dev/$SYSNAME/root
     lvcreate -s -n data-snap -L4G /dev/$SYSNAME/data
         mkdir -v /mnt/root-snap /mnt/data-snap
           mount -v -o ro /dev/$SYSNAME/root-snap /mnt/root-snap
             mount -v -o ro /dev/$SYSNAME/data-snap /mnt/data-snap
+              cd /mnt/backup_local/data && pwd
               run_7z
             umount -v /mnt/data-snap
           umount -v /mnt/root-snap
@@ -144,8 +141,8 @@ umount_local
 backup_system () {
 echo -e "\nbackup_system"
 mount_local
-  cd /mnt/backup_local/system && pwd
   lvcreate -s -n root-snap -L4G /dev/$SYSNAME/root
+    cd /mnt/backup_local/system && pwd
     run_fsarchiver
   lvremove -A y -f /dev/$SYSNAME/root-snap
   time par2create -r100 -n1 -t4 -T4 -q latest/system-backup-$DATE.fsa
@@ -201,7 +198,6 @@ sleep 60 && reboot
 #---------------------------------------------------------------------------------------------
 check_depencences
 locking
-make_mount_folders
 make_folders_structure
 copy_script
 if [[ $(date +%u) -eq 1 ]]; then
