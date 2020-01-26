@@ -185,14 +185,21 @@ umount_remote
 
 update_system () {
 echo -e "\nupdate_system"
-#Fedora
-#yum --assumeyes upgrade-minimal 
-#Centos
-yum --assumeyes --disablerepo=kubernetes upgrade
-#https://gitlab.gnome.org/World/ShellExtensions/desktop-icons/issues/137#note_677618
-setcap -r /usr/bin/gnome-shell > /dev/null 2>&1 || true
-echo "Rebooting"
-sleep 60 && reboot
+
+if grep -q -E 'NAME=Fedora' /etc/os-release; then
+  OPT="--bugfix --enhancement --security"
+else
+  unset OPT
+fi
+
+yum --refresh $OPT check-update
+if [ "$?" -eq 100 ]; then
+  yum --assumeyes $OPT upgrade | sendmail root
+  #https://gitlab.gnome.org/World/ShellExtensions/desktop-icons/issues/137#note_677618
+  setcap -r /usr/bin/gnome-shell > /dev/null 2>&1 || true
+  echo "Rebooting ..."
+  sleep 60 && reboot
+fi
 }
 
 #---------------------------------------------------------------------------------------------
