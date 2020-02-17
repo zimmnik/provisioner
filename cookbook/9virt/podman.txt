@@ -1,9 +1,20 @@
-sudo dnf -y install @"Container Management" podman-docker
-sudo touch /etc/containers/nodocker
+yum -y install @"Container Management" jq
+yum -y install podman-docker && touch /etc/containers/nodocker
 
-sudo sysctl -w "net.ipv4.ping_group_range=0 2000000"
-docker run -it --rm debian ping ya.ru
+yum -y install jq
+cat /etc/cni/net.d/87-podman-bridge.conflist | jq -r '.plugins[] | select(.type=="firewall").backend = "firewalld"' > /run/jq.tmp
+mv -f /run/jq.tmp /etc/cni/net.d/87-podman-bridge.conflist
+ip link delete cni-podman0 || true
 
+sysctl -w "net.ipv4.ping_group_range=0 2000000"
+echo "net.ipv4.ping_group_range = 0 2000000" > /etc/sysctl.d/podman_ping.conf
+
+cat << 'EOF' >> Dockerfile && docker build -t debug .
+FROM debian
+RUN apt update && apt -y install nmap dnsutils vim less
+EOF
+
+docker run -it --rm debug ping ya.ru
 docker run -it --rm -v ~/Desktop/temp:/mnt:Z python:2 bash
 
 docker run --name nginx -dP -v ~/Desktop/provisioner/kickstart:/usr/share/nginx/html:Z,ro nginx:stable
