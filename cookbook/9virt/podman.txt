@@ -1,13 +1,12 @@
-yum -y install @"Container Management" jq
-yum -y install podman-docker && touch /etc/containers/nodocker
+yum -y install @"Container Management"
+touch /etc/containers/nodocker
 
-yum -y install jq
-cat /etc/cni/net.d/87-podman-bridge.conflist | jq -r '.plugins[] | select(.type=="firewall").backend = "firewalld"' > /run/jq.tmp
-mv -f /run/jq.tmp /etc/cni/net.d/87-podman-bridge.conflist
-ip link delete cni-podman0 || true
+sed -i "s/iptables/firewalld/" /etc/cni/net.d/87-podman-bridge.conflist
+#ip link delete cni-podman0
 
-sysctl -w "net.ipv4.ping_group_range=0 2000000"
-echo "net.ipv4.ping_group_range = 0 2000000" > /etc/sysctl.d/podman_ping.conf
+#rootless only
+sudo sysctl -w "net.ipv4.ping_group_range=0 2000000"
+sudo sh -c 'echo "net.ipv4.ping_group_range = 0 2000000" > /etc/sysctl.d/podman_ping.conf'
 
 cat << 'EOF' >> Dockerfile && docker build -t debug .
 FROM debian
