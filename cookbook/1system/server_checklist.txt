@@ -1,0 +1,16 @@
+hardware
+bios
+ipkvm
+installation
+ansible
+
+soft raid
+hard raid
+san
+
+security(accounts, ssh, passwords)
+network
+
+monitoring
+backup
+wiki
