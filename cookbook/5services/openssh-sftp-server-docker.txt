@@ -1,3 +1,5 @@
+mkdir conf && cd conf
+
 cat << 'EOF' >> sshd_config
 usepam no
 loglevel INFO
@@ -14,11 +16,18 @@ challengeresponseauthentication no
 hostkey /etc/ssh/ssh_host_rsa_key
 hostkey /etc/ssh/ssh_host_ecdsa_key
 hostkey /etc/ssh/ssh_host_ed25519_key
-authorizedkeysfile /root/.ssh/authorized_keys
+authorizedkeysfile /etc/ssh/authorized_keys
 chrootdirectory /stor
 subsystem sftp internal-sftp
 forcecommand internal-sftp
 EOF
+
+for TYPE in {rsa,ecdsa,ed25519}; do ssh-keygen -N '' -t ${TYPE} -f ssh_host_${TYPE}_key; done
+time ssh-keygen -M 127 -b 2048 -W 2 -G numbers 
+time ssh-keygen -f numbers -T moduli
+rm numbers
+
+cd .. 
 
 cat << 'EOF' >> Dockerfile
 FROM centos:8
@@ -26,16 +35,12 @@ MAINTAINER Semyon Vasilkov <docker@zimmnik.ru>
 LABEL Description="OpenSSH SFTP server" Version="1"
 USER root
 RUN yum -y install openssh-server; \
-    mkdir -v /root/.ssh /stor; \
+    mkdir -v /stor; \
     usermod -U root
-COPY ssh_host_* /etc/ssh
-COPY sshd_config /etc/ssh
-COPY authorized_keys /root/.ssh/
 EXPOSE 22
 CMD ["/usr/sbin/sshd", "-e", "-D"]
 EOF
 
-for TYPE in {rsa,ecdsa,ed25519}; do ssh-keygen -N '' -t ${TYPE} -f ssh_host_${TYPE}_key; done
 docker build -t openssh-sftp-server .
 docker run -p 2222:22 --name sshd -dP openssh-sftp-server
 scp -i ~/.ssh/id_rsa /etc/hosts root@localhost:2222
