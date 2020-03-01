@@ -17,7 +17,7 @@ hostkey /etc/ssh/ssh_host_rsa_key
 hostkey /etc/ssh/ssh_host_ecdsa_key
 hostkey /etc/ssh/ssh_host_ed25519_key
 authorizedkeysfile /etc/ssh/authorized_keys
-chrootdirectory /stor
+chrootdirectory /mnt
 subsystem sftp internal-sftp
 forcecommand internal-sftp
 EOF
@@ -27,22 +27,24 @@ time ssh-keygen -M 127 -b 2048 -W 2 -G numbers
 time ssh-keygen -f numbers -T moduli
 rm numbers
 
-cd .. 
+cd .. && chmod og-rwx conf/
 
 cat << 'EOF' >> Dockerfile
 FROM centos:8
 MAINTAINER Semyon Vasilkov <docker@zimmnik.ru>
 LABEL Description="OpenSSH SFTP server" Version="1"
 USER root
-RUN yum -y install openssh-server; \
-    mkdir -v /stor; \
+RUN yum -y install openssh-server && \
+    yum clean all && \
+    rm -rf /var/cache/yum && \
     usermod -U root
 EXPOSE 22
 CMD ["/usr/sbin/sshd", "-e", "-D"]
 EOF
 
 docker build -t openssh-sftp-server .
-docker run -p 2222:22 --name sshd -dP openssh-sftp-server
-scp -i ~/.ssh/id_rsa /etc/hosts root@localhost:2222
-sudo yum install fuse-sshfs
+docker run --name sftp_backup -p 2222:22 -v $(pwd)/conf:/etc/ssh:Z,ro -d openssh-sftp-server
+
+sftp -i ~/.ssh/id_rsa_zorg sftp://root@localhost:2222
+sudo yum install fuse-sshfs && \
 sshfs root@localhost:/ ~/temp -p 2222 -o IdentityFile=~/.ssh/id_rsa
