@@ -17,8 +17,8 @@ EOF
 docker build -t openssh-sftp-server .
 
 #---------------------------------------------------
-zfs create stor/sftp_backup
-cd /stor/sftp_backup
+zfs create stor/sftp-backup
+cd /stor/sftp-backup
 mkdir data conf && cd conf
 
 cat << 'EOF' >> sshd_config
@@ -49,9 +49,13 @@ time sh -c 'ssh-keygen -M 127 -b 2048 -W 2 -G numbers && ssh-keygen -f numbers -
 cd .. && chmod og-rwx conf/
 
 #---------------------------------------------------
-cd /stor/sftp_backup
-docker run --name ${PWD##*/} -p 2000:22 -v ${PWD}/conf:/etc/ssh:Z,ro -v ${PWD}/data:/mnt:Z,rw -d openssh-sftp-server
+cd /stor/sftp-backup
+docker run --name sftp-backup -p 2000:22 -v ${PWD}/conf:/etc/ssh:Z,ro -v ${PWD}/data:/mnt:Z,rw -d openssh-sftp-server
+cd /etc/systemd/system
+docker generate systemd sftp-backup | sed -e '/\[Unit\]/a After=multi-user.target' > sftp-backup.service
+systemctl daemon reload && systemctl enable sftp-backup.service
 
-sftp -i ~/.ssh/id_rsa_zorg sftp://root@localhost:2222
+#---------------------------------------------------
+sftp -i ~/.ssh/id_rsa_zorg sftp://root@localhost:2000
 sudo yum install fuse-sshfs && \
-sshfs root@localhost:/ ~/temp -p 2222 -o IdentityFile=~/.ssh/id_rsa
+sshfs root@localhost:/ ~/temp -p 2000 -o IdentityFile=~/.ssh/id_rsa
