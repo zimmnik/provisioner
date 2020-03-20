@@ -20,7 +20,13 @@ docker run --name nginx -dP -v ~/Desktop/provisioner/kickstart:/usr/share/nginx/
 docker port -l
 docker rm -f nginx
 
+sudo setsebool -P container_manage_cgroup true
+docker run -it --rm centos:8 /usr/sbin/init
+
 ########################################################################
+#CNI MACVLAN
+https://github.com/containernetworking/plugins/issues/435
+
 cat << 'EOF' >> /etc/systemd/system/io.podman.dhcp.socket 
 [Unit]
 Description=DHCP Client for CNI
@@ -70,4 +76,3 @@ EOF
 
 docker run --name nginx --network macvlan --detach --hostname=nginx.home.local nginx
 
-https://github.com/containernetworking/plugins/issues/435
