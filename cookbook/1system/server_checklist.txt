@@ -4,13 +4,12 @@ ipkvm
 installation
 ansible
 
-soft raid
-hard raid
-san
+raid/storage
 
 security(accounts, ssh, passwords)
 network
 
 monitoring
 backup
+update policy
 wiki
