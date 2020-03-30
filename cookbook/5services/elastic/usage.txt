@@ -95,7 +95,8 @@ GET _ilm/policy/test_policy
 DELETE _ilm/policy/test_policy
 
 # Assign policy to index
-PUT test_index/_settings
+GET test_*/_settings 		
+PUT test_*/_settings
 {
   "lifecycle.name": "test_policy"
 }
