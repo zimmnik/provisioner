@@ -57,5 +57,6 @@ systemctl daemon reload && systemctl enable sftp-backup.service
 
 #---------------------------------------------------
 sftp -i ~/.ssh/id_rsa_zorg sftp://root@localhost:2000
+sftp -i ~/.ssh/id_rsa_zorg -P 2000 root@localhost
 sudo yum install fuse-sshfs && \
 sshfs root@localhost:/ ~/temp -p 2000 -o IdentityFile=~/.ssh/id_rsa
