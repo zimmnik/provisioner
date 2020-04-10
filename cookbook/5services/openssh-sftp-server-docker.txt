@@ -23,7 +23,7 @@ mkdir data conf && cd conf
 
 cat << 'EOF' >> sshd_config
 usepam no
-loglevel INFO
+loglevel VERBOSE
 compression no
 disableforwarding yes
 permitrootlogin prohibit-password
@@ -53,7 +53,8 @@ cd /stor/sftp-backup
 docker run --name sftp-backup -p 2000:22 -v ${PWD}/conf:/etc/ssh:Z,ro -v ${PWD}/data:/mnt:Z,rw -d openssh-sftp-server
 cd /etc/systemd/system
 docker generate systemd sftp-backup | sed -e '/\[Unit\]/a After=multi-user.target' > sftp-backup.service
-systemctl daemon reload && systemctl enable sftp-backup.service
+systemctl daemon-reload && systemctl enable sftp-backup.service
+docker logs -ft sftp-backup
 
 #---------------------------------------------------
 sftp -i ~/.ssh/id_rsa_zorg sftp://root@localhost:2000
