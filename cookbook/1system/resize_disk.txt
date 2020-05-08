@@ -14,5 +14,13 @@ lvresize --extents +100%FREE --resizefs /dev/xxxx/root
 # descrease fs size
 lvreduce -r -L -15G /dev/Volgroup/lv_root
 
-# For pure ext4
-resize2fs /dev/vda1
+# pure ext4 over partiton table
+systemctl stop elasticsearch
+df -h && umount /dev/sdb1
+parted /dev/sdb print free
+parted /dev/sdb resizepart 1 100%
+parted /dev/sdb print free
+e2fsck -f /dev/sdb1
+resize2fs /dev/sdb1
+mount /dev/sdb1 && df -h
+systemctl start elasticsearch
