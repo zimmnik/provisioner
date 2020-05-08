@@ -1,7 +1,0 @@
-#system
-autoupdate
-mta
-
-#data
-ssd trim
-autobackup + alert (rsync, fsarchiver, duplicity, dar)
