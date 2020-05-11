@@ -4,23 +4,21 @@ Provisioner is a bundle ansible playbooks that allow to quickly configure RHEL-b
 
 Supported distributions
 -----------------------------
-
 -   **CentOS** 7
 -   **CentOS** 8
 -   **Fedora** 31
 
 ## Quick Start
-
 To deploy the cluster you can use :
 
-### BareMetal + Kickstart + Ansible
+### 1) BareMetal + Kickstart + Ansible
+#### Usage:
 
-#### Usage
-
+Anaconda stage: use kickstart file (except CentOS 8, see [bugreport](https://bugzilla.redhat.com/show_bug.cgi?id=1712776))
 ```raw
-# Kickstart option (except CentOS 8, see [bugreport](https://bugzilla.redhat.com/show_bug.cgi?id=1712776))
 ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/custom.cfg
 ```
+Pure system stage:
 ```ShellSession
 # Update packages and reboot
 yum -y update && reboot
@@ -47,7 +45,7 @@ passwd someusername
 # Start GUI
 systemctl isolate graphical
 ```
-### VirtualBox + Vagrant
+### 2) VirtualBox + Vagrant
 
 #### Requirements
 - **Git v2.9.0+**
