@@ -52,7 +52,7 @@ systemctl isolate graphical
 - **Virtualbox v5.2+**
 - **Vagrant v2.2.7+**
 
-#### Usage
+#### Usage:
 ```ShellSession
 # Install playbooks
 git clone https://github.com/zimmnik/provisioner.git && cd provisioner
@@ -66,8 +66,8 @@ vagrant up
 
 # Setup user and root passwords
 vagrant ssh
-passwd root 
-passwd someusername
+sudo passwd root 
+sudo passwd someusername
 exit
 
 # Start GUI
