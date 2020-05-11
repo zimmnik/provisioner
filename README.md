@@ -9,7 +9,7 @@ Supported distributions
 -   **Fedora** 31
 
 ## Quick Start
-To deploy the cluster you can use :
+To deploy the system you can use :
 
 ### 1) BareMetal + Kickstart + Ansible
 #### Usage:
