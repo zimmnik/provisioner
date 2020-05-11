@@ -9,13 +9,13 @@ Supported distributions
 -   **CentOS** 8
 -   **Fedora** 31
 
-# Quick Start
+## Quick Start
 
 To deploy the cluster you can use :
 
-## BareMetal + Kickstart + Ansible
+### BareMetal + Kickstart + Ansible
 
-### Usage
+#### Usage
 
 ```raw
 # Kickstart option (except CentOS 8, see [bugreport](https://bugzilla.redhat.com/show_bug.cgi?id=1712776))
@@ -47,14 +47,14 @@ passwd someusername
 # Start GUI
 systemctl isolate graphical
 ```
-## VirtualBox + Vagrant
+### VirtualBox + Vagrant
 
-### Requirements
+#### Requirements
 - **Git v2.9.0+**
 - **Virtualbox v5.2+**
 - **Vagrant v2.2.7+**
 
-### Usage
+#### Usage
 ```ShellSession
 # Install playbooks
 git clone https://github.com/zimmnik/provisioner.git && cd provisioner
