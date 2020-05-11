@@ -9,30 +9,69 @@ Supported distributions
 -   **CentOS** 8
 -   **Fedora** 31
 
-#### Kickstart installation (except CentOS 8, see [bugreport](https://bugzilla.redhat.com/show_bug.cgi?id=1712776))
+# Quick Start
 
-    ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/custom.cfg
+To deploy the cluster you can use :
 
-#### Usage on installed system
+## BareMetal + Kickstart + Ansible
 
-    # Update packages and reboot
-    yum -y update && reboot
+### Usage
 
-    # CentOS only 
-    yum -y install epel-release
+```raw
+# Kickstart option (except CentOS 8, see [bugreport](https://bugzilla.redhat.com/show_bug.cgi?id=1712776))
+ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/custom.cfg
+```
+```ShellSession
+# Update packages and reboot
+yum -y update && reboot
 
-    # Install ansible and playbooks
-    yum -y install ansible git && \
-    git clone https://github.com/zimmnik/provisioner.git
+# CentOS only 
+yum -y install epel-release
 
-    # Edit variables
-    cd provisioner && vi run.yml
+# Install dependencies
+yum -y install ansible git
 
-    # Run playbook
-    ansible-playbook --tags=all,gnome_de run.yml
-    
-    # Setup user password
-    passwd ...
-    
-    # Start GUI
-    systemctl isolate graphical
+# Clone playbooks
+git clone https://github.com/zimmnik/provisioner.git && cd provisioner
+
+# Edit variables
+vi run.yml
+
+# Run playbook
+ansible-playbook -i hosts --tags=all,gnome_de run.yml
+
+# Setup user password
+passwd root 
+passwd someusername
+
+# Start GUI
+systemctl isolate graphical
+```
+## VirtualBox + Vagrant
+
+### Requirements
+- **Git v2.9.0+**
+- **Virtualbox v5.2+**
+- **Vagrant v2.2.7+**
+
+### Usage
+```ShellSession
+# Install playbooks
+git clone https://github.com/zimmnik/provisioner.git && cd provisioner
+
+# Edit variables
+vi Vagrantfile
+vi run.yml
+
+# Deploy
+vagrant up
+
+# Setup user and root passwords
+vagrant ssh
+passwd root 
+passwd someusername
+exit
+
+# Start GUI
+vboxmanage startvm provisioned_vm --type separate
+```

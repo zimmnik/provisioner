@@ -1,5 +1,5 @@
 - name: "local host provisioning"
-  hosts: localhost
+  hosts: default
   vars:
    hostname: somehostname
   #----------------------------------------
