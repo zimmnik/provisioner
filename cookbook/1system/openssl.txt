@@ -1,0 +1,5 @@
+#see content pem certificate
+openssl x509 -inform pem -noout -text -in cert.crt
+
+#see content certificate from site
+NAME=ya.ru && openssl s_client -showcerts -servername "$NAME" -connect "${NAME}:443" </dev/null | less
