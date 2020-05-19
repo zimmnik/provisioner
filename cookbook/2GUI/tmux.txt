@@ -3,4 +3,5 @@ cat << 'EOF' >> ~/.tmux.conf
 unbind-key C-b
 set-option -g prefix C-a
 bind-key C-a send-prefix
+set-option -g history-limit 5000
 EOF
