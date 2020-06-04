@@ -7,6 +7,27 @@
       <primary>yes</primary>
       <monitor>
         <monitorspec>
+          <connector>Virtual1</connector>
+          <vendor>unknown</vendor>
+          <product>unknown</product>
+          <serial>unknown</serial>
+        </monitorspec>
+        <mode>
+          <width>1360</width>
+          <height>768</height>
+          <rate>60.015163421630859</rate>
+        </mode>
+      </monitor>
+    </logicalmonitor>
+  </configuration>
+  <configuration>
+    <logicalmonitor>
+      <x>0</x>
+      <y>0</y>
+      <scale>1</scale>
+      <primary>yes</primary>
+      <monitor>
+        <monitorspec>
           <connector>Virtual-1</connector>
           <vendor>unknown</vendor>
           <product>unknown</product>
@@ -15,7 +36,7 @@
         <mode>
           <width>1360</width>
           <height>768</height>
-          <rate>60.0</rate>
+          <rate>60</rate>
         </mode>
       </monitor>
     </logicalmonitor>
