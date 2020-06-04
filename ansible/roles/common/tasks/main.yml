@@ -40,7 +40,9 @@
       - name: X11 2
         yum: name="@base-x" state=latest
         when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "8") or
-              (ansible_facts['distribution'] == "Fedora" and ansible_facts['distribution_major_version'] == "31")
+              (ansible_facts['distribution'] == "Fedora" and ansible_facts['distribution_major_version'] == "32")
+      - name: X11 3
+        yum: name=dbus-x11 state=latest
 
   - name: GNOME DE
     yum:
@@ -95,10 +97,10 @@
           block: |
             [Settings]
             gtk-application-prefer-dark-theme=1
-      - name: THEME 3
-        copy: src=01-theme dest=/etc/dconf/db/local.d/01-theme
-        notify:
-          - dconf_update
+      #- name: THEME 3
+      #  copy: src=01-theme dest=/etc/dconf/db/local.d/01-theme
+      #  notify:
+      #    - dconf_update
 
   - name: FONTS
     block:
@@ -108,10 +110,10 @@
       - name: FONTS 2
         command: fc-cache -f /usr/share/fonts/
         when: fonts.changed
-      - name: FONTS 3
-        copy: src=02-fonts dest=/etc/dconf/db/local.d/02-fonts
-        notify:
-          - dconf_update
+      #- name: FONTS 3
+      #  copy: src=02-fonts dest=/etc/dconf/db/local.d/02-fonts
+      #  notify:
+      #    - dconf_update
 
   tags: [ never, gnome_de ]
   when: not ansible_virtualization_type == "lxc"

@@ -1,9 +1,9 @@
 - name: "local host provisioning"
   hosts: default
   vars:
-   hostname: somehostname
+   hostname: host01
   #----------------------------------------
   roles: [ common ]
   tasks: 
     - name: USER
-      user: name=someusername groups=wheel append=yes
+      user: name=demo uid=1024 groups=wheel append=yes

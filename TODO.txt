@@ -1,6 +1,2 @@
-time+ntp+rtc
-locale
-desktop icons? topicons?
-layout+hotkey+locale+vconsole
 ssd trim
 mta
