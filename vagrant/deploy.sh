@@ -5,7 +5,7 @@ set -eux
 cp -fv /vagrant/vagrant/files/monitors.xml "/home/${USER}/.config/"
 chown -v "${USER}:${USER}" "/home/${USER}/.config/monitors.xml"
 sudo -u "$USER" dbus-launch gsettings set org.gnome.settings-daemon.plugins.color night-light-enabled true
-sudo -u "$USER" dbus-launch dconf load / < /vagrant/vagrant/files/dconf-power.ini
+sudo -u "$USER" dbus-launch dconf load / < /vagrant/vagrant/files/dconf/dconf-power.ini
 sed -i '/^#Wayland/ s/#//g' /etc/gdm/custom.conf
 
 # timedate
@@ -18,7 +18,7 @@ timedatectl set-timezone Europe/Moscow
 #yum -yq install langpacks-ru
 yum -yq install glibc-langpack-ru
 localectl set-locale LANG=ru_RU.UTF-8 LC_MESSAGES="en_US.UTF-8"
-sudo -u "$USER" dbus-launch dconf load / < /vagrant/vagrant/files/dconf-locale.ini
+sudo -u "$USER" dbus-launch dconf load / < /vagrant/vagrant/files/dconf/dconf-locale.ini
 
 # user
 echo "${USER}:${USER}" | chpasswd
@@ -33,7 +33,8 @@ curl -LSs https://extensions.gnome.org/extension-data/quake-mode%40repsac-by.git
 sudo -u "$USER" dbus-launch gnome-extensions install /var/cache/quake-mode.zip
 rm -v /var/cache/quake-mode.zip
 sudo -u "$USER" dbus-launch gnome-extensions enable quake-mode@repsac-by.github.com
-sudo -u "$USER" dbus-launch dconf load / < /vagrant/vagrant/files/dconf-terminal.ini
+sudo -u "$USER" dbus-launch dconf load / < /vagrant/vagrant/files/dconf/dconf-terminal.ini
+cat /vagrant/vagrant/files/bash.settings >> "/home/${USER}/.bashrc"
 
 # filemanager
 yum -yq install gnome-shell-extension-desktop-icons
@@ -41,7 +42,7 @@ setcap -r /usr/bin/gnome-shell
 sudo -u "$USER" mkdir -v "/home/${USER}/Desktop"
 sudo -u "$USER" dbus-launch gnome-extensions enable desktop-icons@csoriano
 sudo -u "$USER" dbus-launch gsettings get org.gnome.shell enabled-extensions
-sudo -u "$USER" dbus-launch dconf load / < /vagrant/vagrant/files/dconf-filemanager.ini
+sudo -u "$USER" dbus-launch dconf load / < /vagrant/vagrant/files/dconf/dconf-filemanager.ini
 
 # windowmanager
 yum -yq install gnome-shell-extension-workspace-indicator
@@ -50,7 +51,7 @@ curl -LSs https://extensions.gnome.org/extension-data/unitehardpixel.eu.v41.shel
 sudo -u "$USER" dbus-launch gnome-extensions install /var/cache/unite.zip
 sudo -u "$USER" dbus-launch gnome-extensions enable unite@hardpixel.eu
 rm -v /var/cache/unite.zip
-sudo -u "$USER" dbus-launch dconf load / < /vagrant/vagrant/files/dconf-windows.ini
+sudo -u "$USER" dbus-launch dconf load / < /vagrant/vagrant/files/dconf/dconf-windows.ini
 
 # firefox
 yum -yq install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
@@ -84,6 +85,15 @@ chmod -R og-rwx "/home/${USER}/.config/keepassxc"
 sudo -u "$USER" mkdir "/home/${USER}/.config/autostart"
 cp -fv /vagrant/vagrant/files/keepassxc/org.keepassxc.KeePassXC.desktop "/home/${USER}/.config/autostart"
 chown -R "${USER}:${USER}" "/home/${USER}/.config/autostart"
+
+# freerdp
+yum -yq install freerdp
+cat /vagrant/vagrant/files/freerdp.settings >> "/home/${USER}/.bashrc"
+
+# gvim
+yum -yq install gvim
+cat /vagrant/vagrant/files/gvim.settings >> "/home/${USER}/.vimrc"
+chown -R "${USER}:${USER}" "/home/${USER}/.vimrc"
 
 # reload GUI
 #systemctl isolate graphical

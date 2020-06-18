@@ -1,20 +1,6 @@
-keepassx + config + db + autostart
-bookmarks
-settings
-simpletranslate + ublock + vimium
-
-# Fix tearing
-layers.acceleration.force-enabled true
-
 # Centos 8 Fix video playback
 sudo yum -y install --nogpgcheck \
 https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm \
 https://download1.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-8.noarch.rpm && \
 sudo dnf config-manager --enable PowerTools
-sudo yum -y install ffmpeg
-
-# Fedora 31 video playback
-sudo yum -y install \
-https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
-https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 sudo yum -y install ffmpeg
