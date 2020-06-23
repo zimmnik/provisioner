@@ -6,7 +6,7 @@ Supported distributions
 -----------------------------
 -   **CentOS** 7
 -   **CentOS** 8
--   **Fedora** 31
+-   **Fedora** 32
 
 ## Quick Start
 To deploy the system you can use :
