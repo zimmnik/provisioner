@@ -24,24 +24,18 @@ sudo -u "$USER" dbus-launch dconf load / < /vagrant/vagrant/files/dconf/dconf-lo
 echo "${USER}:${USER}" | chpasswd
 sed -i -e "/^Wayland/a AutomaticLoginEnable=True\nAutomaticLogin=${USER}" /etc/gdm/custom.conf
 
-# make profile
-#systemctl isolate graphical.target
-#sleep 15
-
 # terminal
 curl -LSs https://extensions.gnome.org/extension-data/quake-mode%40repsac-by.github.com.v2.shell-extension.zip -o /var/cache/quake-mode.zip
 sudo -u "$USER" dbus-launch gnome-extensions install /var/cache/quake-mode.zip
 rm -v /var/cache/quake-mode.zip
 sudo -u "$USER" dbus-launch gnome-extensions enable quake-mode@repsac-by.github.com
 sudo -u "$USER" dbus-launch dconf load / < /vagrant/vagrant/files/dconf/dconf-terminal.ini
-cat /vagrant/vagrant/files/bash.settings >> "/home/${USER}/.bashrc"
+cat /vagrant/vagrant/files/bash.bashrc >> "/home/${USER}/.bashrc"
 
 # filemanager
-yum -yq install gnome-shell-extension-desktop-icons
+yum -yq install gnome-shell-extension-desktop-icons xdg-user-dirs-gtk
 setcap -r /usr/bin/gnome-shell
-sudo -u "$USER" mkdir -v "/home/${USER}/Desktop"
 sudo -u "$USER" dbus-launch gnome-extensions enable desktop-icons@csoriano
-sudo -u "$USER" dbus-launch gsettings get org.gnome.shell enabled-extensions
 sudo -u "$USER" dbus-launch dconf load / < /vagrant/vagrant/files/dconf/dconf-filemanager.ini
 
 # windowmanager
@@ -78,22 +72,75 @@ time yum -yq install chromium-freeworld
 
 # keepassxc
 yum -yq install keepassxc kpcli
-mkdir -p /home/"$USER"/.config/keepassxc
-cp -frv /vagrant/vagrant/files/keepassxc/keepassxc.ini "/home/${USER}/.config/keepassxc"
-chown -R "${USER}:${USER}" "/home/${USER}/.config/keepassxc"
-chmod -R og-rwx "/home/${USER}/.config/keepassxc"
+mkdir -p "/home/${USER}/.config/keepassxc"
+cp -fv /usr/share/applications/org.keepassxc.KeePassXC.desktop "/home/${USER}/.config/autostart/"
+chown -Rv "${USER}:${USER}" "/home/${USER}/.config/keepassxc"
+chmod -Rv og-rwx "/home/${USER}/.config/keepassxc"
 sudo -u "$USER" mkdir "/home/${USER}/.config/autostart"
 cp -fv /vagrant/vagrant/files/keepassxc/org.keepassxc.KeePassXC.desktop "/home/${USER}/.config/autostart"
-chown -R "${USER}:${USER}" "/home/${USER}/.config/autostart"
+chown -Rv "${USER}:${USER}" "/home/${USER}/.config/autostart"
 
 # freerdp
 yum -yq install freerdp
-cat /vagrant/vagrant/files/freerdp.settings >> "/home/${USER}/.bashrc"
+cat /vagrant/vagrant/files/freerdp.bashrc >> "/home/${USER}/.bashrc"
 
 # gvim
 yum -yq install gvim
 cat /vagrant/vagrant/files/gvim.settings >> "/home/${USER}/.vimrc"
-chown -R "${USER}:${USER}" "/home/${USER}/.vimrc"
+chown -v "${USER}:${USER}" "/home/${USER}/.vimrc"
+
+# libreoffice
+yum -y install libreoffice-writer libreoffice-calc
+
+# podman
+yum -y install @"Container Management" podman-docker
+touch /etc/containers/nodocker
+sed -i "s/iptables/firewalld/" /etc/cni/net.d/87-podman-bridge.conflist
+sudo sh -c 'echo "net.ipv4.ping_group_range = 0 2000000" > /etc/sysctl.d/podman_ping.conf'
+
+# kubectl
+cp -v /vagrant/vagrant/files/kubectl/kubernetes.repo /etc/yum.repos.d/
+yum -yq install kubectl bash-completion
+kubectl completion bash > /etc/bash_completion.d/kubectl
+cat /vagrant/vagrant/files/kubectl/kubectl.bashrc >> "/home/${USER}/.bashrc"
+mkdir -p "/home/${USER}/.kube"
+chown -v "${USER}:${USER}" "/home/${USER}/.kube"
+
+# devops utilites
+yum -yq install ShellCheck jq curl
+
+# stretchly
+yum -yq install https://github.com/hovancik/stretchly/releases/download/v0.21.1/stretchly-0.21.1.x86_64.rpm
+mkdir -p "/home/${USER}/.config/stretchly/"
+cp -frv /vagrant/vagrant/files/stretchly/config.json "/home/${USER}/.config/stretchly/"
+chown -Rv "${USER}:${USER}" "/home/${USER}/.config/keepassxc"
+sudo -u "$USER" mkdir "/home/${USER}/.config/autostart"
+cp -fv /usr/share/applications/stretchly.desktop "/home/${USER}/.config/autostart/"
+chown -Rv "${USER}:${USER}" "/home/${USER}/.config/autostart"
+
+# skype
+curl -Ls https://repo.skype.com/rpm/stable/skype-stable.repo -o /etc/yum.repos.d/skype-stable.repo
+yum -yq install skypeforlinux
+
+# telegram
+yum -yq install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+yum -yq install telegram-desktop
+
+# evolution
+yum -yq install evolution evolution-pst
+
+# tmux
+cp /vagrant/vagrant/files/tmux.conf "/home/${USER}/.tmux.conf"
+chown -v "${USER}:${USER}" "/home/${USER}/.tmux.conf"
+
+
+# ssh agent
+mkdir -v "/home/${USER}/.ssh/"
+cp /vagrant/vagrant/files/ssh-agent/rc "/home/${USER}/.ssh/rc"
+chown -Rv "${USER}:${USER}" "/home/${USER}/.ssh"
+chmod -Rv og-rwx "/home/${USER}/.ssh"
+cat /vagrant/vagrant/files/ssh-agent/agent.tmux >> "/home/${USER}/.tmux.conf"
+chown -v "${USER}:${USER}" "/home/${USER}/.tmux.conf"
 
 # reload GUI
 #systemctl isolate graphical

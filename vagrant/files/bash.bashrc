@@ -1,7 +1,7 @@
 
 #--------------------------------------------------
 #COMMON
-cd ~/Desktop
+#cd ~/Desktop
 set -o vi
 bind -m vi-insert "\C-l":clear-screen
 HISTCONTROL=ignorespace

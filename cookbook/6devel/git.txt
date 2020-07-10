@@ -42,7 +42,11 @@ git rebase -i HEAD~2
 #delete the second line within the editor window that pops up
 git push origin +master --force
 
+#------------------------------------------------------------------------------------
 # Undo many commits +remote (Only unprotected branches)
-git reset --hard b32b7ff
+# https://stackoverflow.com/questions/1463340/revert-multiple-git-commits/1463390#comment1312779_1463390
+git reset --hard A
+git reset --soft @{1}
+git commit
 git push origin HEAD --force
 

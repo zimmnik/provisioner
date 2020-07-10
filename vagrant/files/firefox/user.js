@@ -11,7 +11,6 @@ user_pref("browser.newtabpage.enabled", false);
 user_pref("browser.search.region", "RU");
 user_pref("browser.search.suggest.enabled", false);
 user_pref("browser.tabs.warnOnClose", false);
-user_pref("browser.urlbar.placeholderName", "Google");
 user_pref("datareporting.healthreport.uploadEnabled", false);
 user_pref("network.dns.disablePrefetch", true);
 user_pref("network.predictor.enabled", false);
