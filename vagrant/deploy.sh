@@ -14,9 +14,9 @@ timedatectl set-timezone Europe/Moscow
 
 # locale
 #sed -i 's/$/:ru_RU:ru_RU.UTF-8/' /etc/rpm/macros.image-language-conf
-#yum -yq reinstall dnf glibc-common
-#yum -yq install langpacks-ru
-yum -yq install glibc-langpack-ru
+#yum -y reinstall dnf glibc-common
+#yum -y install langpacks-ru
+yum -y install glibc-langpack-ru
 localectl set-locale LANG=ru_RU.UTF-8 LC_MESSAGES="en_US.UTF-8"
 sudo -u "$USER" dbus-launch dconf load / < /vagrant/vagrant/files/dconf/dconf-locale.ini
 
@@ -33,13 +33,13 @@ sudo -u "$USER" dbus-launch dconf load / < /vagrant/vagrant/files/dconf/dconf-te
 cat /vagrant/vagrant/files/bash.bashrc >> "/home/${USER}/.bashrc"
 
 # filemanager
-yum -yq install gnome-shell-extension-desktop-icons xdg-user-dirs-gtk
+yum -y install gnome-shell-extension-desktop-icons xdg-user-dirs-gtk
 setcap -r /usr/bin/gnome-shell
 sudo -u "$USER" dbus-launch gnome-extensions enable desktop-icons@csoriano
 sudo -u "$USER" dbus-launch dconf load / < /vagrant/vagrant/files/dconf/dconf-filemanager.ini
 
 # windowmanager
-yum -yq install gnome-shell-extension-workspace-indicator
+yum -y install gnome-shell-extension-workspace-indicator
 sudo -u "$USER" dbus-launch gnome-extensions enable workspace-indicator@gnome-shell-extensions.gcampax.github.com
 curl -LSs https://extensions.gnome.org/extension-data/unitehardpixel.eu.v41.shell-extension.zip -o /var/cache/unite.zip
 sudo -u "$USER" dbus-launch gnome-extensions install /var/cache/unite.zip
@@ -48,8 +48,8 @@ rm -v /var/cache/unite.zip
 sudo -u "$USER" dbus-launch dconf load / < /vagrant/vagrant/files/dconf/dconf-windows.ini
 
 # firefox
-yum -yq install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
-yum -yq install firefox ffmpeg libva libva-utils
+yum -y install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+yum -y install firefox ffmpeg libva libva-utils
 
 sudo -i -u "$USER" firefox --headless -CreateProfile default
 cd "/home/${USER}/.mozilla/firefox/"
@@ -67,25 +67,26 @@ curl -Ls "https://addons.mozilla.org/firefox/downloads/file/3518684/" -o {d7742d
 chown -Rv "${USER}:${USER}" ../extensions && cd ~
 
 # chromium
-yum -yq install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
-time yum -yq install chromium-freeworld
+yum -y install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+time yum -y install chromium-freeworld
 
 # keepassxc
-yum -yq install keepassxc kpcli
+yum -y install keepassxc kpcli
 mkdir -p "/home/${USER}/.config/keepassxc"
-cp -fv /usr/share/applications/org.keepassxc.KeePassXC.desktop "/home/${USER}/.config/autostart/"
+cp -fv /vagrant/vagrant/files/keepassxc/keepassxc.ini "/home/${USER}/.config/keepassxc"
 chown -Rv "${USER}:${USER}" "/home/${USER}/.config/keepassxc"
 chmod -Rv og-rwx "/home/${USER}/.config/keepassxc"
-sudo -u "$USER" mkdir "/home/${USER}/.config/autostart"
-cp -fv /vagrant/vagrant/files/keepassxc/org.keepassxc.KeePassXC.desktop "/home/${USER}/.config/autostart"
+
+mkdir -p "/home/${USER}/.config/autostart"
+cp -fv /usr/share/applications/org.keepassxc.KeePassXC.desktop "/home/${USER}/.config/autostart/"
 chown -Rv "${USER}:${USER}" "/home/${USER}/.config/autostart"
 
 # freerdp
-yum -yq install freerdp
+yum -y install freerdp
 cat /vagrant/vagrant/files/freerdp.bashrc >> "/home/${USER}/.bashrc"
 
 # gvim
-yum -yq install gvim
+yum -y install gvim
 cat /vagrant/vagrant/files/gvim.settings >> "/home/${USER}/.vimrc"
 chown -v "${USER}:${USER}" "/home/${USER}/.vimrc"
 
@@ -100,39 +101,41 @@ sudo sh -c 'echo "net.ipv4.ping_group_range = 0 2000000" > /etc/sysctl.d/podman_
 
 # kubectl
 cp -v /vagrant/vagrant/files/kubectl/kubernetes.repo /etc/yum.repos.d/
-yum -yq install kubectl bash-completion
+yum -y install kubectl bash-completion
 kubectl completion bash > /etc/bash_completion.d/kubectl
 cat /vagrant/vagrant/files/kubectl/kubectl.bashrc >> "/home/${USER}/.bashrc"
 mkdir -p "/home/${USER}/.kube"
 chown -v "${USER}:${USER}" "/home/${USER}/.kube"
 
+# minikube
+yum -y install https://github.com/kubernetes/minikube/releases/download/v1.12.0/minikube-latest.x86_64.rpm
+
 # devops utilites
-yum -yq install ShellCheck jq curl
+yum -y install ShellCheck jq curl
 
 # stretchly
-yum -yq install https://github.com/hovancik/stretchly/releases/download/v0.21.1/stretchly-0.21.1.x86_64.rpm
+yum -y install https://github.com/hovancik/stretchly/releases/download/v0.21.1/stretchly-0.21.1.x86_64.rpm
 mkdir -p "/home/${USER}/.config/stretchly/"
 cp -frv /vagrant/vagrant/files/stretchly/config.json "/home/${USER}/.config/stretchly/"
-chown -Rv "${USER}:${USER}" "/home/${USER}/.config/keepassxc"
-sudo -u "$USER" mkdir "/home/${USER}/.config/autostart"
+
+mkdir -p "/home/${USER}/.config/autostart"
 cp -fv /usr/share/applications/stretchly.desktop "/home/${USER}/.config/autostart/"
 chown -Rv "${USER}:${USER}" "/home/${USER}/.config/autostart"
 
 # skype
 curl -Ls https://repo.skype.com/rpm/stable/skype-stable.repo -o /etc/yum.repos.d/skype-stable.repo
-yum -yq install skypeforlinux
+yum -y install skypeforlinux-8.61.0.95-1
 
 # telegram
-yum -yq install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
-yum -yq install telegram-desktop
+yum -y install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+yum -y install telegram-desktop
 
 # evolution
-yum -yq install evolution evolution-pst
+yum -y install evolution evolution-pst
 
 # tmux
 cp /vagrant/vagrant/files/tmux.conf "/home/${USER}/.tmux.conf"
 chown -v "${USER}:${USER}" "/home/${USER}/.tmux.conf"
-
 
 # ssh agent
 mkdir -v "/home/${USER}/.ssh/"
