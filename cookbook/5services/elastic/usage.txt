@@ -54,8 +54,16 @@ GET /test_index/_search?pretty
 }
 # Get index settings
 GET /test_index
+# Set replicas count
+PUT logstash-*/_settings
+{
+  "number_of_replicas" : "0"
+}
 # Delete index
 DELETE /logstash-*
+
+#-----------------------------------------------------------------------------
+POST /_cluster/reroute
 
 #-----------------------------------------------------------------------------
 # ILM POLICY
