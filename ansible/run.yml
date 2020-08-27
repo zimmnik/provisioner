@@ -5,5 +5,7 @@
   #----------------------------------------
   roles: [ common ]
   tasks: 
-    - name: USER
-      user: name=demo uid=1024 groups=wheel append=yes
+    - user: name=demo uid=1024 groups=wheel append=yes
+    - yum: name=glibc-langpack-ru state=latest
+    - command: localectl set-locale LANG=ru_RU.UTF-8 LC_MESSAGES="en_US.UTF-8"
+    - timezone: name=Europe/Moscow

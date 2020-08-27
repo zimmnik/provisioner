@@ -1,23 +1,7 @@
 #!/bin/bash
 set -eux
 
-# displays
-cp -fv /vagrant/vagrant/files/monitors.xml "/home/${USER}/.config/"
-chown -v "${USER}:${USER}" "/home/${USER}/.config/monitors.xml"
-sudo -u "$USER" dbus-launch gsettings set org.gnome.settings-daemon.plugins.color night-light-enabled true
-sudo -u "$USER" dbus-launch dconf load / < /vagrant/vagrant/files/dconf/dconf-power.ini
-sed -i '/^#Wayland/ s/#//g' /etc/gdm/custom.conf
-
-# timedate
-timedatectl set-ntp true
-timedatectl set-timezone Europe/Moscow
-
 # locale
-#sed -i 's/$/:ru_RU:ru_RU.UTF-8/' /etc/rpm/macros.image-language-conf
-#yum -y reinstall dnf glibc-common
-#yum -y install langpacks-ru
-yum -y install glibc-langpack-ru
-localectl set-locale LANG=ru_RU.UTF-8 LC_MESSAGES="en_US.UTF-8"
 sudo -u "$USER" dbus-launch dconf load / < /vagrant/vagrant/files/dconf/dconf-locale.ini
 
 # user
@@ -92,46 +76,6 @@ chown -v "${USER}:${USER}" "/home/${USER}/.vimrc"
 
 # libreoffice
 yum -y install libreoffice-writer libreoffice-calc
-
-# podman
-yum -y install @"Container Management" podman-docker
-touch /etc/containers/nodocker
-sed -i "s/iptables/firewalld/" /etc/cni/net.d/87-podman-bridge.conflist
-sudo sh -c 'echo "net.ipv4.ping_group_range = 0 2000000" > /etc/sysctl.d/podman_ping.conf'
-
-# kubectl
-cp -v /vagrant/vagrant/files/kubectl/kubernetes.repo /etc/yum.repos.d/
-yum -y install kubectl bash-completion
-kubectl completion bash > /etc/bash_completion.d/kubectl
-cat /vagrant/vagrant/files/kubectl/kubectl.bashrc >> "/home/${USER}/.bashrc"
-mkdir -p "/home/${USER}/.kube"
-chown -v "${USER}:${USER}" "/home/${USER}/.kube"
-
-# minikube
-yum -y install https://github.com/kubernetes/minikube/releases/download/v1.12.0/minikube-latest.x86_64.rpm
-
-# devops utilites
-yum -y install ShellCheck jq curl
-
-# stretchly
-yum -y install https://github.com/hovancik/stretchly/releases/download/v0.21.1/stretchly-0.21.1.x86_64.rpm
-mkdir -p "/home/${USER}/.config/stretchly/"
-cp -frv /vagrant/vagrant/files/stretchly/config.json "/home/${USER}/.config/stretchly/"
-
-mkdir -p "/home/${USER}/.config/autostart"
-cp -fv /usr/share/applications/stretchly.desktop "/home/${USER}/.config/autostart/"
-chown -Rv "${USER}:${USER}" "/home/${USER}/.config/autostart"
-
-# skype
-curl -Ls https://repo.skype.com/rpm/stable/skype-stable.repo -o /etc/yum.repos.d/skype-stable.repo
-yum -y install skypeforlinux-8.61.0.95-1
-
-# telegram
-yum -y install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
-yum -y install telegram-desktop
-
-# evolution
-yum -y install evolution evolution-pst
 
 # tmux
 cp /vagrant/vagrant/files/tmux.conf "/home/${USER}/.tmux.conf"

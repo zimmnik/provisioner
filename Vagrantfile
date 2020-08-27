@@ -30,6 +30,6 @@ Vagrant.configure("2") do |config|
     ansible.become = true
     ansible.tags = ["all", "gnome_de"]
   end
-  config.vm.provision "shell", path: "vagrant/deploy.sh", env: {"USER" => "demo"}
-  config.vm.provision :reload
+  #config.vm.provision "shell", path: "vagrant/deploy.sh", env: {"USER" => "demo"}
+  #config.vm.provision :reload
 end
