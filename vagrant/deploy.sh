@@ -1,8 +1,21 @@
 #!/bin/bash
 set -eux
 
-# locale
-sudo -u "$USER" dbus-launch dconf load / < /vagrant/vagrant/files/dconf/dconf-locale.ini
+# displays
+cp -fv /vagrant/vagrant/files/monitors.xml "/home/${USER}/.config/"
+chown -v "${USER}:${USER}" "/home/${USER}/.config/monitors.xml"
+sudo -u "$USER" dbus-launch dconf load / < /vagrant/vagrant/files/dconf/dconf-vbox-power.ini
+
+# timedate
+#timedatectl set-ntp true
+
+# russian localization
+#sed -i 's/$/:ru_RU:ru_RU.UTF-8/' /etc/rpm/macros.image-language-conf
+#yum -y reinstall dnf glibc-common
+#yum -y install langpacks-ru
+
+# gnome locale
+#sudo -u "$USER" dbus-launch dconf load / < /vagrant/vagrant/files/dconf/dconf-locale.ini
 
 # user
 echo "${USER}:${USER}" | chpasswd

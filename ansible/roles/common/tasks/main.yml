@@ -33,11 +33,9 @@
 - name: Time sync
   block:
     - name: Time sync 1
-      yum: name=chronyd state=latest
+      yum: name=chrony state=latest
     - name: Time sync 2
-      service:
-      name: chronyd.service
-      state: started
+      service: name=chronyd state=started
 
 - name: GUI
   block:
@@ -116,6 +114,8 @@
 
   - name: NightLight
     dconf: key="/org/gnome/settings-daemon/plugins/color/night-light-enabled" value="true"
+    become: true
+    become_user: demo
 
   - name: FONTS
     block:

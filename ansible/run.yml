@@ -1,11 +1,19 @@
 - name: "local host provisioning"
   hosts: default
   vars:
-   hostname: host01
+    hostname: host01
   #----------------------------------------
-  roles: [ common ]
-  tasks: 
+  pre_tasks:
     - user: name=demo uid=1024 groups=wheel append=yes
+  roles: [ common ]
+  post_tasks:
     - yum: name=glibc-langpack-ru state=latest
     - command: localectl set-locale LANG=ru_RU.UTF-8 LC_MESSAGES="en_US.UTF-8"
     - timezone: name=Europe/Moscow
+    - block:
+        - dconf: key="/org/gnome/desktop/input-sources/sources"         value="[('xkb', 'us'), ('xkb', 'ru')]"
+        - dconf: key="/org/gnome/desktop/input-sources/xkb-options"     value="['lv3:ralt_switch', 'grp:alt_shift_toggle']"
+        - dconf: key="/system/locale/region"                            value="'ru_RU.UTF-8'"
+      become: true
+      become_user: demo
+
