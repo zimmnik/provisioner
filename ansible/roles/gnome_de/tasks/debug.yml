@@ -1,0 +1,40 @@
+#- name: Print some debug information 
+#  vars: 
+#    msg: |
+#      Module Variables ("vars"):
+#      --------------------------------
+#      {{ vars | to_nice_json }} 
+#      
+#      Environment Variables ("environment"):
+#      --------------------------------
+#      {{ environment | to_nice_json }} 
+#      
+#      GROUP NAMES Variables ("group_names"):
+#      --------------------------------
+#      {{ group_names | to_nice_json }}
+#      
+#      GROUPS Variables ("groups"):
+#      --------------------------------
+#      {{ groups | to_nice_json }}
+#      
+#      HOST Variables ("hostvars"):
+#      --------------------------------
+#      {{ hostvars | to_nice_json }} 
+#
+#  debug: 
+#    msg: "{{ msg.split('\n') }}"       
+#  tags: debug_info
+
+- debug:
+    msg: System {{ ansible_user_dir }}
+- command: id
+  register: out
+- debug: var=out.stdout_lines
+
+- debug:
+    msg: System {{ ansible_user_dir }}
+  become: true
+- command: id
+  register: out
+  become: true
+- debug: var=out.stdout_lines

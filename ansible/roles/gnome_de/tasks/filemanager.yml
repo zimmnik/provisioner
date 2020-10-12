@@ -1,0 +1,13 @@
+- name: File manager utilites
+  yum:
+    state: latest
+    name:
+      - nautilus
+      - gnome-terminal-nautilus
+      - gvfs-mtp
+      - gvfs-smb
+      - gvfs-gphoto2
+      - gvfs-fuse
+      - file-roller-nautilus
+      - xdg-utils
+  become: true

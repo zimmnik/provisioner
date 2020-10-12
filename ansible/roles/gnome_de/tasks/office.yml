@@ -1,0 +1,8 @@
+- name: Office utilites
+  yum:
+    state: latest
+    name:
+      - gedit
+      - evince
+      - gnome-screenshot
+  become: true

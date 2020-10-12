@@ -1,0 +1,7 @@
+- name: Internet utilites
+  yum:
+    state: latest
+    name:
+      - firefox
+      - seahorse
+  become: true

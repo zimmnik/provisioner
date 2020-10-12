@@ -1,0 +1,40 @@
+- name: Hostname
+  hostname: name={{ hostname }}
+  notify:
+    - nm_restart
+  become: true
+
+- name: Utilites
+  yum:
+    state: latest
+    name:
+      - ncdu
+      - tree
+      - mc
+      - unzip
+      - p7zip
+      - p7zip-plugins
+      - cifs-utils
+      - lsof
+      - bind-utils
+      - curl
+      - man
+      - bash-completion
+      - tmux
+      - vim
+      - less
+  become: true
+
+- name: SSH 1
+  yum: name=openssh-server state=latest
+  become: true
+- name: SSH 2
+  service: name=sshd enabled=yes state=restarted
+  become: true
+
+- name: Time sync 1
+  yum: name=chrony state=latest
+  become: true
+- name: Time sync 2
+  service: name=chronyd state=started
+  become: true

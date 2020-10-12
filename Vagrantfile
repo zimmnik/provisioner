@@ -14,24 +14,27 @@ Vagrant.configure("2") do |config|
     vb.customize ["modifyvm", :id, "--vram", "128"]
   end
 
-  config.vm.provision "shell", inline: <<-SHELL
-    echo "excludepkgs=kernel* fedora-release*" >> /etc/dnf/dnf.conf
-    yum -y update
-  SHELL
-  config.vm.provision :reload
-  
+  #config.vm.provision "shell", inline: <<-SHELL
+  #  echo "excludepkgs=kernel* fedora-release*" >> /etc/dnf/dnf.conf
+  #  yum -y -q update
+  #SHELL
+  #config.vm.provision :reload
+   
   config.vm.network "public_network"
-  config.vm.provision "shell", inline: <<-SHELL
-    nmcli connection modify "System eth1" ipv4.route-metric 99
-    nmcli connection down "System eth1"
-    nmcli connection up "System eth1"
-  SHELL
-
+  #config.vm.provision "shell", inline: <<-SHELL
+  #  nmcli connection modify "System eth1" ipv4.route-metric 99
+  #  nmcli device reapply eth1
+  #SHELL
+   
+  config.vm.provision "shell", inline: "yum -y -q install git"
   config.vm.provision :ansible_local do |ansible|
+    #ansible.verbose = "vvvv"
     ansible.playbook = "ansible/run.yml"
-    ansible.become = true
-    ansible.tags = ["all", "gnome_de"]
+    ansible.galaxy_role_file = "ansible/requirements.yml"
+    ansible.galaxy_roles_path = "/etc/ansible/roles"
+    ansible.galaxy_command = "sudo ansible-galaxy install --role-file=%{role_file} --roles-path=%{roles_path} --force"
   end
-  config.vm.provision "shell", path: "vagrant/deploy.sh", env: {"USER" => "demo"}
-  config.vm.provision :reload
+
+  #config.vm.provision "shell", path: "vagrant/deploy.sh", env: {"USER" => "demo"}
+  #config.vm.provision :reload
 end

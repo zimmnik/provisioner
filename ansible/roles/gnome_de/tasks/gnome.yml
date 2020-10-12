@@ -1,0 +1,104 @@
+- name: xorg 1
+  yum: name="@X Window System" state=latest
+  when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7")
+  become: true
+- name: xorg 2
+  yum: name="@base-x" state=latest
+  when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "8") or
+        (ansible_facts['distribution'] == "Fedora" and ansible_facts['distribution_major_version'] == "32")
+  become: true
+- name: xorg 3
+  yum: name=dbus-x11 state=latest
+  become: true
+
+- name: gnome packages
+  yum:
+    state: latest
+    name:
+      # DISPLAY AND WINDOW MANAGER
+      - gnome-session-xsession
+      - control-center
+      - krb5-libs
+      - gnome-tweak-tool
+      - dconf-editor
+      - python3-psutil
+  notify:
+    - nm_restart
+  become: true
+
+- name: gdm
+  lineinfile:
+    path: /etc/gdm/custom.conf
+    regexp: 'WaylandEnable='
+    line: WaylandEnable=false
+  become: true
+
+- name: systemd target 1
+  command: systemctl get-default
+  register: contents
+  become: true
+- name: systemd target 2
+  command: systemctl set-default graphical.target
+  when: contents.stdout != "graphical.target"
+  become: true
+
+- name: gtk theme 1
+  file: path=~/.config/gtk-3.0/ state=directory
+- name: gtk theme 2
+  blockinfile:
+    dest: ~/.config/gtk-3.0/settings.ini
+    create: yes
+    block: |
+      [Settings]
+      gtk-application-prefer-dark-theme=1
+
+- name: gnome fonts 1
+  file:
+    path: ~/.local/share/fonts/
+    state: directory
+- name: gnome fonts 2
+  unarchive:
+    src: http://ftp.gnome.org/pub/GNOME/sources/ttf-bitstream-vera/1.10/ttf-bitstream-vera-1.10.zip
+    dest: ~/.local/share/fonts/
+    remote_src: yes
+    creates: ~/.local/share/fonts/ttf-bitstream-vera-1.10/
+  register: fonts_state
+- name: gnome fonts 3
+  unarchive:
+    src: https://assets.ubuntu.com/v1/0cef8205-ubuntu-font-family-0.83.zip
+    dest: ~/.local/share/fonts/
+    remote_src: yes
+    creates: ~/.local/share/fonts/ubuntu-font-family-0.83/
+  register: fonts_state
+- name: gnome fonts 3
+  command: fc-cache -f ~/.local/share/fonts/
+  when: fonts_state.changed
+- name: gnome fonts 4
+  dconf: key="/org/gnome/desktop/wm/preferences/titlebar-uses-system-font" value="true"
+- name: gnome fonts 5
+  dconf: key="/org/gnome/desktop/wm/preferences/titlebar-font" value="'Ubuntu Medium 11'"
+- name: gnome fonts 6
+  dconf: key="/org/gnome/desktop/interface/monospace-font-name" value="'Bitstream Vera Sans Mono 11'"
+- name: gnome fonts 7
+  dconf: key="/org/gnome/desktop/interface/font-name" value="'Ubuntu 11'"
+
+- name: gnome nightlight
+  dconf: key="/org/gnome/settings-daemon/plugins/color/night-light-enabled" value="true"
+
+- name: gnome background 1
+  dconf: key="/org/gnome/desktop/background/picture-uri" value="'file:////usr/share/gnome-control-center/pixmaps/noise-texture-light.png'"
+- name: gnome background 2
+  dconf: key="/org/gnome/desktop/background/picture-options" value="'wallpaper'"
+- name: gnome background 3
+  dconf: key="/org/gnome/desktop/background/primary-color" value="'#2e3436'"
+
+- name: gnome screensaver 1
+  dconf: key="/org/gnome/desktop/screensaver/picture-uri" value="'file:////usr/share/gnome-control-center/pixmaps/noise-texture-light.png'"
+- name: gnome screensaver 2
+  dconf: key="/org/gnome/desktop/screensaver/picture-options" value="'wallpaper'"
+- name: gnome screensaver 3
+  dconf: key="/org/gnome/desktop/screensaver/primary-color" value="'#2e3436'"
+
+- name: gnome button-layout
+  dconf: key="/org/gnome/desktop/wm/preferences/button-layout" value="'appmenu:minimize,maximize,close'"
+

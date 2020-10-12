@@ -1,2 +1,9 @@
-ssd trim
+ssh keys + config
+keepassxc db
+firefox links + proxy.pac
+vpn
+ssh tunnel
+backup
+monitoring?
 mta
+ssd trim

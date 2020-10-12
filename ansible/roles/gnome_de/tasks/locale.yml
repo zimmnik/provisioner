@@ -1,0 +1,20 @@
+- name: "locale - glibc"
+  yum: name=glibc-langpack-ru state=latest
+  become: true
+
+- name: "locale - locale"
+  command: localectl set-locale LANG=ru_RU.UTF-8 LC_MESSAGES="en_US.UTF-8"
+  become: true
+
+- name: "locale - timezone"
+  timezone: name=Europe/Moscow
+  become: true
+
+- name: "locale - gnome input languages"
+  dconf: key="/org/gnome/desktop/input-sources/sources" value="[('xkb', 'us'), ('xkb', 'ru')]"
+
+- name: "locale - gnome input hotkey"
+  dconf: key="/org/gnome/desktop/input-sources/xkb-options" value="['lv3:ralt_switch', 'grp:alt_shift_toggle']"
+
+- name: "locale - gnome region"
+  dconf: key="/system/locale/region" value="'ru_RU.UTF-8'"

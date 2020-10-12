@@ -1,0 +1,14 @@
+---
+- include_tasks: "{{ taskfile }}"
+  loop:
+    - debug.yml
+    - common.yml
+    - gnome.yml
+    - filemanager.yml
+    - terminal.yml
+    - internet.yml
+    - office.yml
+    - media.yml
+    - locale.yml
+  loop_control:
+    loop_var: taskfile

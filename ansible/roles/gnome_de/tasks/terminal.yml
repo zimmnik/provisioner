@@ -1,0 +1,12 @@
+- name: Terminal utilites
+  yum:
+    state: latest
+    name:
+      - gnome-terminal
+  become: true
+
+- import_role:
+    name: jaredhocutt.gnome_extensions
+  vars:
+    gnome_extension_ids:
+      - 1411
