@@ -1,7 +1,7 @@
 ---
 - include_tasks: "{{ taskfile }}"
   loop:
-    - debug.yml
+    #- debug.yml
     - common.yml
     - gnome.yml
     - filemanager.yml

@@ -35,6 +35,6 @@ Vagrant.configure("2") do |config|
     ansible.galaxy_command = "sudo ansible-galaxy install --role-file=%{role_file} --roles-path=%{roles_path} --force"
   end
 
-  #config.vm.provision "shell", path: "vagrant/deploy.sh", env: {"USER" => "demo"}
-  #config.vm.provision :reload
+  config.vm.provision "shell", path: "vagrant/deploy.sh", env: {"USER" => "vagrant"}
+  config.vm.provision :reload
 end

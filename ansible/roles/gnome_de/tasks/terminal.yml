@@ -1,12 +1,51 @@
-- name: Terminal utilites
+- name: terminal 1
   yum:
     state: latest
     name:
       - gnome-terminal
   become: true
+- name: terminal 2
+  dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+  loop:
+    - { key: "/org/gnome/terminal/legacy/menu-accelerator-enabled", value: "false" }
+    - { key: "/org/gnome/terminal/legacy/profiles:/list", value: "'b1dcc9dd-5262-4d8d-a863-c897e6d979b9'"  }
+    - { key: "/org/gnome/terminal/legacy/profiles:/default", value: "'b1dcc9dd-5262-4d8d-a863-c897e6d979b9'" }
+  
+    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/font", value: "'Bitstream Vera Sans Mono 14'" }
+    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/use-system-font", value: "false" }
+    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/scroll-on-output", value: "false" }
+    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/scrollbar-policy", value: "'never'" }
+    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/scroll-on-keystroke", value: "false" }
+    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/scrollback-unlimited", value: "true" }
 
-- import_role:
+- name: terminal quake-mode 1
+  import_role:
     name: jaredhocutt.gnome_extensions
   vars:
     gnome_extension_ids:
       - 1411
+- name: terminal quake-mode 2
+  dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+  loop:
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-app", value: "'org.gnome.Terminal.desktop'" }
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-tray", value: "true" }
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-width", value: "100" }
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-height", value: "100" }
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-hotkey", value: "'<Primary>grave'" }
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-animation-time", value: "0.25" }
+
+- name: terminal bash settings
+  blockinfile:
+    dest: ~/.bashrc
+    create: yes
+    block: |
+      #COMMON
+      set -o vi
+      bind -m vi-insert "\C-l":clear-screen
+      HISTCONTROL=ignorespace
+      shopt -s histappend
+      PROMPT_COMMAND='history -a'

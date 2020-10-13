@@ -1,13 +1,32 @@
-- name: File manager utilites
+- name: filemanager 1
   yum:
     state: latest
     name:
       - nautilus
       - gnome-terminal-nautilus
+      - file-roller-nautilus
       - gvfs-mtp
       - gvfs-smb
       - gvfs-gphoto2
       - gvfs-fuse
-      - file-roller-nautilus
       - xdg-utils
+      - xdg-user-dirs-gtk
   become: true
+- name: filemanager 2
+  dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+  loop:
+    - { key: "/org/gnome/nautilus/list-view/use-tree-view", value: "true" }
+    - { key: "/org/gnome/desktop/media-handling/autorun-never", value: "true" }
+    - { key: "/org/gnome/nautilus/list-view/default-zoom-level", value: "'small'" }
+    - { key: "/org/gnome/settings-daemon/plugins/media-keys/home", value: "'<Super>e'" }
+    - { key: "/org/gnome/nautilus/preferences/default-folder-viewer", value: "'list-view'" }
+    - { key: "/org/gnome/nautilus/preferences/search-filter-time-type", value: "'last_modified'" }
+
+- name: filemanager desktop icons 1
+  import_role:
+    name: jaredhocutt.gnome_extensions
+  vars:
+    gnome_extension_ids:
+      - 2087
