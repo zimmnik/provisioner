@@ -14,18 +14,6 @@ sudo -u "$USER" dbus-launch dconf load / < /vagrant/vagrant/files/dconf/dconf-vb
 # user
 sed -i -e "/^Wayland/a AutomaticLoginEnable=True\nAutomaticLogin=${USER}" /etc/gdm/custom.conf
 
-# filemanager
-#setcap -r /usr/bin/gnome-shell
-
-## windowmanager
-#yum -y install gnome-shell-extension-workspace-indicator
-#sudo -u "$USER" dbus-launch gnome-extensions enable workspace-indicator@gnome-shell-extensions.gcampax.github.com
-#curl -LSs https://extensions.gnome.org/extension-data/unitehardpixel.eu.v41.shell-extension.zip -o /var/cache/unite.zip
-#sudo -u "$USER" dbus-launch gnome-extensions install /var/cache/unite.zip
-#sudo -u "$USER" dbus-launch gnome-extensions enable unite@hardpixel.eu
-#rm -v /var/cache/unite.zip
-#sudo -u "$USER" dbus-launch dconf load / < /vagrant/vagrant/files/dconf/dconf-windows.ini
-#
 ## firefox
 #yum -y install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
 #yum -y install firefox ffmpeg libva libva-utils
