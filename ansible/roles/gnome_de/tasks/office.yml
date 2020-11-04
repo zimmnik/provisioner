@@ -1,8 +1,16 @@
-- name: Office utilites
+- name: office utilites
   yum:
     state: latest
     name:
       - gedit
       - evince
       - gnome-screenshot
+      - libreoffice-writer
+      - libreoffice-calc
+      - gvim
   become: true
+
+- name: office vim 
+  copy:
+    src: .vimrc
+    dest: ~/

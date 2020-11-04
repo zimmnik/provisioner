@@ -1,14 +1,13 @@
+#- name: xorg 1
+#  yum: name="@X Window System" state=latest
+#  when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7")
+#  become: true
+#
+#  when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "8") or
+#  when  (ansible_facts['distribution'] == "Fedora" and ansible_facts['distribution_major_version'] == "33")
+ 
 - name: xorg 1
-  yum: name="@X Window System" state=latest
-  when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7")
-  become: true
-- name: xorg 2
   yum: name="@base-x" state=latest
-  when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "8") or
-        (ansible_facts['distribution'] == "Fedora" and ansible_facts['distribution_major_version'] == "32")
-  become: true
-- name: xorg 3
-  yum: name=dbus-x11 state=latest
   become: true
 
 - name: gnome packages
@@ -22,6 +21,7 @@
       - gnome-tweak-tool
       - dconf-editor
       - python3-psutil
+      - dbus-x11
   notify:
     - nm_restart
   become: true
@@ -36,7 +36,9 @@
 - name: systemd target 1
   command: systemctl get-default
   register: contents
+  changed_when: false
   become: true
+
 - name: systemd target 2
   command: systemctl set-default graphical.target
   when: contents.stdout != "graphical.target"
@@ -44,10 +46,12 @@
 
 - name: gtk theme 1
   file: path=~/.config/gtk-3.0/ state=directory
+
 - name: gtk theme 2
   blockinfile:
     dest: ~/.config/gtk-3.0/settings.ini
     create: yes
+    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gtk theme 2 -->"
     block: |
       [Settings]
       gtk-application-prefer-dark-theme=1
@@ -56,6 +60,7 @@
   file:
     path: ~/.local/share/fonts/
     state: directory
+
 - name: gnome fonts 2
   unarchive:
     src: http://ftp.gnome.org/pub/GNOME/sources/ttf-bitstream-vera/1.10/ttf-bitstream-vera-1.10.zip
@@ -63,6 +68,7 @@
     remote_src: yes
     creates: ~/.local/share/fonts/ttf-bitstream-vera-1.10/
   register: fonts_state
+
 - name: gnome fonts 3
   unarchive:
     src: https://assets.ubuntu.com/v1/0cef8205-ubuntu-font-family-0.83.zip
@@ -70,13 +76,15 @@
     remote_src: yes
     creates: ~/.local/share/fonts/ubuntu-font-family-0.83/
   register: fonts_state
+
 - name: gnome fonts 3
   command: fc-cache -f ~/.local/share/fonts/
   when: fonts_state.changed
+
 - name: gnome fonts 4
   dconf:
     key: "{{ item.key }}"
-    value: "{{ item.value }}"
+    value: "{{ item.value |string }}"
   loop:
     - { key: "/org/gnome/desktop/interface/monospace-font-name", value: "'Bitstream Vera Sans Mono 11'" }
     - { key: "/org/gnome/desktop/interface/font-name", value: "'Ubuntu 11'" }
@@ -86,7 +94,7 @@
 - name: gnome background and screensaver
   dconf:
     key: "{{ item.key }}"
-    value: "{{ item.value }}"
+    value: "{{ item.value |string }}"
   loop:
     - { key: "/org/gnome/desktop/background/picture-uri", value: "'file:////usr/share/gnome-control-center/pixmaps/noise-texture-light.png'" }
     - { key: "/org/gnome/desktop/background/primary-color", value: "'#2e3436'" }
@@ -113,25 +121,27 @@
 - name: gnome keybindings
   dconf:
     key: "{{ item.key }}"
-    value: "{{ item.value }}"
+    value: "{{ item.value |string }}"
   loop:
-    - { key: "/org/gnome/desktop/wm/keybindings/close", value: "'<Super>q'" }
-    - { key: "/org/gnome/desktop/wm/keybindings/show-desktop", value: "'<Super>d'" }
-    - { key: "/org/gnome/desktop/wm/keybindings/switch-applications", value: "@as " }
-    - { key: "/org/gnome/desktop/wm/keybindings/switch-windows", value: "'<Alt>Tab'" }
-    - { key: "/org/gnome/desktop/wm/keybindings/switch-applications-backward", value: "@as " }
-    - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-1", value: "'<Primary>1'" }
-    - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-2", value: "'<Primary>2'" }
-    - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-3", value: "'<Primary>3'" }
-    - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-4", value: "'<Primary>4'" }
-    - { key: "/org/gnome/desktop/wm/keybindings/switch-windows-backward", value: "'<Shift><Alt>Tab'" }
-    - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-1", value: "'<Primary><Shift>exclam'" }
-    - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-2", value: "'<Primary><Shift>at'" }
-    - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-3", value: "'<Primary><Shift>numbersign'" }
-    - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-4", value: "'<Primary><Shift>dollar'" }
+    - { key: "/org/gnome/desktop/wm/keybindings/close", value: "['<Super>q']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/show-desktop", value: "['<Super>d']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-applications", value: "@as []" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-applications-backward", value: "@as []" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-windows", value: "['<Alt>Tab']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-1", value: "['<Primary>1']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-2", value: "['<Primary>2']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-3", value: "['<Primary>3']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-4", value: "['<Primary>4']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-1", value: "['<Primary><Shift>exclam']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-2", value: "['<Primary><Shift>at']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-3", value: "['<Primary><Shift>numbersign']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-4", value: "['<Primary><Shift>dollar']" }
 
 - name: gnome clock
   dconf: key="/org/gnome/desktop/interface/clock-show-weekday" value="true"
+
+- name: gnome battery
+  dconf: key="/org/gnome/desktop/interface/show-battery-percentage" value="true"
 
 - name: gnome unite 1
   import_role:
@@ -139,10 +149,11 @@
   vars:
     gnome_extension_ids:
       - 1287
+
 - name: gnome unite 2
   dconf:
     key: "{{ item.key }}"
-    value: "{{ item.value }}"
+    value: "{{ item.value |string }}"
   loop:
     - { key: "/org/gnome/shell/extensions/unite/extend-left-box", value: "false" }
     - { key: "/org/gnome/shell/extensions/unite/show-desktop-name", value: "false" }
@@ -153,3 +164,28 @@
     - { key: "/org/gnome/shell/extensions/unite/hide-activities-button", value: "'never'" }
     - { key: "/org/gnome/shell/extensions/unite/window-buttons-placement", value: "'last'" }
     - { key: "/org/gnome/shell/extensions/unite/hide-aggregate-menu-arrow", value: "true" }
+
+- block:
+    - name: gnome screen 1
+      dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value |string }}"
+      loop:
+        - { key: "/org/gnome/desktop/lockdown/disable-lock-screen", value: "true" }
+        - { key: "/org/gnome/desktop/screensaver/lock-enabled", value: "false" }
+        - { key: "/org/gnome/desktop/session/idle-delay", value: "uint32 0" }
+        - { key: "/org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type", value: "'nothing'" }
+    
+    - name: gnome screen 2
+      copy: src=monitors.xml dest=~/.config/
+
+    - name: gnome autologin
+      blockinfile:
+        dest: /etc/gdm/custom.conf
+        marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome screen 2 -->"
+        insertafter: "\\[daemon\\]"
+        block: |
+          AutomaticLoginEnable=True
+          AutomaticLogin={{ ansible_user_id }}
+      become: true
+  when: ansible_virtualization_role == "guest"

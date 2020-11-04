@@ -12,15 +12,16 @@
       - xdg-utils
       - xdg-user-dirs-gtk
   become: true
+
 - name: filemanager 2
   dconf:
     key: "{{ item.key }}"
-    value: "{{ item.value }}"
+    value: "{{ item.value |string}}"
   loop:
     - { key: "/org/gnome/nautilus/list-view/use-tree-view", value: "true" }
     - { key: "/org/gnome/desktop/media-handling/autorun-never", value: "true" }
     - { key: "/org/gnome/nautilus/list-view/default-zoom-level", value: "'small'" }
-    - { key: "/org/gnome/settings-daemon/plugins/media-keys/home", value: "'<Super>e'" }
+    - { key: "/org/gnome/settings-daemon/plugins/media-keys/home", value: "['<Super>e']" }
     - { key: "/org/gnome/nautilus/preferences/default-folder-viewer", value: "'list-view'" }
     - { key: "/org/gnome/nautilus/preferences/search-filter-time-type", value: "'last_modified'" }
 
@@ -30,3 +31,10 @@
   vars:
     gnome_extension_ids:
       - 2087
+
+- name: filemanager mc
+  blockinfile:
+    dest: ~/.bashrc
+    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK filemanager mc -->"
+    block: |
+      alias mc="mc -b"

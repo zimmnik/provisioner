@@ -1,7 +1,106 @@
-- name: Internet utilites
+- name: internet rpm-fusion repo
+  yum: disable_gpg_check=yes name=https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm
+  become: true
+
+- name: internet firefox 1
   yum:
     state: latest
     name:
       - firefox
-      - seahorse
+      - ffmpeg
+      - libva
+      - libva-utils
   become: true
+
+- name: internet firefox 2
+  stat:
+    path: ~/.mozilla
+  register: mozilla
+
+- block:
+    - name: internet firefox 3 #https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode 
+      shell: firefox --headless -CreateProfile default && firefox --headless -P default --screenshot about:logo && rm screenshot.png
+
+    - name: internet firefox 4
+      shell: find ~/.mozilla/firefox/ -maxdepth 1 -type d -name "*.default" -printf '%f\n'
+      register: out
+      ignore_errors: True
+
+    - name: internet firefox 5
+      set_fact:
+        ff_profile: "{{ out.stdout }}"
+
+    - name: internet firefox 6
+      copy:
+        src: firefox/user.js
+        dest: "~/.mozilla/firefox/{{ ff_profile }}/"
+
+    - name: internet firefox 7
+      file:
+        path: "~/.mozilla/firefox/{{ ff_profile }}/extensions"
+        state: directory
+
+    - name: internet firefox 8
+      get_url:
+        url: https://addons.mozilla.org/firefox/downloads/file/3561208/
+        dest: ~/.mozilla/firefox/{{ ff_profile }}/extensions/simple-translate@sienori.xpi
+
+    - name: internet firefox 9
+      get_url:
+        url: https://addons.mozilla.org/firefox/downloads/file/3579401/
+        dest: ~/.mozilla/firefox/{{ ff_profile }}/extensions/uBlock0@raymondhill.net.xpi
+
+    - name: internet firefox 10
+      get_url:
+        url: https://addons.mozilla.org/firefox/downloads/file/3518684/
+        dest: ~/.mozilla/firefox/{{ ff_profile }}/extensions/{d7742d87-e61d-4b78-b8a1-b469842139fa}.xpi
+  when: not mozilla.stat.exists
+
+- name: internet chromium
+  yum: name=chromium-freeworld state=latest
+  become: true
+
+- name: internet keepassxc 1
+  yum:
+    state: latest
+    name:
+      - seahorse
+      - keepassxc
+      - kpcli
+  become: true
+
+- name: internet keepassxc 2
+  file:
+    path: "~/.config/keepassxc"
+    state: directory
+
+- name: internet keepassxc 3
+  copy: src=keepassxc.ini dest=~/.config/keepassxc/
+  changed_when: false
+
+- name: internet keepassxc 4
+  file:
+    path: "~/.config/autostart"
+    state: directory
+
+- name: internet keepassxc 5
+  copy:
+    src: /usr/share/applications/org.keepassxc.KeePassXC.desktop
+    dest: ~/.config/autostart/
+    remote_src: yes
+
+- name: internet freerdp 1
+  yum: name=freerdp state=latest
+  become: true
+
+- name: internet freerdp 2
+  blockinfile:
+    dest: ~/.bashrc
+    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK internet freerdp 2 -->"
+    block: |
+      alias home="xfreerdp \
+      /aero /decorations /themes /fonts /network:lan \
+      /grab-keyboard /clipboard /kbd:Russian \
+      /drive:REMOTE,$HOME/Desktop \
+      /floatbar /monitors:0 /size:1920x1043 \
+      /u:username /v:host:port"

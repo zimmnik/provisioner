@@ -1,2 +1,5 @@
-- name: jaredhocutt.gnome_extensions
-  src: https://github.com/jaredhocutt/ansible-gnome-extensions
+collections:
+  - name: ansible.posix
+roles:
+  - name: jaredhocutt.gnome_extensions
+    src: https://github.com/jaredhocutt/ansible-gnome-extensions

@@ -1,13 +1,11 @@
 - name: terminal 1
-  yum:
-    state: latest
-    name:
-      - gnome-terminal
+  yum: name=gnome-terminal state=latest
   become: true
+
 - name: terminal 2
   dconf:
     key: "{{ item.key }}"
-    value: "{{ item.value }}"
+    value: "{{ item.value |string }}"
   loop:
     - { key: "/org/gnome/terminal/legacy/menu-accelerator-enabled", value: "false" }
     - { key: "/org/gnome/terminal/legacy/profiles:/list", value: "'b1dcc9dd-5262-4d8d-a863-c897e6d979b9'"  }
@@ -29,23 +27,57 @@
 - name: terminal quake-mode 2
   dconf:
     key: "{{ item.key }}"
-    value: "{{ item.value }}"
+    value: "{{ item.value |string }}"
   loop:
     - { key: "/com/github/repsac-by/quake-mode/quake-mode-app", value: "'org.gnome.Terminal.desktop'" }
     - { key: "/com/github/repsac-by/quake-mode/quake-mode-tray", value: "true" }
     - { key: "/com/github/repsac-by/quake-mode/quake-mode-width", value: "100" }
     - { key: "/com/github/repsac-by/quake-mode/quake-mode-height", value: "100" }
-    - { key: "/com/github/repsac-by/quake-mode/quake-mode-hotkey", value: "'<Primary>grave'" }
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-hotkey", value: "['<Primary>grave']" }
     - { key: "/com/github/repsac-by/quake-mode/quake-mode-animation-time", value: "0.25" }
 
-- name: terminal bash settings
+- name: terminal bash
   blockinfile:
     dest: ~/.bashrc
     create: yes
+    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK terminal bash -->"
     block: |
-      #COMMON
       set -o vi
       bind -m vi-insert "\C-l":clear-screen
       HISTCONTROL=ignorespace
       shopt -s histappend
       PROMPT_COMMAND='history -a'
+
+- name: internet tmux 1
+  yum: name=tmux state=latest
+  become: true
+
+- name: internet tmux 2
+  blockinfile:
+    dest: ~/.tmux.conf
+    create: yes
+    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK internet tmux 2 -->"
+    block: |
+      unbind-key C-b
+      set-option -g prefix C-a
+      bind-key C-a send-prefix
+      set-option -g history-limit 5000
+
+- name: internet ssh-agent 1
+  blockinfile:
+    dest: ~/.ssh/rc
+    create: yes
+    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK internet ssh-agent 1 -->"
+    block: |
+      if [ ! -S ~/.ssh/ssh_auth_sock ] && [ -S "$SSH_AUTH_SOCK" ]; then
+          ln -sf $SSH_AUTH_SOCK ~/.ssh/ssh_auth_sock
+      fi
+
+- name: internet ssh-agent 2
+  blockinfile:
+    dest: ~/.tmux.conf
+    create: yes
+    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK internet ssh-agent 2 -->"
+    block: |
+      set-option -g update-environment "DISPLAY SSH_ASKPASS SSH_AGENT_PID SSH_CONNECTION WINDOWID XAUTHORITY"
+      set-environment -g SSH_AUTH_SOCK $HOME/.ssh/ssh_auth_sock

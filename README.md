@@ -1,12 +1,10 @@
 # provisioner
 
-Provisioner is a bundle ansible playbooks that allow to quickly configure RHEL-based systems.
+Provisioner is an ansible playbook that allow to quickly configure Gnome DE on RHEL-based system.
 
 Supported distributions
 -----------------------------
--   **CentOS** 7
--   **CentOS** 8
--   **Fedora** 32
+-   **Fedora** 33
 
 ## Quick Start
 To deploy the system you can use :
@@ -20,30 +18,32 @@ ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/custom
 ```
 Pure system stage:
 ```ShellSession
+# Set root password
+passwd
+
 # Update packages and reboot
 yum -y update && reboot
-
-# CentOS only 
-yum -y install epel-release
 
 # Install dependencies
 yum -y install ansible git
 
+# Add sudo user and set password
+useradd --groups wheel --create-home username && passwd username
+
+# Run shell for sudo user
+sudo -u -i username
+
 # Clone playbooks
-git clone https://github.com/zimmnik/provisioner.git && cd provisioner
+git clone https://github.com/zimmnik/provisioner.git && cd provisioner/ansible
 
-# Edit variables
-vi run.yml
+# Install playbook requirements
+ansible-galaxy install -r requirements.yml
 
-# Run playbook
-ansible-playbook -i hosts --tags=all,gnome_de run.yml
-
-# Setup user password
-passwd root 
-passwd someusername
+# Run playbook with desired hostname
+ansible-playbook -i hosts -K -e "hostname=host01" run.yml
 
 # Start GUI
-systemctl isolate graphical
+sudo systemctl isolate graphical
 ```
 ### 2) VirtualBox + Vagrant
 
@@ -51,25 +51,16 @@ systemctl isolate graphical
 - **Git v2.9.0+**
 - **Virtualbox v5.2+**
 - **Vagrant v2.2.7+**
+- **4GB RAM for guest**
 
 #### Usage:
 ```ShellSession
 # Install playbooks
-git clone https://github.com/zimmnik/provisioner.git && cd provisioner
-
-# Edit variables
-vi Vagrantfile
-vi run.yml
+git clone https://github.com/zimmnik/provisioner.git && cd provisioner/
 
 # Deploy
-vagrant up
+time vagrant up --color
 
-# Setup user and root passwords
-vagrant ssh
-sudo passwd root 
-sudo passwd someusername
-exit
-
-# Start GUI
+# Open GUI window
 vboxmanage startvm provisioned_vm --type separate
 ```

@@ -28,13 +28,16 @@
 - name: SSH 1
   yum: name=openssh-server state=latest
   become: true
+  register: ssh_state
+
 - name: SSH 2
-  service: name=sshd enabled=yes state=restarted
+  service: name=sshd enabled=yes state=started
   become: true
 
 - name: Time sync 1
   yum: name=chrony state=latest
   become: true
+
 - name: Time sync 2
-  service: name=chronyd state=started
+  service: name=chronyd enabled=yes state=started
   become: true

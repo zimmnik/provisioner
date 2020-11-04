@@ -1,6 +1,4 @@
 ---
 - hosts: default
-  vars:
-    hostname: host01
   roles:
     - gnome_de
