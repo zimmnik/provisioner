@@ -12,7 +12,7 @@ To deploy the system you can use :
 ### 1) BareMetal + Kickstart + Ansible
 #### Usage:
 
-Anaconda stage: use kickstart file (except CentOS 8, see [bugreport](https://bugzilla.redhat.com/show_bug.cgi?id=1712776))
+Anaconda stage: use kickstart file
 ```raw
 ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/custom.cfg
 ```
