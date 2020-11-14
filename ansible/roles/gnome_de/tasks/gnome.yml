@@ -109,33 +109,6 @@
 - name: gnome button-layout
   dconf: key="/org/gnome/desktop/wm/preferences/button-layout" value="'appmenu:minimize,maximize,close'"
 
-- name: gnome workspace 1
-  import_role:
-    name: jaredhocutt.gnome_extensions
-  vars:
-    gnome_extension_ids:
-      - 21
-- name: gnome workspace 2
-  dconf: key="/org/gnome/mutter/dynamic-workspaces" value="false"
-
-- name: gnome keybindings
-  dconf:
-    key: "{{ item.key }}"
-    value: "{{ item.value |string }}"
-  loop:
-    - { key: "/org/gnome/desktop/wm/keybindings/close", value: "['<Super>q']" }
-    - { key: "/org/gnome/desktop/wm/keybindings/show-desktop", value: "['<Super>d']" }
-    - { key: "/org/gnome/desktop/wm/keybindings/switch-applications", value: "@as []" }
-    - { key: "/org/gnome/desktop/wm/keybindings/switch-applications-backward", value: "@as []" }
-    - { key: "/org/gnome/desktop/wm/keybindings/switch-windows", value: "['<Alt>Tab']" }
-    - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-1", value: "['<Primary>1']" }
-    - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-2", value: "['<Primary>2']" }
-    - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-3", value: "['<Primary>3']" }
-    - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-4", value: "['<Primary>4']" }
-    - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-1", value: "['<Primary><Shift>exclam']" }
-    - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-2", value: "['<Primary><Shift>at']" }
-    - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-3", value: "['<Primary><Shift>numbersign']" }
-    - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-4", value: "['<Primary><Shift>dollar']" }
 
 - name: gnome clock
   dconf: key="/org/gnome/desktop/interface/clock-show-weekday" value="true"
@@ -165,6 +138,38 @@
     - { key: "/org/gnome/shell/extensions/unite/window-buttons-placement", value: "'last'" }
     - { key: "/org/gnome/shell/extensions/unite/hide-aggregate-menu-arrow", value: "true" }
 
+- name: gnome workspace 1
+  import_role:
+    name: jaredhocutt.gnome_extensions
+  vars:
+    gnome_extension_ids:
+      - 21
+
+- name: gnome workspace 2
+  dconf: key="/org/gnome/mutter/dynamic-workspaces" value="false"
+
+- name: gnome workspace 3
+  dconf: key="/org/gnome/shell/overrides/dynamic-workspaces" value="false"
+
+- name: gnome wm hotkeys
+  dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value |string }}"
+  loop:
+    - { key: "/org/gnome/desktop/wm/keybindings/close", value: "['<Super>q']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/show-desktop", value: "['<Super>d']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-applications", value: "@as []" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-applications-backward", value: "@as []" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-windows", value: "['<Alt>Tab']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-1", value: "['<Primary>1']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-2", value: "['<Primary>2']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-3", value: "['<Primary>3']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-4", value: "['<Primary>4']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-1", value: "['<Primary><Shift>exclam']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-2", value: "['<Primary><Shift>at']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-3", value: "['<Primary><Shift>numbersign']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-4", value: "['<Primary><Shift>dollar']" }
+
 - block:
     - name: gnome screen 1
       dconf:
@@ -189,3 +194,4 @@
           AutomaticLogin={{ ansible_user_id }}
       become: true
   when: ansible_virtualization_role == "guest"
+
