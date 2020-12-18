@@ -10,6 +10,12 @@
       - gvim
   become: true
 
+- name: office vim root
+  copy:
+    src: .vimrc
+    dest: /root
+  become: true
+
 - name: office vim 
   copy:
     src: .vimrc
