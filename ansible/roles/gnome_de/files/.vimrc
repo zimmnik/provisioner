@@ -1,4 +1,4 @@
-colorscheme slate
+colorscheme pablo
 set guifont=Bitstream\ Vera\ Sans\ Mono\ 14
 
 vmap <C-c> "+yi

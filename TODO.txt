@@ -1,9 +1,17 @@
 ssh keys + config
 keepassxc db
 firefox links + proxy.pac
-vpn
-ssh tunnel
-backup
-monitoring?
+vpn or ssh tunnel
 mta
 ssd trim
+nvidia gpu drivers
+wifi firmware?
+s.m.a.r.t?
+fancontrol
+screen flickering (https://github.com/edio/intelpwm-udev)
+screen tearing 
+disable useless devices
+battery power management
+video hardware acceleration
+backup
+monitoring?
