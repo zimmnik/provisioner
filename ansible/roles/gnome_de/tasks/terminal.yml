@@ -47,6 +47,7 @@
       HISTCONTROL=ignorespace
       shopt -s histappend
       PROMPT_COMMAND='history -a'
+      LS_COLORS=$LS_COLORS:'di=1;33:' ; export LS_COLORS
 
 - name: internet tmux 1
   yum: name=tmux state=latest

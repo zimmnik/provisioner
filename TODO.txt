@@ -1,17 +1,17 @@
 ssh keys + config
 keepassxc db
-firefox links + proxy.pac
+firefox links + proxy.pac + tor
 vpn or ssh tunnel
 mta
 ssd trim
 nvidia gpu drivers
 wifi firmware?
-s.m.a.r.t?
+smart
 fancontrol
 screen flickering (https://github.com/edio/intelpwm-udev)
 screen tearing 
 disable useless devices
+printing (splix cups)
 battery power management
 video hardware acceleration
 backup
-monitoring?
