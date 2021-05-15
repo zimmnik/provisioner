@@ -4,7 +4,7 @@ Provisioner is an ansible playbook that allow to quickly configure Gnome DE on R
 
 Supported distributions
 -----------------------------
--   **Fedora** 33
+-   **Fedora** 34
 
 ## Quick Start
 To deploy the system you can use :
@@ -17,6 +17,7 @@ Anaconda stage: use kickstart file
 ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/custom.cfg
 ```
 Pure system stage:
+WARNING! Don't use tty1 console, use tty2-4, because playbook will start systemd's graphical.target
 ```ShellSession
 # Set root password
 passwd
@@ -41,9 +42,6 @@ ansible-galaxy install -r requirements.yml
 
 # Run playbook with desired hostname
 ansible-playbook -i hosts -K -e "hostname=host01" run.yml
-
-# Start GUI
-sudo systemctl isolate graphical
 ```
 ### 2) VirtualBox + Vagrant
 

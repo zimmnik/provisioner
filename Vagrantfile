@@ -1,8 +1,8 @@
-# -*- mode: ruby -*-
-# vi: set ft=ruby :
-#
+# -*- mode: ruby -*- # vi: set ft=ruby :
+
 Vagrant.configure("2") do |config|
-  config.vm.box = "fedora/33-cloud-base"
+  config.vm.box = "fedora/34-cloud-base"
+  config.vm.box_url = "https://mirror.yandex.ru/fedora/linux/releases/34/Cloud/x86_64/images/Fedora-Cloud-Base-Vagrant-34-1.2.x86_64.vagrant-virtualbox.box"
 
   config.vm.provider "virtualbox" do |vb|
     vb.name = "provisioned_vm"
@@ -12,8 +12,9 @@ Vagrant.configure("2") do |config|
     vb.customize ["modifyvm", :id, "--vram", "128"]
   end
   
-  config.vagrant.plugins = ["vagrant-reload", "vagrant-vbguest"]
-  config.vbguest.installer_options = { allow_kernel_upgrade: true }
+  config.vagrant.plugins = ["vagrant-reload"]
+  #config.vagrant.plugins = ["vagrant-reload", "vagrant-vbguest"]
+  #config.vbguest.installer_options = { allow_kernel_upgrade: false }
   config.vm.provision "shell", inline: "yum -y -q update"
   config.vm.provision :reload
     
@@ -27,6 +28,4 @@ Vagrant.configure("2") do |config|
     ansible.galaxy_roles_path = "/etc/ansible/roles"
     ansible.galaxy_command = "sudo ansible-galaxy install --role-file=%{role_file} --roles-path=%{roles_path} --force"
   end
-  config.vm.provision :reload
-  config.vm.provision "shell", inline: "sudo -u vagrant dbus-launch gsettings list-recursively | grep dyna"
 end

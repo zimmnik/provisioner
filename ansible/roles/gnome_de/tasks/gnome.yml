@@ -1,20 +1,8 @@
-#- name: xorg 1
-#  yum: name="@X Window System" state=latest
-#  when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7")
-#  become: true
-#
-#  when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "8") or
-#  when  (ansible_facts['distribution'] == "Fedora" and ansible_facts['distribution_major_version'] == "33")
- 
-- name: xorg 1
-  yum: name="@base-x" state=latest
-  become: true
-
 - name: gnome packages
   yum:
     state: latest
     name:
-      # DISPLAY AND WINDOW MANAGER
+      - "@base-x"
       - gnome-session-xsession
       - control-center
       - krb5-libs
@@ -26,7 +14,7 @@
     - nm_restart
   become: true
 
-- name: gdm
+- name: gdm wayland disable
   lineinfile:
     path: /etc/gdm/custom.conf
     regexp: 'WaylandEnable='
@@ -43,6 +31,34 @@
   command: systemctl set-default graphical.target
   when: contents.stdout != "graphical.target"
   become: true
+
+- name: gnome disable welcome dialog
+  dconf: key="/org/gnome/shell/welcome-dialog-last-shown-version" value="40.0"
+
+- name: gnome autologin
+  blockinfile:
+    dest: /etc/gdm/custom.conf
+    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
+    insertafter: "\\[daemon\\]"
+    block: |
+      AutomaticLoginEnable=True
+      AutomaticLogin={{ ansible_user_id }}
+  become: true
+
+- name: systemd isolate graphical
+  command: systemctl isolate graphical.target
+  become: true
+
+##- name: Wait for graphical target loading
+##  pause:
+##    minutes: 1
+#
+#- name: gnome autologin
+#  blockinfile:
+#    dest: /etc/gdm/custom.conf
+#    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
+#    state: absent
+#  become: true
 
 - name: gtk theme 1
   file: path=~/.config/gtk-3.0/ state=directory
@@ -109,47 +125,11 @@
 - name: gnome button-layout
   dconf: key="/org/gnome/desktop/wm/preferences/button-layout" value="'appmenu:minimize,maximize,close'"
 
-
 - name: gnome clock
   dconf: key="/org/gnome/desktop/interface/clock-show-weekday" value="true"
 
 - name: gnome battery
   dconf: key="/org/gnome/desktop/interface/show-battery-percentage" value="true"
-
-- name: gnome unite 1
-  import_role:
-    name: jaredhocutt.gnome_extensions
-  vars:
-    gnome_extension_ids:
-      - 1287
-
-- name: gnome unite 2
-  dconf:
-    key: "{{ item.key }}"
-    value: "{{ item.value |string }}"
-  loop:
-    - { key: "/org/gnome/shell/extensions/unite/extend-left-box", value: "false" }
-    - { key: "/org/gnome/shell/extensions/unite/show-desktop-name", value: "false" }
-    - { key: "/org/gnome/shell/extensions/unite/hide-app-menu-icon", value: "true" }
-    - { key: "/org/gnome/shell/extensions/unite/hide-app-menu-arrow", value: "true" }
-    - { key: "/org/gnome/shell/extensions/unite/greyscale-tray-icons", value: "true" }
-    - { key: "/org/gnome/shell/extensions/unite/window-buttons-theme", value: "'united-dark'" }
-    - { key: "/org/gnome/shell/extensions/unite/hide-activities-button", value: "'never'" }
-    - { key: "/org/gnome/shell/extensions/unite/window-buttons-placement", value: "'last'" }
-    - { key: "/org/gnome/shell/extensions/unite/hide-aggregate-menu-arrow", value: "true" }
-
-- name: gnome workspace 1
-  import_role:
-    name: jaredhocutt.gnome_extensions
-  vars:
-    gnome_extension_ids:
-      - 21
-
-- name: gnome workspace 2
-  dconf: key="/org/gnome/mutter/dynamic-workspaces" value="false"
-
-- name: gnome workspace 3
-  dconf: key="/org/gnome/shell/overrides/dynamic-workspaces" value="false"
 
 - name: gnome wm hotkeys
   dconf:
@@ -171,7 +151,7 @@
     - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-4", value: "['<Primary><Shift>dollar']" }
 
 - block:
-    - name: gnome screen 1
+    - name: gnome lock&sleep
       dconf:
         key: "{{ item.key }}"
         value: "{{ item.value |string }}"
@@ -181,17 +161,58 @@
         - { key: "/org/gnome/desktop/session/idle-delay", value: "uint32 0" }
         - { key: "/org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type", value: "'nothing'" }
     
-    - name: gnome screen 2
+    - name: gnome monitors
       copy: src=monitors.xml dest=~/.config/
 
-    - name: gnome autologin
-      blockinfile:
-        dest: /etc/gdm/custom.conf
-        marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome screen 2 -->"
-        insertafter: "\\[daemon\\]"
-        block: |
-          AutomaticLoginEnable=True
-          AutomaticLogin={{ ansible_user_id }}
-      become: true
+    #- name: gnome autologin
+    #  blockinfile:
+    #    dest: /etc/gdm/custom.conf
+    #    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
+    #    insertafter: "\\[daemon\\]"
+    #    block: |
+    #      AutomaticLoginEnable=True
+    #      AutomaticLogin={{ ansible_user_id }}
+    #  become: true
+
   when: ansible_virtualization_role == "guest"
 
+- name: gnome unite 1
+  yum: name=xprop state=latest
+  become: true
+
+- name: gnome unite 2
+  import_role:
+    name: jaredhocutt.gnome_extensions
+  vars:
+    gnome_extension_ids:
+      - 1287
+  #notify:
+  #  - enable_extensions
+
+- name: gnome unite 3
+  dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value |string }}"
+  loop:
+    - { key: "/org/gnome/shell/extensions/unite/extend-left-box", value: "false" }
+    - { key: "/org/gnome/shell/extensions/unite/show-desktop-name", value: "false" }
+    - { key: "/org/gnome/shell/extensions/unite/hide-app-menu-icon", value: "true" }
+    - { key: "/org/gnome/shell/extensions/unite/hide-app-menu-arrow", value: "true" }
+    - { key: "/org/gnome/shell/extensions/unite/greyscale-tray-icons", value: "true" }
+    - { key: "/org/gnome/shell/extensions/unite/window-buttons-theme", value: "'united-dark'" }
+    - { key: "/org/gnome/shell/extensions/unite/hide-activities-button", value: "'never'" }
+    - { key: "/org/gnome/shell/extensions/unite/window-buttons-placement", value: "'last'" }
+    - { key: "/org/gnome/shell/extensions/unite/hide-aggregate-menu-arrow", value: "true" }
+
+- name: gnome workspace 1
+  import_role:
+    name: jaredhocutt.gnome_extensions
+  vars:
+    gnome_extension_ids:
+      - 21
+- name: gnome workspace 2
+  dconf: key="/org/gnome/mutter/dynamic-workspaces" value="false"
+- name: gnome workspace 3
+  dconf: key="/org/gnome/shell/overrides/dynamic-workspaces" value="false"
+  notify:
+    - enable_extensions
