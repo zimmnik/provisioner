@@ -32,6 +32,12 @@
     gnome_extension_ids:
       - 2087
 
+- name: filemanager desktop icons 2
+  debug:
+    msg: "Any extension must to nofity handler after install, but cannot to do it from import_role, so we here"
+  notify:
+    - enable_extensions
+
 - name: filemanager mc
   blockinfile:
     dest: ~/.bashrc

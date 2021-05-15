@@ -24,6 +24,7 @@
   vars:
     gnome_extension_ids:
       - 1411
+
 - name: terminal quake-mode 2
   dconf:
     key: "{{ item.key }}"
@@ -35,6 +36,8 @@
     - { key: "/com/github/repsac-by/quake-mode/quake-mode-height", value: "100" }
     - { key: "/com/github/repsac-by/quake-mode/quake-mode-hotkey", value: "['<Primary>grave']" }
     - { key: "/com/github/repsac-by/quake-mode/quake-mode-animation-time", value: "0.25" }
+  notify:
+    - enable_extensions
 
 - name: terminal bash
   blockinfile:
