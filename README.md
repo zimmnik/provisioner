@@ -14,7 +14,7 @@ To deploy the system you can use :
 
 Anaconda stage: use kickstart file
 ```raw
-ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/custom.cfg
+inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/custom.cfg
 ```
 Pure system stage:  
 WARNING! Don't use tty1 console, use tty2-4, because playbook will start systemd's graphical.target
