@@ -149,7 +149,6 @@
     - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-4", value: "['<Primary><Shift>dollar']" }
 
 - block:
-  when: ansible_virtualization_role == "guest"
     - name: gnome lock&sleep
       dconf:
         key: "{{ item.key }}"
@@ -172,6 +171,7 @@
     #      AutomaticLoginEnable=True
     #      AutomaticLogin={{ ansible_user_id }}
     #  become: true
+  when: ansible_virtualization_role == "guest"
 
 - name: gnome unite 1
   become: true
