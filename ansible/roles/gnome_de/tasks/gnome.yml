@@ -1,54 +1,52 @@
 - name: gnome packages
+  become: true
   yum:
     state: latest
     name:
-      - "@base-x"
-      - gnome-session-xsession
-      - control-center
+      #- "@base-x"
+      #- gnome-session-xsession
+      #- control-center
       - krb5-libs
       - gnome-tweak-tool
       - dconf-editor
       - python3-psutil
       - dbus-x11
-  notify:
-    - nm_restart
-  become: true
 
-- name: gdm wayland disable
-  lineinfile:
-    path: /etc/gdm/custom.conf
-    regexp: 'WaylandEnable='
-    line: WaylandEnable=false
-  become: true
-
-- name: systemd target 1
-  command: systemctl get-default
-  register: contents
-  changed_when: false
-  become: true
-
-- name: systemd target 2
-  command: systemctl set-default graphical.target
-  when: contents.stdout != "graphical.target"
-  become: true
-
-- name: gnome disable welcome dialog
-  dconf: key="/org/gnome/shell/welcome-dialog-last-shown-version" value="40.0"
-
-- name: gnome autologin
-  blockinfile:
-    dest: /etc/gdm/custom.conf
-    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
-    insertafter: "\\[daemon\\]"
-    block: |
-      AutomaticLoginEnable=True
-      AutomaticLogin={{ ansible_user_id }}
-  become: true
-
-- name: systemd isolate graphical
-  command: systemctl isolate graphical.target
-  become: true
-
+#- name: gdm wayland disable
+#  become: true
+#  lineinfile:
+#    path: /etc/gdm/custom.conf
+#    regexp: 'WaylandEnable='
+#    line: WaylandEnable=false
+#
+#- name: systemd target 1
+#  command: systemctl get-default
+#  register: contents
+#  changed_when: false
+#  become: true
+#
+#- name: systemd target 2
+#  command: systemctl set-default graphical.target
+#  when: contents.stdout != "graphical.target"
+#  become: true
+#
+#- name: gnome disable welcome dialog
+#  dconf: key="/org/gnome/shell/welcome-dialog-last-shown-version" value="40.0"
+#
+#- name: gnome autologin
+#  blockinfile:
+#    dest: /etc/gdm/custom.conf
+#    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
+#    insertafter: "\\[daemon\\]"
+#    block: |
+#      AutomaticLoginEnable=True
+#      AutomaticLogin={{ ansible_user_id }}
+#  become: true
+#
+#- name: systemd isolate graphical
+#  command: systemctl isolate graphical.target
+#  become: true
+#
 ##- name: Wait for graphical target loading
 ##  pause:
 ##    minutes: 1
@@ -78,20 +76,20 @@
     state: directory
 
 - name: gnome fonts 2
+  register: fonts_state
   unarchive:
     src: http://ftp.gnome.org/pub/GNOME/sources/ttf-bitstream-vera/1.10/ttf-bitstream-vera-1.10.zip
     dest: ~/.local/share/fonts/
     remote_src: yes
     creates: ~/.local/share/fonts/ttf-bitstream-vera-1.10/
-  register: fonts_state
 
 - name: gnome fonts 3
+  register: fonts_state
   unarchive:
     src: https://assets.ubuntu.com/v1/0cef8205-ubuntu-font-family-0.83.zip
     dest: ~/.local/share/fonts/
     remote_src: yes
     creates: ~/.local/share/fonts/ubuntu-font-family-0.83/
-  register: fonts_state
 
 - name: gnome fonts 3
   command: fc-cache -f ~/.local/share/fonts/
@@ -151,6 +149,7 @@
     - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-4", value: "['<Primary><Shift>dollar']" }
 
 - block:
+  when: ansible_virtualization_role == "guest"
     - name: gnome lock&sleep
       dconf:
         key: "{{ item.key }}"
@@ -174,11 +173,9 @@
     #      AutomaticLogin={{ ansible_user_id }}
     #  become: true
 
-  when: ansible_virtualization_role == "guest"
-
 - name: gnome unite 1
-  yum: name=xprop state=latest
   become: true
+  yum: name=xprop state=latest
 
 - name: gnome unite 2
   import_role:
@@ -186,8 +183,6 @@
   vars:
     gnome_extension_ids:
       - 1287
-  #notify:
-  #  - enable_extensions
 
 - name: gnome unite 3
   dconf:
@@ -210,9 +205,9 @@
   vars:
     gnome_extension_ids:
       - 21
+
 - name: gnome workspace 2
   dconf: key="/org/gnome/mutter/dynamic-workspaces" value="false"
+
 - name: gnome workspace 3
   dconf: key="/org/gnome/shell/overrides/dynamic-workspaces" value="false"
-  notify:
-    - enable_extensions

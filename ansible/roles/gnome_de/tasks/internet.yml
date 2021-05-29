@@ -1,8 +1,9 @@
 - name: internet rpm-fusion repo
-  yum: disable_gpg_check=yes name=https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm
   become: true
+  yum: disable_gpg_check=yes name=https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm
 
 - name: internet firefox 1
+  become: true
   yum:
     state: latest
     name:
@@ -10,7 +11,6 @@
       - ffmpeg
       - libva
       - libva-utils
-  become: true
 
 - name: internet firefox 2
   stat:
@@ -57,17 +57,17 @@
   when: not mozilla.stat.exists
 
 - name: internet chromium
-  yum: name=chromium-freeworld state=latest
   become: true
+  yum: name=chromium-freeworld state=latest
 
 - name: internet keepassxc 1
+  become: true
   yum:
     state: latest
     name:
       - seahorse
       - keepassxc
       - kpcli
-  become: true
 
 - name: internet keepassxc 2
   file:
@@ -75,8 +75,8 @@
     state: directory
 
 - name: internet keepassxc 3
-  copy: src=keepassxc.ini dest=~/.config/keepassxc/
   changed_when: false
+  copy: src=keepassxc.ini dest=~/.config/keepassxc/
 
 - name: internet keepassxc 4
   file:
@@ -90,8 +90,8 @@
     remote_src: yes
 
 - name: internet freerdp 1
-  yum: name=freerdp state=latest
   become: true
+  yum: name=freerdp state=latest
 
 - name: internet freerdp 2
   blockinfile:

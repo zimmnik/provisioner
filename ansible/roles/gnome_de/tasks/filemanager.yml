@@ -1,4 +1,5 @@
 - name: filemanager 1
+  become: true
   yum:
     state: latest
     name:
@@ -11,7 +12,6 @@
       - gvfs-fuse
       - xdg-utils
       - xdg-user-dirs-gtk
-  become: true
 
 - name: filemanager 2
   dconf:
@@ -35,8 +35,6 @@
 - name: filemanager desktop icons 2
   debug:
     msg: "Any extension must to nofity handler after install, but cannot to do it from import_role, so we here"
-  notify:
-    - enable_extensions
 
 - name: filemanager mc
   blockinfile:

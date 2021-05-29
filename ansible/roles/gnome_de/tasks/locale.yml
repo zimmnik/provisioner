@@ -1,30 +1,30 @@
 - name: locale glibc
-  yum: name=glibc-langpack-ru state=latest
   become: true
+  yum: name=glibc-langpack-ru state=latest
 
 - name: locale env_lang 1
-  shell: locale | grep LANG | cut -d "=" -f2
   register: env_lang
   changed_when: false
+  shell: locale | grep LANG | cut -d "=" -f2
 
 - name: locale env_lang 2
-  shell: localectl set-locale LANG="ru_RU.UTF-8"
   become: true
   when: env_lang.stdout != "ru_RU.UTF-8"
+  shell: localectl set-locale LANG="ru_RU.UTF-8"
 
 - name: locale env_lc_messages 1
-  shell: locale | grep LC_MESSAGES | cut -d "=" -f2
   register: env_lc_messages
   changed_when: false
+  shell: locale | grep LC_MESSAGES | cut -d "=" -f2
 
 - name: locale env_lc_messages 2
-  shell: localectl set-locale LC_MESSAGES="en_US.UTF-8"
   become: true
   when: env_lc_messages.stdout != "en_US.UTF-8"
+  shell: localectl set-locale LC_MESSAGES="en_US.UTF-8"
 
 - name: locale timezone
-  timezone: name=Europe/Moscow
   become: true
+  timezone: name=Europe/Moscow
 
 - name: locale gnome input languages
   dconf: key="/org/gnome/desktop/input-sources/sources" value="[('xkb', 'us'), ('xkb', 'ru')]"

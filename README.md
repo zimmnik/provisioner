@@ -22,17 +22,27 @@ WARNING! Don't use tty1 console, use tty2-4, because playbook will start systemd
 # Set root password
 passwd
 
-# Update packages and reboot
-yum -y update && reboot
-
-# Install dependencies
-yum -y install ansible git
-
 # Add sudo user and set password
 useradd --groups wheel --create-home username && passwd username
 
-# Run shell for sudo user
-sudo -u -i username
+# Update packages and reboot
+yum -y update && reboot
+
+# Install minimal gnome
+yum -y install "@base-x" gnome-session-xsession control-center gnome-terminal
+
+# Disable Wayland 
+
+# Enable graphical target
+systemctl set-default graphical.target
+
+# Apply changes
+reboot
+
+# Login via GUI as sudo user and open Gnome Terminal
+
+# Install dependencies
+yum -y install ansible git
 
 # Clone playbooks
 git clone https://github.com/zimmnik/provisioner.git && cd provisioner/ansible

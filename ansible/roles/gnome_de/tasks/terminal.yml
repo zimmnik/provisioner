@@ -1,8 +1,8 @@
-- name: terminal 1
-  yum: name=gnome-terminal state=latest
-  become: true
+#- name: terminal 1
+#  yum: name=gnome-terminal state=latest
+#  become: true
 
-- name: terminal 2
+- name: terminal app settings
   dconf:
     key: "{{ item.key }}"
     value: "{{ item.value |string }}"
@@ -36,8 +36,6 @@
     - { key: "/com/github/repsac-by/quake-mode/quake-mode-height", value: "100" }
     - { key: "/com/github/repsac-by/quake-mode/quake-mode-hotkey", value: "['<Primary>grave']" }
     - { key: "/com/github/repsac-by/quake-mode/quake-mode-animation-time", value: "0.25" }
-  notify:
-    - enable_extensions
 
 - name: terminal bash
   blockinfile:
@@ -53,8 +51,8 @@
       LS_COLORS=$LS_COLORS:'di=1;33:' ; export LS_COLORS
 
 - name: internet tmux 1
-  yum: name=tmux state=latest
   become: true
+  yum: name=tmux state=latest
 
 - name: internet tmux 2
   blockinfile:

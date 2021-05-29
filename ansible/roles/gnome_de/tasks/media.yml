@@ -1,6 +1,6 @@
 - name: Media utilites
+  become: true
   yum:
     state: latest
     name:
       - eog
-  become: true
