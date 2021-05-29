@@ -25,8 +25,8 @@ passwd
 # Add sudo user and set password
 useradd --groups wheel --create-home username && passwd username
 
-# Update packages and reboot
-yum -y update && reboot
+# Update packages
+yum -y update
 
 # Install minimal gnome
 yum -y install "@base-x" gnome-session-xsession control-center gnome-terminal
