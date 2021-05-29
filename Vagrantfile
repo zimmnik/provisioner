@@ -15,17 +15,24 @@ Vagrant.configure("2") do |config|
   config.vagrant.plugins = ["vagrant-reload"]
   #config.vagrant.plugins = ["vagrant-reload", "vagrant-vbguest"]
   #config.vbguest.installer_options = { allow_kernel_upgrade: false }
-  config.vm.provision "shell", inline: "yum -y -q update"
+  #config.vm.provision "shell", inline: "yum -y -q update"
+  config.vm.provision "shell", inline: <<-SHELL
+    #yum -y -q update
+    yum -y install "@base-x" gnome-session-xsession control-center gnome-terminal
+    sed -i "s/#WaylandEnable=false/WaylandEnable=true/g" /etc/gdm/custom.conf
+    systemctl set-default graphical.target
+  SHELL
   config.vm.provision :reload
     
-  config.vm.provision "shell", inline: "yum -y -q install git"
-  config.vm.provision :ansible_local do |ansible|
-    #ansible.verbose = "vvvv"
-    ansible.compatibility_mode = "2.0"
-    ansible.playbook = "ansible/run.yml"
-    ansible.config_file = "ansible/ansible.cfg"
-    ansible.galaxy_role_file = "ansible/requirements.yml"
-    ansible.galaxy_roles_path = "/etc/ansible/roles"
-    ansible.galaxy_command = "sudo ansible-galaxy install --role-file=%{role_file} --roles-path=%{roles_path} --force"
-  end
+  #  
+  #config.vm.provision "shell", inline: "yum -y -q install git"
+  #config.vm.provision :ansible_local do |ansible|
+  #  #ansible.verbose = "vvvv"
+  #  ansible.compatibility_mode = "2.0"
+  #  ansible.playbook = "ansible/run.yml"
+  #  ansible.config_file = "ansible/ansible.cfg"
+  #  ansible.galaxy_role_file = "ansible/requirements.yml"
+  #  ansible.galaxy_roles_path = "/etc/ansible/roles"
+  #  ansible.galaxy_command = "sudo ansible-galaxy install --role-file=%{role_file} --roles-path=%{roles_path} --force"
+  #end
 end
