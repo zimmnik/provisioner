@@ -1,5 +1,4 @@
 - block:
-  become: true
     - name: Hostname
       hostname: name={{ hostname }}
     
@@ -34,3 +33,4 @@
     
     - name: Time sync 2
       service: name=chronyd enabled=yes state=started
+  become: true
