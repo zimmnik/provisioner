@@ -1,7 +1,11 @@
-- block:
+- name: common
+  become: true
+  block:
     - name: Hostname
       hostname: name={{ hostname }}
-    
+      notify:
+        - enable_extensions 
+
     - name: Utilites
       yum:
         state: latest
@@ -33,4 +37,3 @@
     
     - name: Time sync 2
       service: name=chronyd enabled=yes state=started
-  become: true

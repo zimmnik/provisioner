@@ -1,5 +1,4 @@
 - name: gnome packages
-  become: true
   yum:
     state: latest
     name:
@@ -11,6 +10,7 @@
       - dconf-editor
       - python3-psutil
       - dbus-x11
+  become: true
 
 #- name: gdm wayland disable
 #  become: true
@@ -198,6 +198,8 @@
     - { key: "/org/gnome/shell/extensions/unite/hide-activities-button", value: "'never'" }
     - { key: "/org/gnome/shell/extensions/unite/window-buttons-placement", value: "'last'" }
     - { key: "/org/gnome/shell/extensions/unite/hide-aggregate-menu-arrow", value: "true" }
+  notify:
+    - enable_extensions
 
 - name: gnome workspace 1
   import_role:
@@ -211,3 +213,5 @@
 
 - name: gnome workspace 3
   dconf: key="/org/gnome/shell/overrides/dynamic-workspaces" value="false"
+  notify:
+    - enable_extensions
