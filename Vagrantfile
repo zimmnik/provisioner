@@ -15,10 +15,10 @@ Vagrant.configure("2") do |config|
   config.vagrant.plugins = ["vagrant-reload"]
   #config.vagrant.plugins = ["vagrant-reload", "vagrant-vbguest"]
   #config.vbguest.installer_options = { allow_kernel_upgrade: false }
-  config.vm.provision "shell", inline: "yum -y -q update"
-  config.vm.provision :reload
+  #config.vm.provision "shell", inline: "yum -y -q update"
+  #config.vm.provision :reload
     
-  config.vm.provision "shell", inline: "yum -y -q install git"
+  config.vm.provision "shell", inline: "yum -y -q install git unzip"
   config.vm.provision :ansible_local do |ansible|
     #ansible.verbose = "vvvv"
     ansible.compatibility_mode = "2.0"
