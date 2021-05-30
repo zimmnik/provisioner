@@ -10,6 +10,7 @@
       - dconf-editor
       - python3-psutil
       - dbus-x11
+      - gnome-terminal
   notify:
     - nm_restart
   become: true
