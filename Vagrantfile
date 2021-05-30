@@ -20,7 +20,7 @@ Vagrant.configure("2") do |config|
     #yum -y -q update
     yum -y install "@base-x" gnome-session-xsession control-center gnome-terminal
     sed -i "s/#WaylandEnable=false/WaylandEnable=true/g" /etc/gdm/custom.conf
-    sed "/daemon/a AutomaticLoginEnable=True\nAutomaticLogin=vagrant" /etc/gdm/custom.conf
+    sed -i "/daemon/a AutomaticLoginEnable=True\nAutomaticLogin=vagrant" /etc/gdm/custom.conf
     systemctl set-default graphical.target
   SHELL
   config.vm.provision :reload
