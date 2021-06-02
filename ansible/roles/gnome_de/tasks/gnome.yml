@@ -48,8 +48,8 @@
   when: contents.stdout != "graphical.target"
   become: true
 
-- name: gnome disable welcome dialog
-  dconf: key="/org/gnome/shell/welcome-dialog-last-shown-version" value="40.0"
+#- name: gnome disable welcome dialog
+#  dconf: key="/org/gnome/shell/welcome-dialog-last-shown-version" value="40.0"
 
 - name: gnome autologin
   blockinfile:
@@ -68,6 +68,17 @@
 - name: Wait for graphical target loading
   pause:
     seconds: 30
+
+- name: gnome autologin
+  blockinfile:
+    dest: /etc/gdm/custom.conf
+    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
+    state: absent
+    #insertafter: "\\[daemon\\]"
+    #block: |
+    #  AutomaticLoginEnable=True
+    #  AutomaticLogin={{ ansible_user_id }}
+  become: true
 
 - name: gtk theme 1
   file: path=~/.config/gtk-3.0/ state=directory
