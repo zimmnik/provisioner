@@ -19,3 +19,7 @@
 - name: enable gnome extensions
   shell: for i in $(gnome-extensions list); do echo $i; gnome-extensions enable $i; done
   listen: "enable_extensions"
+
+- name: system logout
+  shell: gnome-session-quit --no-prompt
+  listen: "enable_extensions"
