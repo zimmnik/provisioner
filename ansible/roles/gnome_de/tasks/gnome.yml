@@ -1,3 +1,5 @@
+#-----------------------------------------------------------------------------------------------
+# GNOME
 - name: gnome packages
   yum:
     state: latest
@@ -14,13 +16,53 @@
     - nm_restart
   become: true
 
-- name: gdm wayland disable
-  lineinfile:
-    path: /etc/gdm/custom.conf
-    regexp: 'WaylandEnable='
-    line: WaylandEnable=false
+#-----------------------------------------------------------------------------------------------
+# GNOME EXTENSIONS
+- name: gnome unite 1
+  yum: name=xprop state=latest
   become: true
 
+- name: gnome unite 2
+  import_role:
+    name: jaredhocutt.gnome_extensions
+  vars:
+    gnome_extension_ids:
+      - 1287
+  notify:
+    - enable_extensions
+
+- name: gnome unite 3
+  dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value |string }}"
+  loop:
+    - { key: "/org/gnome/shell/extensions/unite/extend-left-box", value: "false" }
+    - { key: "/org/gnome/shell/extensions/unite/show-desktop-name", value: "false" }
+    - { key: "/org/gnome/shell/extensions/unite/hide-app-menu-icon", value: "true" }
+    - { key: "/org/gnome/shell/extensions/unite/hide-app-menu-arrow", value: "true" }
+    - { key: "/org/gnome/shell/extensions/unite/greyscale-tray-icons", value: "true" }
+    - { key: "/org/gnome/shell/extensions/unite/window-buttons-theme", value: "'united-dark'" }
+    - { key: "/org/gnome/shell/extensions/unite/hide-activities-button", value: "'never'" }
+    - { key: "/org/gnome/shell/extensions/unite/window-buttons-placement", value: "'last'" }
+    - { key: "/org/gnome/shell/extensions/unite/hide-aggregate-menu-arrow", value: "true" }
+
+- name: gnome workspace 1
+  import_role:
+    name: jaredhocutt.gnome_extensions
+  vars:
+    gnome_extension_ids:
+      - 21
+
+- name: gnome workspace 2
+  dconf: key="/org/gnome/mutter/dynamic-workspaces" value="false"
+
+- name: gnome workspace 3
+  dconf: key="/org/gnome/shell/overrides/dynamic-workspaces" value="false"
+  notify:
+    - enable_extensions
+
+#-----------------------------------------------------------------------------------------------
+# GNOME START_UP SETUP
 - name: systemd target 1
   command: systemctl get-default
   register: contents
@@ -32,9 +74,18 @@
   when: contents.stdout != "graphical.target"
   become: true
 
-- name: gnome disable welcome dialog
-  dconf: key="/org/gnome/shell/welcome-dialog-last-shown-version" value="40.0"
+- name: gdm wayland disable
+  lineinfile:
+    path: /etc/gdm/custom.conf
+    regexp: 'WaylandEnable='
+    line: WaylandEnable=false
+  become: true
 
+#- name: gnome disable welcome dialog
+#  dconf: key="/org/gnome/shell/welcome-dialog-last-shown-version" value="40.0"
+
+#-----------------------------------------------------------------------------------------------
+# GNOME START-UP
 - name: gnome autologin
   blockinfile:
     dest: /etc/gdm/custom.conf
@@ -49,17 +100,19 @@
   command: systemctl isolate graphical.target
   become: true
 
-##- name: Wait for graphical target loading
-##  pause:
-##    minutes: 1
-#
-#- name: gnome autologin
-#  blockinfile:
-#    dest: /etc/gdm/custom.conf
-#    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
-#    state: absent
-#  become: true
+- name: Wait for graphical target loading
+  pause:
+    seconds: 30
 
+- name: gnome autologin
+  blockinfile:
+    dest: /etc/gdm/custom.conf
+    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
+    state: absent
+  become: true
+
+#-----------------------------------------------------------------------------------------------
+# GNOME APPEARANCE
 - name: gtk theme 1
   file: path=~/.config/gtk-3.0/ state=directory
 
@@ -175,44 +228,3 @@
     #  become: true
 
   when: ansible_virtualization_role == "guest"
-
-- name: gnome unite 1
-  yum: name=xprop state=latest
-  become: true
-
-- name: gnome unite 2
-  import_role:
-    name: jaredhocutt.gnome_extensions
-  vars:
-    gnome_extension_ids:
-      - 1287
-  #notify:
-  #  - enable_extensions
-
-- name: gnome unite 3
-  dconf:
-    key: "{{ item.key }}"
-    value: "{{ item.value |string }}"
-  loop:
-    - { key: "/org/gnome/shell/extensions/unite/extend-left-box", value: "false" }
-    - { key: "/org/gnome/shell/extensions/unite/show-desktop-name", value: "false" }
-    - { key: "/org/gnome/shell/extensions/unite/hide-app-menu-icon", value: "true" }
-    - { key: "/org/gnome/shell/extensions/unite/hide-app-menu-arrow", value: "true" }
-    - { key: "/org/gnome/shell/extensions/unite/greyscale-tray-icons", value: "true" }
-    - { key: "/org/gnome/shell/extensions/unite/window-buttons-theme", value: "'united-dark'" }
-    - { key: "/org/gnome/shell/extensions/unite/hide-activities-button", value: "'never'" }
-    - { key: "/org/gnome/shell/extensions/unite/window-buttons-placement", value: "'last'" }
-    - { key: "/org/gnome/shell/extensions/unite/hide-aggregate-menu-arrow", value: "true" }
-
-- name: gnome workspace 1
-  import_role:
-    name: jaredhocutt.gnome_extensions
-  vars:
-    gnome_extension_ids:
-      - 21
-- name: gnome workspace 2
-  dconf: key="/org/gnome/mutter/dynamic-workspaces" value="false"
-- name: gnome workspace 3
-  dconf: key="/org/gnome/shell/overrides/dynamic-workspaces" value="false"
-  notify:
-    - enable_extensions

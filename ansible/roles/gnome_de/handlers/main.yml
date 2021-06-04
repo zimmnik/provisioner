@@ -3,20 +3,10 @@
   service: name=NetworkManager state=restarted
   become: true
 
-#- name: enable_extensions
-#  dconf: key="/org/gnome/shell/enabled-extensions" value="['workspace-indicator@gnome-shell-extensions.gcampax.github.com', 'unite@hardpixel.eu', 'quake-m    ode@repsac-by.github.com', 'ding@rastersoft.com', 'user-theme@gnome-shell-extensions.gcampax.github.com']"
-
-- name: restart gnome
-  command: systemctl isolate graphical.target
-  become: true
-  listen: "enable_extensions"
-
-- name: wait gnome
-  pause:
-    minutes: 1
-  listen: "enable_extensions"
-
 - name: enable gnome extensions
   shell: for i in $(gnome-extensions list); do echo $i; gnome-extensions enable $i; done
   listen: "enable_extensions"
 
+- name: gnome logout
+  shell: gnome-session-quit --no-prompt
+  listen: "enable_extensions"
