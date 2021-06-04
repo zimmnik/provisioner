@@ -81,8 +81,8 @@
     line: WaylandEnable=false
   become: true
 
-- name: gnome disable welcome dialog
-  dconf: key="/org/gnome/shell/welcome-dialog-last-shown-version" value="40.0"
+#- name: gnome disable welcome dialog
+#  dconf: key="/org/gnome/shell/welcome-dialog-last-shown-version" value="40.0"
 
 #-----------------------------------------------------------------------------------------------
 # GNOME START-UP
