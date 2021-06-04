@@ -17,7 +17,7 @@ Anaconda stage: use kickstart file
 inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/custom.cfg
 ```
 Pure system stage:  
-WARNING! Don't use tty1 console, use tty2-4, because playbook will start systemd's graphical.target
+WARNING! Don't use tty1 console, use tty4, because playbook will start systemd's graphical.target
 ```ShellSession
 # Set root password
 passwd
@@ -31,8 +31,8 @@ yum -y install ansible git
 # Add sudo user and set password
 useradd --groups wheel --create-home username && passwd username
 
-# Run shell for sudo user
-sudo -u -i username
+# logout and run shell for sudo user
+logout
 
 # Clone playbooks
 git clone https://github.com/zimmnik/provisioner.git && cd provisioner/ansible
