@@ -16,15 +16,48 @@
     - nm_restart
   become: true
 
-- name: gnome extensions
+#-----------------------------------------------------------------------------------------------
+# GNOME EXTENSIONS
+- name: gnome unite 1
+  yum: name=xprop state=latest
+  become: true
+
+- name: gnome unite 2
+  import_role:
+    name: jaredhocutt.gnome_extensions
+  vars:
+    gnome_extension_ids:
+      - 1287
+  notify:
+    - enable_extensions
+
+- name: gnome unite 3
+  dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value |string }}"
+  loop:
+    - { key: "/org/gnome/shell/extensions/unite/extend-left-box", value: "false" }
+    - { key: "/org/gnome/shell/extensions/unite/show-desktop-name", value: "false" }
+    - { key: "/org/gnome/shell/extensions/unite/hide-app-menu-icon", value: "true" }
+    - { key: "/org/gnome/shell/extensions/unite/hide-app-menu-arrow", value: "true" }
+    - { key: "/org/gnome/shell/extensions/unite/greyscale-tray-icons", value: "true" }
+    - { key: "/org/gnome/shell/extensions/unite/window-buttons-theme", value: "'united-dark'" }
+    - { key: "/org/gnome/shell/extensions/unite/hide-activities-button", value: "'never'" }
+    - { key: "/org/gnome/shell/extensions/unite/window-buttons-placement", value: "'last'" }
+    - { key: "/org/gnome/shell/extensions/unite/hide-aggregate-menu-arrow", value: "true" }
+
+- name: gnome workspace 1
   import_role:
     name: jaredhocutt.gnome_extensions
   vars:
     gnome_extension_ids:
       - 21
-      - 1287
-      - 1411
-      - 2087
+
+- name: gnome workspace 2
+  dconf: key="/org/gnome/mutter/dynamic-workspaces" value="false"
+
+- name: gnome workspace 3
+  dconf: key="/org/gnome/shell/overrides/dynamic-workspaces" value="false"
   notify:
     - enable_extensions
 
@@ -77,33 +110,6 @@
     marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
     state: absent
   become: true
-
-#-----------------------------------------------------------------------------------------------
-# GNOME EXTENSIONS
-- name: gnome unite 1
-  yum: name=xprop state=latest
-  become: true
-
-- name: gnome unite 2
-  dconf:
-    key: "{{ item.key }}"
-    value: "{{ item.value |string }}"
-  loop:
-    - { key: "/org/gnome/shell/extensions/unite/extend-left-box", value: "false" }
-    - { key: "/org/gnome/shell/extensions/unite/show-desktop-name", value: "false" }
-    - { key: "/org/gnome/shell/extensions/unite/hide-app-menu-icon", value: "true" }
-    - { key: "/org/gnome/shell/extensions/unite/hide-app-menu-arrow", value: "true" }
-    - { key: "/org/gnome/shell/extensions/unite/greyscale-tray-icons", value: "true" }
-    - { key: "/org/gnome/shell/extensions/unite/window-buttons-theme", value: "'united-dark'" }
-    - { key: "/org/gnome/shell/extensions/unite/hide-activities-button", value: "'never'" }
-    - { key: "/org/gnome/shell/extensions/unite/window-buttons-placement", value: "'last'" }
-    - { key: "/org/gnome/shell/extensions/unite/hide-aggregate-menu-arrow", value: "true" }
-
-- name: gnome workspace 1
-  dconf: key="/org/gnome/mutter/dynamic-workspaces" value="false"
-
-- name: gnome workspace 2
-  dconf: key="/org/gnome/shell/overrides/dynamic-workspaces" value="false"
 
 #-----------------------------------------------------------------------------------------------
 # GNOME APPEARANCE

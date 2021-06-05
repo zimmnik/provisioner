@@ -25,9 +25,18 @@
     - { key: "/org/gnome/nautilus/preferences/default-folder-viewer", value: "'list-view'" }
     - { key: "/org/gnome/nautilus/preferences/search-filter-time-type", value: "'last_modified'" }
 
-- name: filemanager desktop icons 
+- name: filemanager desktop icons 1
+  import_role:
+    name: jaredhocutt.gnome_extensions
+  vars:
+    gnome_extension_ids:
+      - 2087
+
+- name: filemanager desktop icons 2
   debug:
     msg: "Any extension must to nofity handler after install, but cannot to do it from import_role, so we here"
+  notify:
+    - enable_extensions
 
 - name: filemanager mc
   blockinfile:
