@@ -18,20 +18,45 @@
 
 #-----------------------------------------------------------------------------------------------
 # GNOME EXTENSIONS
-- name: gnome unite 1
+
+- name: extension gnome desktop icons
+  import_role:
+    name: jaredhocutt.gnome_extensions
+  vars:
+    gnome_extension_ids:
+      - 2087
+
+- name: extension gnome quake-mode 1
+  import_role:
+    name: jaredhocutt.gnome_extensions
+  vars:
+    gnome_extension_ids:
+      - 1411
+
+- name: extension gnom quake-mode 2
+  dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value |string }}"
+  loop:
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-app", value: "'org.gnome.Terminal.desktop'" }
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-tray", value: "true" }
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-width", value: "100" }
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-height", value: "100" }
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-hotkey", value: "['<Primary>grave']" }
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-animation-time", value: "0.25" }
+
+- name: extension gnome unite 1
   yum: name=xprop state=latest
   become: true
 
-- name: gnome unite 2
+- name: extension gnome unite 2
   import_role:
     name: jaredhocutt.gnome_extensions
   vars:
     gnome_extension_ids:
       - 1287
-  notify:
-    - enable_extensions
 
-- name: gnome unite 3
+- name: extension gnome unite 3
   dconf:
     key: "{{ item.key }}"
     value: "{{ item.value |string }}"
@@ -46,23 +71,21 @@
     - { key: "/org/gnome/shell/extensions/unite/window-buttons-placement", value: "'last'" }
     - { key: "/org/gnome/shell/extensions/unite/hide-aggregate-menu-arrow", value: "true" }
 
-- name: gnome workspace 1
+- name: extension gnome workspace 1
   import_role:
     name: jaredhocutt.gnome_extensions
   vars:
     gnome_extension_ids:
       - 21
 
-- name: gnome workspace 2
+- name: extension gnome workspace 2
   dconf: key="/org/gnome/mutter/dynamic-workspaces" value="false"
 
-- name: gnome workspace 3
+- name: extension gnome workspace 3
   dconf: key="/org/gnome/shell/overrides/dynamic-workspaces" value="false"
-  notify:
-    - enable_extensions
 
 #-----------------------------------------------------------------------------------------------
-# GNOME START_UP SETUP
+# GNOME START_UP
 - name: systemd target 1
   command: systemctl get-default
   register: contents
@@ -81,11 +104,6 @@
     line: WaylandEnable=false
   become: true
 
-#- name: gnome disable welcome dialog
-#  dconf: key="/org/gnome/shell/welcome-dialog-last-shown-version" value="40.0"
-
-#-----------------------------------------------------------------------------------------------
-# GNOME START-UP
 - name: gnome autologin
   blockinfile:
     dest: /etc/gdm/custom.conf
@@ -99,6 +117,8 @@
 - name: systemd isolate graphical
   command: systemctl isolate graphical.target
   become: true
+  notify:
+    - session_logout
 
 - name: Wait for graphical target loading
   pause:
@@ -110,6 +130,9 @@
     marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
     state: absent
   become: true
+
+- name: enable gnome extensions
+  shell: for i in $(gnome-extensions list); do echo $i; gnome-extensions enable $i; done
 
 #-----------------------------------------------------------------------------------------------
 # GNOME APPEARANCE
@@ -217,14 +240,14 @@
     - name: gnome monitors
       copy: src=monitors.xml dest=~/.config/
 
-    #- name: gnome autologin
-    #  blockinfile:
-    #    dest: /etc/gdm/custom.conf
-    #    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
-    #    insertafter: "\\[daemon\\]"
-    #    block: |
-    #      AutomaticLoginEnable=True
-    #      AutomaticLogin={{ ansible_user_id }}
-    #  become: true
+    - name: gnome autologin
+      blockinfile:
+        dest: /etc/gdm/custom.conf
+        marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
+        insertafter: "\\[daemon\\]"
+        block: |
+          AutomaticLoginEnable=True
+          AutomaticLogin={{ ansible_user_id }}
+      become: true
 
   when: ansible_virtualization_role == "guest"

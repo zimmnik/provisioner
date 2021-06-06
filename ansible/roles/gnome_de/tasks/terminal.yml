@@ -18,27 +18,6 @@
     - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/scroll-on-keystroke", value: "false" }
     - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/scrollback-unlimited", value: "true" }
 
-- name: terminal quake-mode 1
-  import_role:
-    name: jaredhocutt.gnome_extensions
-  vars:
-    gnome_extension_ids:
-      - 1411
-
-- name: terminal quake-mode 2
-  dconf:
-    key: "{{ item.key }}"
-    value: "{{ item.value |string }}"
-  loop:
-    - { key: "/com/github/repsac-by/quake-mode/quake-mode-app", value: "'org.gnome.Terminal.desktop'" }
-    - { key: "/com/github/repsac-by/quake-mode/quake-mode-tray", value: "true" }
-    - { key: "/com/github/repsac-by/quake-mode/quake-mode-width", value: "100" }
-    - { key: "/com/github/repsac-by/quake-mode/quake-mode-height", value: "100" }
-    - { key: "/com/github/repsac-by/quake-mode/quake-mode-hotkey", value: "['<Primary>grave']" }
-    - { key: "/com/github/repsac-by/quake-mode/quake-mode-animation-time", value: "0.25" }
-  notify:
-    - enable_extensions
-
 - name: terminal bash
   blockinfile:
     dest: ~/.bashrc
