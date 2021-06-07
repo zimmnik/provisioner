@@ -1,12 +1,9 @@
 ---
-- name: nm_restart
+- name: restart NetworkManager
   service: name=NetworkManager state=restarted
+  listen: "nm_restart"
   become: true
-
-- name: enable gnome extensions
-  shell: for i in $(gnome-extensions list); do echo $i; gnome-extensions enable $i; done
-  listen: "enable_extensions"
 
 - name: gnome logout
   shell: gnome-session-quit --no-prompt
-  listen: "enable_extensions"
+  listen: "session_logout"
