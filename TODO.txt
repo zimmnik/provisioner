@@ -11,7 +11,9 @@ fancontrol
 screen flickering (https://github.com/edio/intelpwm-udev)
 screen tearing 
 disable useless devices
-printing (splix cups)
+printing
 battery power management
 video hardware acceleration
+qbittorent
+zenkit
 backup
