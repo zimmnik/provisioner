@@ -3,7 +3,7 @@ keepassxc db
 firefox links + proxy.pac + tor
 vpn or ssh tunnel
 mta
-ssd trim
+ssd trim (cat /etc/fstab && sudo systemctl list-timers)
 nvidia gpu drivers
 wifi firmware?
 smart
