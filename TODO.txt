@@ -13,7 +13,8 @@ screen flickering (https://github.com/edio/intelpwm-udev)
 screen tearing 
 disable useless devices
 printing
-battery power management
+battery power management 
+lockscreen
 video hardware acceleration
 qbittorent
 zenkit
