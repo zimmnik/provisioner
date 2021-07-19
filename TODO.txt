@@ -1,4 +1,5 @@
 ssh keys + config
+barrier
 keepassxc db
 firefox links + proxy.pac + tor
 vpn or ssh tunnel
