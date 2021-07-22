@@ -10,6 +10,13 @@
       - gvim
   become: true
 
+- name: gedit settings
+  dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value |string }}"
+  loop:
+    - { key: "/org/gnome/gedit/preferences/editor/scheme", value: "'oblivion'" }
+    
 - name: office vim root
   copy:
     src: .vimrc
