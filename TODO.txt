@@ -1,18 +1,20 @@
 ssh keys + config
+barrier
 keepassxc db
 firefox links + proxy.pac + tor
 vpn or ssh tunnel
 mta
-ssd trim
+ssd trim (cat /etc/fstab && sudo systemctl list-timers)
 nvidia gpu drivers
-wifi firmware?
+firmware (wifi, sound) 
 smart
 fancontrol
 screen flickering (https://github.com/edio/intelpwm-udev)
 screen tearing 
 disable useless devices
 printing
-battery power management
+battery power management 
+lockscreen
 video hardware acceleration
 qbittorent
 zenkit
