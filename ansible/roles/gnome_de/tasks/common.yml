@@ -36,4 +36,10 @@
     - name: Time sync 2
       service: name=chronyd enabled=yes state=started
 
+    - name: Power-profiles 1
+      yum: name=power-profiles-daemon state=latest
+
+    - name: Power-profiles 2
+      service: name=power-profiles-daemon enabled=yes state=started
+
   become: true
