@@ -23,3 +23,6 @@ if has('gui_running')
     nnoremap <silent> <C-ScrollWheelUp> :call <SID>ChangeFont(+1)<cr>
     nnoremap <silent> <C-ScrollWheelDown> :call <SID>ChangeFont(-1)<cr>
 endif
+
+"FYI https://vi.stackexchange.com/questions/14622/how-can-i-close-the-netrw-buffer
+autocmd FileType netrw setl bufhidden=wipe
