@@ -3,6 +3,7 @@
     state: latest
     name:
       - gedit
+      - gedit-plugin-textsize
       - evince
       - gnome-screenshot
       - libreoffice-writer
@@ -16,6 +17,7 @@
     value: "{{ item.value |string }}"
   loop:
     - { key: "/org/gnome/gedit/preferences/editor/scheme", value: "'oblivion'" }
+    - { key: "/org/gnome/gedit/plugins/active-plugins", value: "['textsize', 'spell', 'sort', 'modelines', 'filebrowser', 'docinfo']" }
     
 - name: office vim root
   copy:
