@@ -10,3 +10,6 @@ _version }}.noarch.rpm
       - eog
       - gnome-mpv
   become: true
+
+- name: Disable celluloid fullscreen tearing
+  dconf: key="/io/github/celluloid-player/Celluloid/csd-enable" value="false"
