@@ -201,8 +201,8 @@
 - name: gnome nightlight
   dconf: key="/org/gnome/settings-daemon/plugins/color/night-light-enabled" value="true"
 
-- name: gnome button-layout
-  dconf: key="/org/gnome/desktop/wm/preferences/button-layout" value="'appmenu:minimize,maximize,close'"
+#- name: gnome button-layout
+#  dconf: key="/org/gnome/desktop/wm/preferences/button-layout" value="'appmenu:minimize,maximize,close'"
 
 - name: gnome clock
   dconf: key="/org/gnome/desktop/interface/clock-show-weekday" value="true"
