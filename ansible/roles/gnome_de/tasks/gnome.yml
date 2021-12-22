@@ -138,6 +138,15 @@
   shell: for i in $(gnome-extensions list); do echo $i; gnome-extensions enable $i; done
 
 #-----------------------------------------------------------------------------------------------
+# GNOME VNC
+- name: gnome vnc 1
+  dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value |string }}"
+  loop:
+    - { key: "/org/gnome/desktop/remote-desktop/vnc/encryption", value: "['none']" }
+    
+#-----------------------------------------------------------------------------------------------
 # GNOME APPEARANCE
 - name: gtk theme 1
   file: path=~/.config/gtk-3.0/ state=directory
