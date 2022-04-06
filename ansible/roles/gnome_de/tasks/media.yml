@@ -1,6 +1,5 @@
 - name: internet rpm-fusion repo
-  yum: disable_gpg_check=yes name=https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major
-_version }}.noarch.rpm
+  yum: disable_gpg_check=yes name="https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm"
   become: true
 
 - name: Media utilites
