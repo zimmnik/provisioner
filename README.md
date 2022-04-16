@@ -1,10 +1,10 @@
 # provisioner
 
-Provisioner is an ansible playbook that allow to quickly configure Gnome DE on RHEL-based system.
+Provisioner is an ansible playbook that allow to quickly configure Gnome DE on Fedora system.
 
 Supported distributions
 -----------------------------
--   **Fedora** 34
+-   **Fedora** 36 Beta
 
 ## Quick Start
 To deploy the system you can use :
@@ -43,12 +43,13 @@ ansible-galaxy install -r requirements.yml
 # Run playbook with desired hostname
 ansible-playbook -i hosts -K -e "hostname=host01" run.yml
 ```
-### 2) VirtualBox + Vagrant
+### 2) Libvirt + Vagrant
 
 #### Requirements
-- **Git v2.9.0+**
-- **Virtualbox v5.2+**
-- **Vagrant v2.2.7+**
+- **git v2.31.1+**
+- **libvirt v7+**
+- **vagrant v2.2.16+**
+- **vagrant-libvirt v0.4.1+**
 - **4GB RAM for guest**
 
 #### Usage:
@@ -60,5 +61,5 @@ git clone https://github.com/zimmnik/provisioner.git && cd provisioner/
 time vagrant up --color
 
 # Open GUI window
-vboxmanage startvm provisioned_vm --type separate
+virt-manager --connect qemu:///system --show-domain-console provisioner_default
 ```

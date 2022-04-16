@@ -19,44 +19,78 @@
 #-----------------------------------------------------------------------------------------------
 # GNOME EXTENSIONS
 
-- name: extension gnome desktop icons
+- name: gnome extension manager 1
+  community.general.flatpak_remote:
+    name: flathub
+    state: present
+    flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
+  become: true
+
+- name: gnome extension manager 2
+  community.general.flatpak:
+    name: org.gnome.Extensions
+    state: present
+  become: true
+
+- name: gnome extension gnome desktop icons
   import_role:
     name: jaredhocutt.gnome_extensions
   vars:
     gnome_extension_ids:
       - 2087
 
-- name: extension gnome quake-mode 1
+- name: gnome extension drop-down terminal
   import_role:
     name: jaredhocutt.gnome_extensions
   vars:
     gnome_extension_ids:
-      - 1411
+      - 3780
 
-- name: extension gnom quake-mode 2
+- name: gnome extension drop-down terminal 2
   dconf:
     key: "{{ item.key }}"
     value: "{{ item.value |string }}"
   loop:
-    - { key: "/com/github/repsac-by/quake-mode/quake-mode-app", value: "'org.gnome.Terminal.desktop'" }
-    - { key: "/com/github/repsac-by/quake-mode/quake-mode-tray", value: "true" }
-    - { key: "/com/github/repsac-by/quake-mode/quake-mode-width", value: "100" }
-    - { key: "/com/github/repsac-by/quake-mode/quake-mode-height", value: "100" }
-    - { key: "/com/github/repsac-by/quake-mode/quake-mode-hotkey", value: "['<Primary>grave']" }
-    - { key: "/com/github/repsac-by/quake-mode/quake-mode-animation-time", value: "0.25" }
+    - { key: "/com/github/amezin/ddterm/custom-font", value: "'Bitstream Vera Sans Mono 14'" }
+    - { key: "/com/github/amezin/ddterm/ddterm-toggle-hotkey", value: "['<Control>grave']" }
+    - { key: "/com/github/amezin/ddterm/detect-urls-news-man", value: "false" }
+    - { key: "/com/github/amezin/ddterm/detect-urls-voip", value: "false" }
+    - { key: "/com/github/amezin/ddterm/notebook-border", value: "false" }
+    - { key: "/com/github/amezin/ddterm/override-window-animation", value: "false" }
+    - { key: "/com/github/amezin/ddterm/scroll-on-keystroke", value: "false" }
+    - { key: "/com/github/amezin/ddterm/scrollback-unlimited", value: "true" }
+    - { key: "/com/github/amezin/ddterm/tab-policy", value: "'automatic'" }
+    - { key: "/com/github/amezin/ddterm/theme-variant", value: "'dark'" }
+    - { key: "/com/github/amezin/ddterm/use-system-font", value: "false" }
+    - { key: "/com/github/amezin/ddterm/use-theme-colors", value: "true" }
+    - { key: "/com/github/amezin/ddterm/window-maximize", value: "false" }
+    - { key: "/com/github/amezin/ddterm/window-size", value: "1.0" }
 
-- name: extension gnome unite 1
+
+#- name: extension gnome quake-mode 2
+#  dconf:
+#    key: "{{ item.key }}"
+#    value: "{{ item.value |string }}"
+#  loop:
+#    - { key: "/com/github/repsac-by/quake-mode/quake-mode-app", value: "'org.gnome.Terminal.desktop'" }
+#    - { key: "/com/github/repsac-by/quake-mode/quake-mode-tray", value: "true" }
+#    - { key: "/com/github/repsac-by/quake-mode/quake-mode-width", value: "100" }
+#    - { key: "/com/github/repsac-by/quake-mode/quake-mode-height", value: "100" }
+#    - { key: "/com/github/repsac-by/quake-mode/quake-mode-hotkey", value: "['<Primary>grave']" }
+#    - { key: "/com/github/repsac-by/quake-mode/quake-mode-animation-time", value: "0.25" }
+
+- name: gnome extension gnome unite 1
   yum: name=xprop state=latest
   become: true
 
-- name: extension gnome unite 2
+- name: gnome extension gnome unite 2
   import_role:
     name: jaredhocutt.gnome_extensions
   vars:
     gnome_extension_ids:
       - 1287
 
-- name: extension gnome unite 3
+- name: gnome extension gnome unite 3
   dconf:
     key: "{{ item.key }}"
     value: "{{ item.value |string }}"
@@ -74,33 +108,33 @@
     - { key: "/org/gnome/shell/extensions/unite/show-window-title", value: "'never'" }
     - { key: "/org/gnome/shell/extensions/unite/hide-window-titlebars", value: "'never'" }
 
-- name: extension gnome workspace 1
+- name: gnome extension gnome workspace 1
   import_role:
     name: jaredhocutt.gnome_extensions
   vars:
     gnome_extension_ids:
       - 21
 
-- name: extension gnome workspace 2
+- name: gnome extension gnome workspace 2
   dconf: key="/org/gnome/mutter/dynamic-workspaces" value="false"
 
-- name: extension gnome workspace 3
+- name: gnome extension gnome workspace 3
   dconf: key="/org/gnome/shell/overrides/dynamic-workspaces" value="false"
 
 #-----------------------------------------------------------------------------------------------
 # GNOME START_UP
-- name: systemd target 1
+- name: gnome systemd target 1
   command: systemctl get-default
   register: contents
   changed_when: false
   become: true
 
-- name: systemd target 2
+- name: gnome systemd target 2
   command: systemctl set-default graphical.target
   when: contents.stdout != "graphical.target"
   become: true
 
-- name: gdm wayland disable
+- name: gnome gdm wayland disable
   lineinfile:
     path: /etc/gdm/custom.conf
     regexp: 'WaylandEnable='
@@ -117,13 +151,13 @@
       AutomaticLogin={{ ansible_user_id }}
   become: true
 
-- name: systemd isolate graphical
+- name: gnome systemd isolate graphical
   command: systemctl isolate graphical.target
   become: true
   notify:
     - session_logout
 
-- name: Wait for graphical target loading
+- name: gnome wait for graphical target loading
   pause:
     seconds: 30
 
@@ -134,7 +168,7 @@
     state: absent
   become: true
 
-- name: enable gnome extensions
+- name: gnome enable all gnome extensions
   shell: for i in $(gnome-extensions list); do echo $i; gnome-extensions enable $i; done
 
 #-----------------------------------------------------------------------------------------------
@@ -148,10 +182,11 @@
     
 #-----------------------------------------------------------------------------------------------
 # GNOME APPEARANCE
-- name: gtk theme 1
+
+- name: gnome gtk theme 1
   file: path=~/.config/gtk-3.0/ state=directory
 
-- name: gtk theme 2
+- name: gnome gtk theme 2
   blockinfile:
     dest: ~/.config/gtk-3.0/settings.ini
     create: yes
@@ -159,6 +194,9 @@
     block: |
       [Settings]
       gtk-application-prefer-dark-theme=1
+
+- name: gnome gtk theme 3
+  dconf: key="/org/gnome/desktop/interface/color-scheme" value="'prefer-dark'"
 
 - name: gnome fonts 1
   file:
@@ -194,24 +232,31 @@
     - { key: "/org/gnome/desktop/interface/font-name", value: "'Ubuntu 11'" }
     - { key: "/org/gnome/desktop/wm/preferences/titlebar-uses-system-font", value: "true" }
     - { key: "/org/gnome/desktop/wm/preferences/titlebar-font", value: "'Ubuntu Medium 11'" }
+    - { key: "/org/gnome/desktop/interface/font-antialiasing", value: "'rgba'" }
+
 
 - name: gnome background and screensaver
   dconf:
     key: "{{ item.key }}"
     value: "{{ item.value |string }}"
   loop:
-    - { key: "/org/gnome/desktop/background/picture-uri", value: "'file:////usr/share/gnome-control-center/pixmaps/noise-texture-light.png'" }
     - { key: "/org/gnome/desktop/background/primary-color", value: "'#2e3436'" }
     - { key: "/org/gnome/desktop/background/picture-options", value: "'wallpaper'" }
-    - { key: "/org/gnome/desktop/screensaver/picture-uri", value: "'file:////usr/share/gnome-control-center/pixmaps/noise-texture-light.png'" }
     - { key: "/org/gnome/desktop/screensaver/primary-color", value: "'#2e3436'" }
     - { key: "/org/gnome/desktop/screensaver/picture-options", value: "'wallpaper'" }
+
+      #    - { key: "/org/gnome/desktop/background/picture-uri", value: "'file:////usr/share/gnome-control-center/pixmaps/noise-texture-light.png'" }
+      #    - { key: "/org/gnome/desktop/background/primary-color", value: "'#2e3436'" }
+      #    - { key: "/org/gnome/desktop/background/picture-options", value: "'wallpaper'" }
+      #    - { key: "/org/gnome/desktop/screensaver/picture-uri", value: "'file:////usr/share/gnome-control-center/pixmaps/noise-texture-light.png'" }
+      #    - { key: "/org/gnome/desktop/screensaver/primary-color", value: "'#2e3436'" }
+      #    - { key: "/org/gnome/desktop/screensaver/picture-options", value: "'wallpaper'" }
 
 - name: gnome nightlight
   dconf: key="/org/gnome/settings-daemon/plugins/color/night-light-enabled" value="true"
 
-#- name: gnome button-layout
-#  dconf: key="/org/gnome/desktop/wm/preferences/button-layout" value="'appmenu:minimize,maximize,close'"
+- name: gnome button-layout
+  dconf: key="/org/gnome/desktop/wm/preferences/button-layout" value="'appmenu:minimize,maximize,close'"
 
 - name: gnome clock
   dconf: key="/org/gnome/desktop/interface/clock-show-weekday" value="true"

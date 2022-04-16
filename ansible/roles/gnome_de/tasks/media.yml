@@ -11,4 +11,4 @@
   become: true
 
 - name: Disable celluloid fullscreen tearing
-  dconf: key="/io/github/celluloid-player/Celluloid/csd-enable" value="false"
+  dconf: key="/io/github/celluloid-player/celluloid/csd-enable" value="false"
