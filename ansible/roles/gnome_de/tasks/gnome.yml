@@ -19,18 +19,18 @@
 #-----------------------------------------------------------------------------------------------
 # GNOME EXTENSIONS
 
-- name: gnome extension manager 1
-  community.general.flatpak_remote:
-    name: flathub
-    state: present
-    flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
-  become: true
-
-- name: gnome extension manager 2
-  community.general.flatpak:
-    name: org.gnome.Extensions
-    state: present
-  become: true
+    #- name: gnome extension manager 1
+    #  community.general.flatpak_remote:
+    #    name: flathub
+    #    state: present
+    #    flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
+    #  become: true
+    #
+    #- name: gnome extension manager 2
+    #  community.general.flatpak:
+    #    name: org.gnome.Extensions
+    #    state: present
+    #  become: true
 
 - name: gnome extension gnome desktop icons
   import_role:
@@ -39,45 +39,51 @@
     gnome_extension_ids:
       - 2087
 
-- name: gnome extension drop-down terminal
-  import_role:
-    name: jaredhocutt.gnome_extensions
-  vars:
-    gnome_extension_ids:
-      - 3780
-
-- name: gnome extension drop-down terminal 2
-  dconf:
-    key: "{{ item.key }}"
-    value: "{{ item.value |string }}"
-  loop:
-    - { key: "/com/github/amezin/ddterm/custom-font", value: "'Bitstream Vera Sans Mono 14'" }
-    - { key: "/com/github/amezin/ddterm/ddterm-toggle-hotkey", value: "['<Control>grave']" }
-    - { key: "/com/github/amezin/ddterm/detect-urls-news-man", value: "false" }
-    - { key: "/com/github/amezin/ddterm/detect-urls-voip", value: "false" }
-    - { key: "/com/github/amezin/ddterm/notebook-border", value: "false" }
-    - { key: "/com/github/amezin/ddterm/override-window-animation", value: "false" }
-    - { key: "/com/github/amezin/ddterm/scroll-on-keystroke", value: "false" }
-    - { key: "/com/github/amezin/ddterm/scrollback-unlimited", value: "true" }
-    - { key: "/com/github/amezin/ddterm/tab-policy", value: "'automatic'" }
-    - { key: "/com/github/amezin/ddterm/theme-variant", value: "'dark'" }
-    - { key: "/com/github/amezin/ddterm/use-system-font", value: "false" }
-    - { key: "/com/github/amezin/ddterm/use-theme-colors", value: "true" }
-    - { key: "/com/github/amezin/ddterm/window-maximize", value: "false" }
-    - { key: "/com/github/amezin/ddterm/window-size", value: "1.0" }
-
-
-#- name: extension gnome quake-mode 2
+#- name: gnome extension drop-down terminal
+#  import_role:
+#    name: jaredhocutt.gnome_extensions
+#  vars:
+#    gnome_extension_ids:
+#      - 3780
+#
+#- name: gnome extension drop-down terminal 2
 #  dconf:
 #    key: "{{ item.key }}"
 #    value: "{{ item.value |string }}"
 #  loop:
-#    - { key: "/com/github/repsac-by/quake-mode/quake-mode-app", value: "'org.gnome.Terminal.desktop'" }
-#    - { key: "/com/github/repsac-by/quake-mode/quake-mode-tray", value: "true" }
-#    - { key: "/com/github/repsac-by/quake-mode/quake-mode-width", value: "100" }
-#    - { key: "/com/github/repsac-by/quake-mode/quake-mode-height", value: "100" }
-#    - { key: "/com/github/repsac-by/quake-mode/quake-mode-hotkey", value: "['<Primary>grave']" }
-#    - { key: "/com/github/repsac-by/quake-mode/quake-mode-animation-time", value: "0.25" }
+#    - { key: "/com/github/amezin/ddterm/custom-font", value: "'Bitstream Vera Sans Mono 14'" }
+#    - { key: "/com/github/amezin/ddterm/ddterm-toggle-hotkey", value: "['<Control>grave']" }
+#    - { key: "/com/github/amezin/ddterm/detect-urls-news-man", value: "false" }
+#    - { key: "/com/github/amezin/ddterm/detect-urls-voip", value: "false" }
+#    - { key: "/com/github/amezin/ddterm/notebook-border", value: "false" }
+#    - { key: "/com/github/amezin/ddterm/override-window-animation", value: "false" }
+#    - { key: "/com/github/amezin/ddterm/scroll-on-keystroke", value: "false" }
+#    - { key: "/com/github/amezin/ddterm/scrollback-unlimited", value: "true" }
+#    - { key: "/com/github/amezin/ddterm/tab-policy", value: "'automatic'" }
+#    - { key: "/com/github/amezin/ddterm/theme-variant", value: "'dark'" }
+#    - { key: "/com/github/amezin/ddterm/use-system-font", value: "false" }
+#    - { key: "/com/github/amezin/ddterm/use-theme-colors", value: "true" }
+#    - { key: "/com/github/amezin/ddterm/window-maximize", value: "false" }
+#    - { key: "/com/github/amezin/ddterm/window-size", value: "1.0" }
+
+- name: extension gnome quake-mode 1
+  import_role:
+    name: jaredhocutt.gnome_extensions
+  vars:
+    gnome_extension_ids:
+      - 1411
+
+- name: extension gnome quake-mode 2
+  dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value |string }}"
+  loop:
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-app", value: "'org.gnome.Terminal.desktop'" }
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-tray", value: "true" }
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-width", value: "100" }
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-height", value: "100" }
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-hotkey", value: "['<Primary>grave']" }
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-animation-time", value: "0.25" }
 
 - name: gnome extension gnome unite 1
   yum: name=xprop state=latest
@@ -116,10 +122,23 @@
       - 21
 
 - name: gnome extension gnome workspace 2
-  dconf: key="/org/gnome/mutter/dynamic-workspaces" value="false"
-
-- name: gnome extension gnome workspace 3
-  dconf: key="/org/gnome/shell/overrides/dynamic-workspaces" value="false"
+  dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value |string }}"
+  loop:
+    - { key: "/org/gnome/mutter/dynamic-workspaces", value: "false" }
+    - { key: "/org/gnome/mutter/workspaces-only-on-primary", value: "false" }
+    - { key: "/org/gnome/shell/overrides/dynamic-workspaces", value: "false" }
+    - { key: "/org/gnome/shell/overrides/workspaces-only-on-primary", value: "false" }
+    - { key: "/org/gnome/shell/app-switcher/current-workspace-only", value: "true" }
+      
+      #- command: 'dconf dump /org/gnome/mutter'
+      #    register: out
+      #- debug: var=out.stdout_lines
+      #      
+      #- command: 'dconf dump /org/gnome/shell/overrides'
+      #    register: out
+      #- debug: var=out.stdout_lines
 
 #-----------------------------------------------------------------------------------------------
 # GNOME START_UP
@@ -205,7 +224,7 @@
 
 - name: gnome fonts 2
   unarchive:
-    src: http://ftp.gnome.org/pub/GNOME/sources/ttf-bitstream-vera/1.10/ttf-bitstream-vera-1.10.zip
+    src: https://ftp.gnome.org/pub/GNOME/sources/ttf-bitstream-vera/1.10/ttf-bitstream-vera-1.10.zip
     dest: ~/.local/share/fonts/
     remote_src: yes
     creates: ~/.local/share/fonts/ttf-bitstream-vera-1.10/
@@ -244,13 +263,6 @@
     - { key: "/org/gnome/desktop/background/picture-options", value: "'wallpaper'" }
     - { key: "/org/gnome/desktop/screensaver/primary-color", value: "'#2e3436'" }
     - { key: "/org/gnome/desktop/screensaver/picture-options", value: "'wallpaper'" }
-
-      #    - { key: "/org/gnome/desktop/background/picture-uri", value: "'file:////usr/share/gnome-control-center/pixmaps/noise-texture-light.png'" }
-      #    - { key: "/org/gnome/desktop/background/primary-color", value: "'#2e3436'" }
-      #    - { key: "/org/gnome/desktop/background/picture-options", value: "'wallpaper'" }
-      #    - { key: "/org/gnome/desktop/screensaver/picture-uri", value: "'file:////usr/share/gnome-control-center/pixmaps/noise-texture-light.png'" }
-      #    - { key: "/org/gnome/desktop/screensaver/primary-color", value: "'#2e3436'" }
-      #    - { key: "/org/gnome/desktop/screensaver/picture-options", value: "'wallpaper'" }
 
 - name: gnome nightlight
   dconf: key="/org/gnome/settings-daemon/plugins/color/night-light-enabled" value="true"
@@ -293,6 +305,7 @@
         - { key: "/org/gnome/desktop/screensaver/lock-enabled", value: "false" }
         - { key: "/org/gnome/desktop/session/idle-delay", value: "uint32 0" }
         - { key: "/org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type", value: "'nothing'" }
+        - { key: "/org/gnome/desktop/notifications/show-in-lock-screen", value: "false" }
     
     - name: gnome monitors
       copy: src=monitors.xml dest=~/.config/

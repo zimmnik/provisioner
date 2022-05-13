@@ -1,11 +1,11 @@
 Vagrant.configure("2") do |config|
-  config.vm.box = "fedora/36-beta-cloud-base"
+  config.vm.box = "fedora/36-cloud-base"
   #config.vm.box_url = "https://mirror.yandex.ru/fedora/linux/releases/34/Cloud/x86_64/images/Fedora-Cloud-Base-Vagrant-34-1.2.x86_64.vagrant-libvirt.box"
-  config.vm.box_url = "https://mirror.yandex.ru/fedora/linux/releases/test/36_Beta/Cloud/x86_64/images/Fedora-Cloud-Base-Vagrant-36_Beta-1.4.x86_64.vagrant-libvirt.box"
+  #config.vm.box_url = "https://mirror.yandex.ru/fedora/linux/releases/test/36_Beta/Cloud/x86_64/images/Fedora-Cloud-Base-Vagrant-36_Beta-1.4.x86_64.vagrant-libvirt.box"
  
   config.vm.provider :libvirt do |lv|
     lv.qemu_use_session = false
-    lv.title = 'fedora36beta'
+    lv.title = 'fedora36'
     lv.cpus = 4
     lv.memory = 4096
     lv.video_type = 'qxl'
@@ -27,7 +27,7 @@ Vagrant.configure("2") do |config|
 
     sed -i 's/#baseurl/baseurl/g' $(grep -ril 'baseurl' /etc/yum.repos.d/) && \
     sed -i 's/metalink/#metalink/g' $(grep -ril 'metalink' /etc/yum.repos.d/) && \
-    echo -e 'deltarpm=false\nzchunk=false\nproxy=http://192.168.121.1:3128' | tee -a /etc/dnf/dnf.conf
+    echo -e 'deltarpm=false\nzchunk=false\nproxy=http://192.168.4.253:3128' | tee -a /etc/dnf/dnf.conf
 
     yum -y install http://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm 
     sed -i 's%http://download1.rpmfusion.org/free/fedora/releases/%http://ftp-stud.hs-esslingen.de/pub/Mirrors/rpmfusion.org/free/fedora/development/%g' /etc/yum.repos.d/rpmfusion-free.repo
@@ -39,9 +39,6 @@ Vagrant.configure("2") do |config|
     yum repolist -v | egrep "baseurl|id"
 
     yum -y install git
-    #yum -y install git ansible vim less
-    #cd /vagrant/ansible
-    #ansible-galaxy install -r requirements.yml
   SHELL
 
   config.vm.provision :ansible_local do |ansible|

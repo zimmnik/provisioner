@@ -32,5 +32,8 @@
 - name: locale gnome input hotkey
   dconf: key="/org/gnome/desktop/input-sources/xkb-options" value="['lv3:ralt_switch', 'grp:alt_shift_toggle']"
 
+- name: locale gnome input per window
+  dconf: key="/org/gnome/desktop/input-sources/per-window" value="true"
+
 - name: locale gnome region
   dconf: key="/system/locale/region" value="'ru_RU.UTF-8'"

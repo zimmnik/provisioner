@@ -4,7 +4,7 @@ Provisioner is an ansible playbook that allow to quickly configure Gnome DE on F
 
 Supported distributions
 -----------------------------
--   **Fedora** 36 Beta
+-   **Fedora** 36
 
 ## Quick Start
 To deploy the system you can use :
@@ -26,7 +26,11 @@ passwd
 yum -y update && reboot
 
 # Install dependencies
-yum -y install ansible git
+yum -y install git
+
+# Install ansible
+python3 -m venv --upgrade-deps .py-env && source .py-env/bin/activate
+pip3 install ansible
 
 # Add sudo user and set password
 useradd --groups wheel --create-home username && passwd username
