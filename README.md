@@ -28,10 +28,6 @@ yum -y update && reboot
 # Install dependencies
 yum -y install git
 
-# Install ansible
-python3 -m venv --upgrade-deps .py-env && source .py-env/bin/activate
-pip3 install ansible
-
 # Add sudo user and set password
 useradd --groups wheel --create-home username && passwd username
 
@@ -40,6 +36,10 @@ logout
 
 # Clone playbooks
 git clone https://github.com/zimmnik/provisioner.git && cd provisioner/ansible
+
+# Install Ansible
+python3 -m venv --upgrade-deps .py-env && source .py-env/bin/activate
+pip3 install ansible
 
 # Install playbook requirements
 ansible-galaxy install -r requirements.yml
