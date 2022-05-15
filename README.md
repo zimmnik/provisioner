@@ -12,7 +12,7 @@ To deploy the system you can use :
 ### 1) BareMetal + Kickstart + Ansible
 #### Usage:
 
-Anaconda stage: use kickstart file
+Anaconda stage: [use kickstart file] (https://anaconda-installer.readthedocs.io/en/latest/boot-options.html#inst-ks)
 ```raw
 inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/custom.cfg
 ```
