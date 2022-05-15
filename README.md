@@ -25,14 +25,14 @@ passwd
 # Add sudo user and set password
 useradd --groups wheel --create-home username && passwd username
 
-# Install dependencies
-yum -y install git
-
 # Update packages and reboot
 yum -y update && reboot
 
 # login as sudo user
 logout
+
+# Install dependencies
+sudo yum -y install git
 
 # Clone playbooks
 git clone https://github.com/zimmnik/provisioner.git && cd provisioner/ansible
