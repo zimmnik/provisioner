@@ -17,7 +17,6 @@ Anaconda stage: use kickstart file
 inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/custom.cfg
 ```
 Pure system stage:  
-WARNING! Don't use tty1 console, use tty4, because playbook will start systemd's graphical.target
 ```ShellSession
 # Set root password
 passwd
@@ -28,6 +27,7 @@ useradd --groups wheel --create-home username && passwd username
 # Update packages and reboot
 yum -y update && reboot
 
+# WARNING! Don't use tty1 console, use tty4, because playbook will start systemd's graphical.target
 # login as sudo user
 logout
 
