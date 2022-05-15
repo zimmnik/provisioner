@@ -16,7 +16,6 @@ Anaconda stage: use kickstart file
 ```raw
 inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/custom.cfg
 ```
-Pure system stage:  
 ```ShellSession
 # Set root password
 passwd
