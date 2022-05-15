@@ -22,16 +22,16 @@ WARNING! Don't use tty1 console, use tty4, because playbook will start systemd's
 # Set root password
 passwd
 
-# Update packages and reboot
-yum -y update && reboot
+# Add sudo user and set password
+useradd --groups wheel --create-home username && passwd username
 
 # Install dependencies
 yum -y install git
 
-# Add sudo user and set password
-useradd --groups wheel --create-home username && passwd username
+# Update packages and reboot
+yum -y update && reboot
 
-# logout and run shell for sudo user
+# login as sudo user
 logout
 
 # Clone playbooks
