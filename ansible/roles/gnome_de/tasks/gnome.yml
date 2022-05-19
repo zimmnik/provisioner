@@ -19,18 +19,18 @@
 #-----------------------------------------------------------------------------------------------
 # GNOME EXTENSIONS
 
-    #- name: gnome extension manager 1
-    #  community.general.flatpak_remote:
-    #    name: flathub
-    #    state: present
-    #    flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
-    #  become: true
-    #
-    #- name: gnome extension manager 2
-    #  community.general.flatpak:
-    #    name: org.gnome.Extensions
-    #    state: present
-    #  become: true
+- name: gnome extension manager 1
+  community.general.flatpak_remote:
+    name: flathub
+    state: present
+    flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
+  become: true
+
+- name: gnome extension manager 2
+  community.general.flatpak:
+    name: org.gnome.Extensions
+    state: present
+  become: true
 
 - name: gnome extension gnome desktop icons
   import_role:
@@ -39,32 +39,32 @@
     gnome_extension_ids:
       - 2087
 
-#- name: gnome extension drop-down terminal
-#  import_role:
-#    name: jaredhocutt.gnome_extensions
-#  vars:
-#    gnome_extension_ids:
-#      - 3780
-#
-#- name: gnome extension drop-down terminal 2
-#  dconf:
-#    key: "{{ item.key }}"
-#    value: "{{ item.value |string }}"
-#  loop:
-#    - { key: "/com/github/amezin/ddterm/custom-font", value: "'Bitstream Vera Sans Mono 14'" }
-#    - { key: "/com/github/amezin/ddterm/ddterm-toggle-hotkey", value: "['<Control>grave']" }
-#    - { key: "/com/github/amezin/ddterm/detect-urls-news-man", value: "false" }
-#    - { key: "/com/github/amezin/ddterm/detect-urls-voip", value: "false" }
-#    - { key: "/com/github/amezin/ddterm/notebook-border", value: "false" }
-#    - { key: "/com/github/amezin/ddterm/override-window-animation", value: "false" }
-#    - { key: "/com/github/amezin/ddterm/scroll-on-keystroke", value: "false" }
-#    - { key: "/com/github/amezin/ddterm/scrollback-unlimited", value: "true" }
-#    - { key: "/com/github/amezin/ddterm/tab-policy", value: "'automatic'" }
-#    - { key: "/com/github/amezin/ddterm/theme-variant", value: "'dark'" }
-#    - { key: "/com/github/amezin/ddterm/use-system-font", value: "false" }
-#    - { key: "/com/github/amezin/ddterm/use-theme-colors", value: "true" }
-#    - { key: "/com/github/amezin/ddterm/window-maximize", value: "false" }
-#    - { key: "/com/github/amezin/ddterm/window-size", value: "1.0" }
+    #- name: gnome extension drop-down terminal
+    #  import_role:
+    #    name: jaredhocutt.gnome_extensions
+    #  vars:
+    #    gnome_extension_ids:
+    #      - 3780
+    #
+    #- name: gnome extension drop-down terminal 2
+    #  dconf:
+    #    key: "{{ item.key }}"
+    #    value: "{{ item.value |string }}"
+    #  loop:
+    #    - { key: "/com/github/amezin/ddterm/custom-font", value: "'Bitstream Vera Sans Mono 14'" }
+    #    - { key: "/com/github/amezin/ddterm/ddterm-toggle-hotkey", value: "['<Control>grave']" }
+    #    - { key: "/com/github/amezin/ddterm/detect-urls-news-man", value: "false" }
+    #    - { key: "/com/github/amezin/ddterm/detect-urls-voip", value: "false" }
+    #    - { key: "/com/github/amezin/ddterm/notebook-border", value: "false" }
+    #    - { key: "/com/github/amezin/ddterm/override-window-animation", value: "false" }
+    #    - { key: "/com/github/amezin/ddterm/scroll-on-keystroke", value: "false" }
+    #    - { key: "/com/github/amezin/ddterm/scrollback-unlimited", value: "true" }
+    #    - { key: "/com/github/amezin/ddterm/tab-policy", value: "'automatic'" }
+    #    - { key: "/com/github/amezin/ddterm/theme-variant", value: "'dark'" }
+    #    - { key: "/com/github/amezin/ddterm/use-system-font", value: "false" }
+    #    - { key: "/com/github/amezin/ddterm/use-theme-colors", value: "true" }
+    #    - { key: "/com/github/amezin/ddterm/window-maximize", value: "false" }
+    #    - { key: "/com/github/amezin/ddterm/window-size", value: "1.0" }
 
 - name: extension gnome quake-mode 1
   import_role:
@@ -110,8 +110,7 @@
     - { key: "/org/gnome/shell/extensions/unite/hide-activities-button", value: "'never'" }
     - { key: "/org/gnome/shell/extensions/unite/window-buttons-placement", value: "'last'" }
     - { key: "/org/gnome/shell/extensions/unite/hide-aggregate-menu-arrow", value: "true" }
-    - { key: "/org/gnome/shell/extensions/unite/show-window-buttons", value: "'never'" }
-    - { key: "/org/gnome/shell/extensions/unite/show-window-title", value: "'never'" }
+    - { key: "/org/gnome/shell/extensions/unite/show-window-buttons", value: "'never'" } - { key: "/org/gnome/shell/extensions/unite/show-window-title", value: "'never'" }
     - { key: "/org/gnome/shell/extensions/unite/hide-window-titlebars", value: "'never'" }
 
 - name: gnome extension gnome workspace 1
@@ -132,14 +131,6 @@
     - { key: "/org/gnome/shell/overrides/workspaces-only-on-primary", value: "false" }
     - { key: "/org/gnome/shell/app-switcher/current-workspace-only", value: "true" }
       
-      #- command: 'dconf dump /org/gnome/mutter'
-      #    register: out
-      #- debug: var=out.stdout_lines
-      #      
-      #- command: 'dconf dump /org/gnome/shell/overrides'
-      #    register: out
-      #- debug: var=out.stdout_lines
-
 #-----------------------------------------------------------------------------------------------
 # GNOME START_UP
 - name: gnome systemd target 1
@@ -202,20 +193,38 @@
 #-----------------------------------------------------------------------------------------------
 # GNOME APPEARANCE
 
-- name: gnome gtk theme 1
-  file: path=~/.config/gtk-3.0/ state=directory
+      #- name: gnome gtk theme 1
+      #  file: path=~/.config/gtk-3.0/ state=directory
+      #
+      #- name: gnome gtk theme 2
+      #  blockinfile:
+      #    dest: ~/.config/gtk-3.0/settings.ini
+      #    create: yes
+      #    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gtk theme 2 -->"
+      #    block: |
+      #      [Settings]
+      #      gtk-application-prefer-dark-theme=1
+      #
 
-- name: gnome gtk theme 2
-  blockinfile:
-    dest: ~/.config/gtk-3.0/settings.ini
-    create: yes
-    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gtk theme 2 -->"
-    block: |
-      [Settings]
-      gtk-application-prefer-dark-theme=1
-
-- name: gnome gtk theme 3
+- name: gnome color theme 1
   dconf: key="/org/gnome/desktop/interface/color-scheme" value="'prefer-dark'"
+
+- name: gnome color theme 2
+  dconf: key="/org/gnome/desktop/interface/gtk-theme" value="'Adwaita-dark'"
+
+- name: gnome cursor theme 1
+  yum: name=dmz-cursor-themes state=latest
+  become: true
+
+- name: gnome cursor theme 2
+  dconf: key="/org/gnome/desktop/interface/cursor-theme" value="'DMZ-White'"
+
+- name: gnome icon theme 1
+  yum: name=gnome-icon-theme state=latest
+  become: true
+
+- name: gnome icon theme 2
+  dconf: key="/org/gnome/desktop/interface/icon-theme" value="'gnome'"
 
 - name: gnome fonts 1
   file:
@@ -247,12 +256,12 @@
     key: "{{ item.key }}"
     value: "{{ item.value |string }}"
   loop:
-    - { key: "/org/gnome/desktop/interface/monospace-font-name", value: "'Bitstream Vera Sans Mono 11'" }
+    - { key: "/org/gnome/desktop/interface/monospace-font-name", value: "'Ubuntu Mono 11'" }
+    - { key: "/org/gnome/desktop/interface/document-font-name", value: "'Ubuntu Italic 11'" }
     - { key: "/org/gnome/desktop/interface/font-name", value: "'Ubuntu 11'" }
     - { key: "/org/gnome/desktop/wm/preferences/titlebar-uses-system-font", value: "true" }
     - { key: "/org/gnome/desktop/wm/preferences/titlebar-font", value: "'Ubuntu Medium 11'" }
     - { key: "/org/gnome/desktop/interface/font-antialiasing", value: "'rgba'" }
-
 
 - name: gnome background and screensaver
   dconf:
