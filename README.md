@@ -12,27 +12,27 @@ To deploy the system you can use :
 ### 1) BareMetal + Kickstart + Ansible
 #### Usage:
 
-Anaconda stage: use kickstart file
+Anaconda stage: [use kickstart file] (https://anaconda-installer.readthedocs.io/en/latest/boot-options.html#inst-ks)
 ```raw
 inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/custom.cfg
 ```
-Pure system stage:  
-WARNING! Don't use tty1 console, use tty4, because playbook will start systemd's graphical.target
+System stage:
 ```ShellSession
 # Set root password
 passwd
 
-# Update packages and reboot
-yum -y update && reboot
-
-# Install dependencies
-yum -y install git
-
 # Add sudo user and set password
 useradd --groups wheel --create-home username && passwd username
 
-# logout and run shell for sudo user
+# Update packages and reboot
+yum -y update && reboot
+
+# WARNING! Don't use tty1 console, use tty4, because playbook will start systemd's graphical.target
+# login as sudo user
 logout
+
+# Install dependencies
+sudo yum -y install git
 
 # Clone playbooks
 git clone https://github.com/zimmnik/provisioner.git && cd provisioner/ansible
