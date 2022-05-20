@@ -84,6 +84,7 @@
     - { key: "/com/github/repsac-by/quake-mode/quake-mode-height", value: "100" }
     - { key: "/com/github/repsac-by/quake-mode/quake-mode-hotkey", value: "['<Primary>grave']" }
     - { key: "/com/github/repsac-by/quake-mode/quake-mode-animation-time", value: "0.25" }
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-hide-from-overview", value: "true" }
 
 - name: gnome extension gnome unite 1
   yum: name=xprop state=latest
