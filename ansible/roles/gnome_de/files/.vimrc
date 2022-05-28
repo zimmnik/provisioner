@@ -1,4 +1,4 @@
-colorscheme pablo
+#colorscheme pablo
 
 set guifont=Bitstream\ Vera\ Sans\ Mono\ 14
 
