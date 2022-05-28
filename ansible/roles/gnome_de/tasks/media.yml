@@ -6,9 +6,12 @@
   yum:
     state: latest
     name:
-      - eog
+      - mirage
       - gnome-mpv
   become: true
 
-- name: Disable celluloid fullscreen tearing
+- name: celluloid disable fullscreen tearing
   dconf: key="/io/github/celluloid-player/celluloid/csd-enable" value="false"
+
+- name: celluloid enable hardware decoding
+  dconf: key="/io/github/celluloid-player/celluloid/mpv-options" value="hwdec=auto"
