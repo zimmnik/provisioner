@@ -1,6 +1,9 @@
 #colorscheme pablo
 
-set guifont=Bitstream\ Vera\ Sans\ Mono\ 14
+set guifont=Ubuntu\ Mono\ Regular\ 14
+
+set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:␣
+"set list
 
 vmap <C-c> "+yi
 vmap <C-x> "+c
