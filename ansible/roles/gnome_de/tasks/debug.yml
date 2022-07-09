@@ -1,6 +1,6 @@
-- name: gnome workspace 4
-  command: dbus-launch --exit-with-session gnome-extensions enable workspace-indicator@gnome-shell-extensions.gcampax.github.com
-
+#- name: gnome workspace 4
+#  command: dbus-launch --exit-with-session gnome-extensions enable workspace-indicator@gnome-shell-extensions.gcampax.github.com
+#
 #- name: Print some debug information 
 #  vars: 
 #    msg: |

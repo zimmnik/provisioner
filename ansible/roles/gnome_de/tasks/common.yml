@@ -4,7 +4,18 @@
       notify:
         - nm_restart
     
-    - name: Utilites
+    - name: terminal utilites
+      yum:
+        state: latest
+        name:
+          - man
+          - bash-completion
+          - tmux
+          - vim
+          - less
+          - atop
+
+    - name: file utilites
       yum:
         state: latest
         name:
@@ -16,13 +27,20 @@
           - p7zip-plugins
           - cifs-utils
           - lsof
+          - iotop
+          - sysstat
+
+    - name: network utilites
+      yum:
+        state: latest
+        name:
           - bind-utils
           - curl
-          - man
-          - bash-completion
-          - tmux
-          - vim
-          - less
+          - arp-scan
+          - iftop
+          - nload
+          - nmap
+          - iperf3
     
     - name: SSH 1
       yum: name=openssh-server state=latest

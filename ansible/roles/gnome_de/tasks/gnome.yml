@@ -39,32 +39,32 @@
     gnome_extension_ids:
       - 2087
 
-    #- name: gnome extension drop-down terminal
-    #  import_role:
-    #    name: jaredhocutt.gnome_extensions
-    #  vars:
-    #    gnome_extension_ids:
-    #      - 3780
-    #
-    #- name: gnome extension drop-down terminal 2
-    #  dconf:
-    #    key: "{{ item.key }}"
-    #    value: "{{ item.value |string }}"
-    #  loop:
-    #    - { key: "/com/github/amezin/ddterm/custom-font", value: "'Bitstream Vera Sans Mono 14'" }
-    #    - { key: "/com/github/amezin/ddterm/ddterm-toggle-hotkey", value: "['<Control>grave']" }
-    #    - { key: "/com/github/amezin/ddterm/detect-urls-news-man", value: "false" }
-    #    - { key: "/com/github/amezin/ddterm/detect-urls-voip", value: "false" }
-    #    - { key: "/com/github/amezin/ddterm/notebook-border", value: "false" }
-    #    - { key: "/com/github/amezin/ddterm/override-window-animation", value: "false" }
-    #    - { key: "/com/github/amezin/ddterm/scroll-on-keystroke", value: "false" }
-    #    - { key: "/com/github/amezin/ddterm/scrollback-unlimited", value: "true" }
-    #    - { key: "/com/github/amezin/ddterm/tab-policy", value: "'automatic'" }
-    #    - { key: "/com/github/amezin/ddterm/theme-variant", value: "'dark'" }
-    #    - { key: "/com/github/amezin/ddterm/use-system-font", value: "false" }
-    #    - { key: "/com/github/amezin/ddterm/use-theme-colors", value: "true" }
-    #    - { key: "/com/github/amezin/ddterm/window-maximize", value: "false" }
-    #    - { key: "/com/github/amezin/ddterm/window-size", value: "1.0" }
+#- name: gnome extension drop-down terminal
+#  import_role:
+#    name: jaredhocutt.gnome_extensions
+#  vars:
+#    gnome_extension_ids:
+#      - 3780
+#
+#- name: gnome extension drop-down terminal 2
+#  dconf:
+#    key: "{{ item.key }}"
+#    value: "{{ item.value |string }}"
+#  loop:
+#    - { key: "/com/github/amezin/ddterm/custom-font", value: "'Bitstream Vera Sans Mono 14'" }
+#    - { key: "/com/github/amezin/ddterm/ddterm-toggle-hotkey", value: "['<Control>grave']" }
+#    - { key: "/com/github/amezin/ddterm/detect-urls-news-man", value: "false" }
+#    - { key: "/com/github/amezin/ddterm/detect-urls-voip", value: "false" }
+#    - { key: "/com/github/amezin/ddterm/notebook-border", value: "false" }
+#    - { key: "/com/github/amezin/ddterm/override-window-animation", value: "false" }
+#    - { key: "/com/github/amezin/ddterm/scroll-on-keystroke", value: "false" }
+#    - { key: "/com/github/amezin/ddterm/scrollback-unlimited", value: "true" }
+#    - { key: "/com/github/amezin/ddterm/tab-policy", value: "'automatic'" }
+#    - { key: "/com/github/amezin/ddterm/theme-variant", value: "'dark'" }
+#    - { key: "/com/github/amezin/ddterm/use-system-font", value: "false" }
+#    - { key: "/com/github/amezin/ddterm/use-theme-colors", value: "true" }
+#    - { key: "/com/github/amezin/ddterm/window-maximize", value: "false" }
+#    - { key: "/com/github/amezin/ddterm/window-size", value: "1.0" }
 
 - name: extension gnome quake-mode 1
   import_role:
@@ -78,13 +78,13 @@
     key: "{{ item.key }}"
     value: "{{ item.value |string }}"
   loop:
-    - { key: "/com/github/repsac-by/quake-mode/quake-mode-app", value: "'org.gnome.Terminal.desktop'" }
     - { key: "/com/github/repsac-by/quake-mode/quake-mode-tray", value: "true" }
     - { key: "/com/github/repsac-by/quake-mode/quake-mode-width", value: "100" }
     - { key: "/com/github/repsac-by/quake-mode/quake-mode-height", value: "100" }
-    - { key: "/com/github/repsac-by/quake-mode/quake-mode-hotkey", value: "['<Primary>grave']" }
     - { key: "/com/github/repsac-by/quake-mode/quake-mode-animation-time", value: "0.25" }
     - { key: "/com/github/repsac-by/quake-mode/quake-mode-hide-from-overview", value: "true" }
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-hotkey", value: "['<Primary>grave']" }
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-app", value: "'org.gnome.Terminal.desktop'" }
 
 - name: gnome extension gnome unite 1
   yum: name=xprop state=latest
@@ -106,14 +106,14 @@
     - { key: "/org/gnome/shell/extensions/unite/show-desktop-name", value: "false" }
     - { key: "/org/gnome/shell/extensions/unite/hide-app-menu-icon", value: "true" }
     - { key: "/org/gnome/shell/extensions/unite/hide-app-menu-arrow", value: "true" }
+    - { key: "/org/gnome/shell/extensions/unite/show-window-title", value: "'never'" }
     - { key: "/org/gnome/shell/extensions/unite/greyscale-tray-icons", value: "true" }
-    - { key: "/org/gnome/shell/extensions/unite/window-buttons-theme", value: "'united-dark'" }
+    - { key: "/org/gnome/shell/extensions/unite/show-window-buttons", value: "'never'" }
+    - { key: "/org/gnome/shell/extensions/unite/hide-window-titlebars", value: "'never'" }
+    - { key: "/org/gnome/shell/extensions/unite/hide-aggregate-menu-arrow", value: "true" }
     - { key: "/org/gnome/shell/extensions/unite/hide-activities-button", value: "'never'" }
     - { key: "/org/gnome/shell/extensions/unite/window-buttons-placement", value: "'last'" }
-    - { key: "/org/gnome/shell/extensions/unite/hide-aggregate-menu-arrow", value: "true" }
-    - { key: "/org/gnome/shell/extensions/unite/show-window-buttons", value: "'never'" }
-    - { key: "/org/gnome/shell/extensions/unite/show-window-title", value: "'never'" }
-    - { key: "/org/gnome/shell/extensions/unite/hide-window-titlebars", value: "'never'" }
+    - { key: "/org/gnome/shell/extensions/unite/window-buttons-theme", value: "'united-dark'" }
 
 - name: gnome extension gnome workspace 1
   import_role:
@@ -162,12 +162,14 @@
       AutomaticLoginEnable=True
       AutomaticLogin={{ ansible_user_id }}
   become: true
+  changed_when: False
 
 - name: gnome systemd isolate graphical
   command: systemctl isolate graphical.target
   become: true
   notify:
     - session_logout
+  changed_when: False
 
 - name: gnome wait for graphical target loading
   pause:
@@ -179,9 +181,11 @@
     marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
     state: absent
   become: true
+  changed_when: False
 
 - name: gnome enable all gnome extensions
   shell: for i in $(gnome-extensions list); do echo $i; gnome-extensions enable $i; done
+  changed_when: False
 
 #-----------------------------------------------------------------------------------------------
 # GNOME VNC
@@ -194,19 +198,6 @@
     
 #-----------------------------------------------------------------------------------------------
 # GNOME APPEARANCE
-
-      #- name: gnome gtk theme 1
-      #  file: path=~/.config/gtk-3.0/ state=directory
-      #
-      #- name: gnome gtk theme 2
-      #  blockinfile:
-      #    dest: ~/.config/gtk-3.0/settings.ini
-      #    create: yes
-      #    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gtk theme 2 -->"
-      #    block: |
-      #      [Settings]
-      #      gtk-application-prefer-dark-theme=1
-      #
 
 - name: gnome color theme 1
   dconf: key="/org/gnome/desktop/interface/color-scheme" value="'prefer-dark'"

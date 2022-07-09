@@ -7,3 +7,4 @@
 - name: gnome logout
   shell: gnome-session-quit --no-prompt
   listen: "session_logout"
+  changed_when: False
