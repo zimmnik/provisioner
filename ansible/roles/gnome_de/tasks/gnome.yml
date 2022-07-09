@@ -111,7 +111,8 @@
     - { key: "/org/gnome/shell/extensions/unite/hide-activities-button", value: "'never'" }
     - { key: "/org/gnome/shell/extensions/unite/window-buttons-placement", value: "'last'" }
     - { key: "/org/gnome/shell/extensions/unite/hide-aggregate-menu-arrow", value: "true" }
-    - { key: "/org/gnome/shell/extensions/unite/show-window-buttons", value: "'never'" } - { key: "/org/gnome/shell/extensions/unite/show-window-title", value: "'never'" }
+    - { key: "/org/gnome/shell/extensions/unite/show-window-buttons", value: "'never'" }
+    - { key: "/org/gnome/shell/extensions/unite/show-window-title", value: "'never'" }
     - { key: "/org/gnome/shell/extensions/unite/hide-window-titlebars", value: "'never'" }
 
 - name: gnome extension gnome workspace 1
