@@ -76,7 +76,6 @@
 
 - name: internet keepassxc 3
   copy: src=keepassxc.ini dest=~/.config/keepassxc/
-  changed_when: false
 
 - name: internet keepassxc 4
   file:

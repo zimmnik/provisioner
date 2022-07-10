@@ -16,28 +16,24 @@
     - nm_restart
   become: true
 
+- name: gnome gdm wayland disable
+  lineinfile:
+    path: /etc/gdm/custom.conf
+    regexp: 'WaylandEnable='
+    line: WaylandEnable=false
+  become: true
+
+- name: gnome systemd target 1
+  command: systemctl get-default
+  register: contents
+  changed_when: false
+
+- name: gnome systemd target 2
+  command: systemctl set-default graphical.target
+  when: contents.stdout != "graphical.target"
+  become: true
 #-----------------------------------------------------------------------------------------------
 # GNOME EXTENSIONS
-
-- name: gnome extension manager 1
-  community.general.flatpak_remote:
-    name: flathub
-    state: present
-    flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
-  become: true
-
-- name: gnome extension manager 2
-  community.general.flatpak:
-    name: org.gnome.Extensions
-    state: present
-  become: true
-
-- name: gnome extension gnome desktop icons
-  import_role:
-    name: jaredhocutt.gnome_extensions
-  vars:
-    gnome_extension_ids:
-      - 2087
 
 #- name: gnome extension drop-down terminal
 #  import_role:
@@ -45,6 +41,7 @@
 #  vars:
 #    gnome_extension_ids:
 #      - 3780
+#  notify: "gnome_restart"
 #
 #- name: gnome extension drop-down terminal 2
 #  dconf:
@@ -65,6 +62,13 @@
 #    - { key: "/com/github/amezin/ddterm/use-theme-colors", value: "true" }
 #    - { key: "/com/github/amezin/ddterm/window-maximize", value: "false" }
 #    - { key: "/com/github/amezin/ddterm/window-size", value: "1.0" }
+
+- name: gnome extension gnome desktop icons 1
+  import_role:
+    name: jaredhocutt.gnome_extensions
+  vars:
+    gnome_extension_ids:
+      - 2087
 
 - name: extension gnome quake-mode 1
   import_role:
@@ -132,60 +136,35 @@
     - { key: "/org/gnome/shell/overrides/dynamic-workspaces", value: "false" }
     - { key: "/org/gnome/shell/overrides/workspaces-only-on-primary", value: "false" }
     - { key: "/org/gnome/shell/app-switcher/current-workspace-only", value: "true" }
-      
-#-----------------------------------------------------------------------------------------------
-# GNOME START_UP
-- name: gnome systemd target 1
-  command: systemctl get-default
-  register: contents
-  changed_when: false
+
+# FYI https://discourse.gnome.org/t/enable-gnome-extensions-without-session-restart/7936
+- include_tasks: "gnome_restart_gui.yml"
+
+- include_tasks: "gnome_enable_extension.yml"
+  loop:
+    - ding@rastersoft.com
+    - quake-mode@repsac-by.github.com
+    - unite@hardpixel.eu
+    - workspace-indicator@gnome-shell-extensions.gcampax.github.com
+  loop_control:
+    loop_var: extension_name
+
+- name: gnome extension manager 1
+  community.general.flatpak_remote:
+    name: flathub
+    state: present
+    flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
   become: true
 
-- name: gnome systemd target 2
-  command: systemctl set-default graphical.target
-  when: contents.stdout != "graphical.target"
+- name: gnome extension manager 2
+  community.general.flatpak:
+    name: org.gnome.Extensions
+    state: present
   become: true
 
-- name: gnome gdm wayland disable
-  lineinfile:
-    path: /etc/gdm/custom.conf
-    regexp: 'WaylandEnable='
-    line: WaylandEnable=false
-  become: true
-
-- name: gnome autologin
-  blockinfile:
-    dest: /etc/gdm/custom.conf
-    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
-    insertafter: "\\[daemon\\]"
-    block: |
-      AutomaticLoginEnable=True
-      AutomaticLogin={{ ansible_user_id }}
-  become: true
-  changed_when: False
-
-- name: gnome systemd isolate graphical
-  command: systemctl isolate graphical.target
-  become: true
-  notify:
-    - session_logout
-  changed_when: False
-
-- name: gnome wait for graphical target loading
-  pause:
-    seconds: 30
-
-- name: gnome autologin
-  blockinfile:
-    dest: /etc/gdm/custom.conf
-    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
-    state: absent
-  become: true
-  changed_when: False
-
-- name: gnome enable all gnome extensions
-  shell: for i in $(gnome-extensions list); do echo $i; gnome-extensions enable $i; done
-  changed_when: False
+#- name: gnome enable all gnome extensions
+#  shell: for i in $(gnome-extensions list); do echo $i; gnome-extensions enable $i; done
+#  changed_when: False
 
 #-----------------------------------------------------------------------------------------------
 # GNOME VNC

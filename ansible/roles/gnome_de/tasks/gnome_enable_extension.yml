@@ -1,0 +1,9 @@
+---
+- name: gnome extension check {{ extension_name }} 1
+  shell: gnome-extensions show {{ extension_name }}
+  register: contents
+  changed_when: False
+
+- name: gnome extension enable {{ extension_name }}
+  shell: gnome-extensions enable {{ extension_name }}
+  when: "'State: ENABLED' not in contents.stdout"

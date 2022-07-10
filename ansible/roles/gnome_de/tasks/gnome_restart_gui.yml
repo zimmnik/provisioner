@@ -1,0 +1,29 @@
+---
+- name: gnome restart GUI 1
+  blockinfile:
+    dest: /etc/gdm/custom.conf
+    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
+    insertafter: "\\[daemon\\]"
+    block: |
+      AutomaticLoginEnable=True
+      AutomaticLogin={{ ansible_user_id }}
+  register: autologin_state
+  become: true
+
+- name: gnome restart GUI 2
+  command: systemctl isolate graphical.target
+  become: true
+  notify:
+    - session_logout
+
+- name: gnome restart GUI 3
+  pause:
+    seconds: 30
+
+- name: gnome restart GUI 4
+  blockinfile:
+    dest: /etc/gdm/custom.conf
+    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
+    state: absent
+  become: true
+  when: autologin_state.changed
