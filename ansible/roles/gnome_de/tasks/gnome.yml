@@ -164,7 +164,6 @@
 
 #- name: gnome enable all gnome extensions
 #  shell: for i in $(gnome-extensions list); do echo $i; gnome-extensions enable $i; done
-#  changed_when: False
 
 #-----------------------------------------------------------------------------------------------
 # GNOME VNC
