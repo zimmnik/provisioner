@@ -10,7 +10,8 @@ Vagrant.configure("2") do |config|
     lv.graphics_type = 'spice'
   end
 
-  config.vm.provision "shell", path: "vagrant_bootstrap.sh"
+  config.vm.provision "shell", path: "proxy_setup.sh"
+  config.vm.provision "shell", inline: "yum -y -q install git"
 
   config.vm.provision :ansible_local do |ansible|
     #ansible.verbose = "vvvv"

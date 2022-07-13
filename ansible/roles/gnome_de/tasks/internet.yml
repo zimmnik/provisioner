@@ -1,5 +1,18 @@
-- name: internet rpm-fusion repo
-  yum: name=https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm
+- block:
+    - name: internet rpm-fusion repo 1
+      yum:
+        name: distribution-gpg-keys
+        state: present
+    
+    - name: internet rpm-fusion repo 2
+      ansible.builtin.rpm_key:
+        state: present
+        key: /usr/share/distribution-gpg-keys/rpmfusion/RPM-GPG-KEY-rpmfusion-free-fedora-36
+    
+    - name: internet rpm-fusion repo 3
+      yum:
+        name: https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm
+        state: present
   become: true
 
 - name: internet firefox 1
