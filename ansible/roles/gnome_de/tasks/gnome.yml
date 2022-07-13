@@ -12,8 +12,6 @@
       - dconf-editor
       - python3-psutil
       - dbus-x11
-  notify:
-    - nm_restart
   become: true
 
 - name: gnome gdm wayland disable
@@ -41,7 +39,6 @@
 #  vars:
 #    gnome_extension_ids:
 #      - 3780
-#  notify: "gnome_restart"
 #
 #- name: gnome extension drop-down terminal 2
 #  dconf:
@@ -138,7 +135,34 @@
     - { key: "/org/gnome/shell/app-switcher/current-workspace-only", value: "true" }
 
 # FYI https://discourse.gnome.org/t/enable-gnome-extensions-without-session-restart/7936
-- include_tasks: "gnome_restart_gui.yml"
+- block:
+    - name: gnome restart GUI 1
+      blockinfile:
+        dest: /etc/gdm/custom.conf
+        marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
+        insertafter: "\\[daemon\\]"
+        block: |
+          AutomaticLoginEnable=True
+          AutomaticLogin={{ ansible_user_id }}
+      register: autologin_state
+    
+    - name: gnome restart GUI 2
+      service: name=gdm state=restarted
+      notify:
+        - session_logout
+    
+    - name: gnome restart GUI 3
+      pause:
+        seconds: 30
+    
+    - name: gnome restart GUI 4
+      blockinfile:
+        dest: /etc/gdm/custom.conf
+        marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
+        state: absent
+      when: autologin_state.changed
+
+  become: true
 
 - include_tasks: "gnome_enable_extension.yml"
   loop:
@@ -161,9 +185,6 @@
     name: org.gnome.Extensions
     state: present
   become: true
-
-#- name: gnome enable all gnome extensions
-#  shell: for i in $(gnome-extensions list); do echo $i; gnome-extensions enable $i; done
 
 #-----------------------------------------------------------------------------------------------
 # GNOME VNC

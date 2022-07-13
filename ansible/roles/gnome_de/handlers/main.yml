@@ -1,9 +1,4 @@
 ---
-- name: restart NetworkManager
-  service: name=NetworkManager state=restarted
-  become: true
-  listen: "nm_restart"
-
 - name: gnome logout
   shell: gnome-session-quit --no-prompt
   listen: "session_logout"
