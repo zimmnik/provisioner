@@ -1,4 +1,4 @@
-#colorscheme pablo
+"colorscheme pablo
 
 set guifont=Ubuntu\ Mono\ Regular\ 14
 
