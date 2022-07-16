@@ -2,7 +2,7 @@
     - name: hostname
       hostname: name={{ hostname }}
     
-    - name: terminal utilites
+    - name: common utilites
       yum:
         state: latest
         name:
@@ -12,6 +12,7 @@
           - vim
           - less
           - atop
+          - lshw
 
     - name: file utilites
       yum:
@@ -39,6 +40,7 @@
           - nload
           - nmap
           - iperf3
+          - traceroute
     
     - name: SSH 1
       yum: name=openssh-server state=latest

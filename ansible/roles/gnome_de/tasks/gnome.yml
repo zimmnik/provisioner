@@ -12,6 +12,7 @@
       - dconf-editor
       - python3-psutil
       - dbus-x11
+      - dnsmasq
   become: true
 
 - name: gnome gdm wayland disable
