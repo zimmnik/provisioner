@@ -24,6 +24,8 @@
           - unzip
           - p7zip
           - p7zip-plugins
+          - tar
+          - zstd
           - cifs-utils
           - lsof
           - iotop
