@@ -12,7 +12,7 @@ sed -i '/fedora-cisco-openh264-$releasever/i \#baseurl=http://codecs.fedoraproje
 
 while read -r filename; do 
   #sed -i 's%http://download.example/pub/fedora/%http://fedora.mirrorservice.org/fedora/%g' "$filename"
-  sed -i 's%http://download.example/pub/fedora/%http://fr2.rpmfind.net/linux/fedora/%g' "$filename"
+  sed -i 's%http://download.example/pub/fedora%http://fr2.rpmfind.net/linux/fedora%g' "$filename"
   sed -i 's/#baseurl/baseurl/g' "$filename"
 done < <(grep -ril 'baseurl' /etc/yum.repos.d/)
 
@@ -31,7 +31,7 @@ yum -y install distribution-gpg-keys
 yum -y install "http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
 
 while read -r filename; do 
-  sed -i 's%http://download1.rpmfusion.org/free/fedora%http://fr2.rpmfind.net/linux/rpmfusion/free/fedora/%g' "$filename"
+  sed -i 's%http://download1.rpmfusion.org/free/fedora%http://fr2.rpmfind.net/linux/rpmfusion/free/fedora%g' "$filename"
   sed -i 's/#baseurl/baseurl/g' "$filename"
 done < <(grep -ril 'baseurl' /etc/yum.repos.d/)
 
