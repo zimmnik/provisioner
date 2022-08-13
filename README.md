@@ -14,7 +14,7 @@ To deploy the system you can use :
 
 Anaconda stage: [use kickstart file] (https://anaconda-installer.readthedocs.io/en/latest/boot-options.html#inst-ks)
 ```raw
-inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/custom.cfg
+inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/f36.cfg
 ```
 System stage:
 ```ShellSession
