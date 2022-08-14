@@ -1,0 +1,20 @@
+- block:
+    - name: rpm-fusion repo 1
+      yum:
+        name: distribution-gpg-keys
+        state: present
+    
+    - name: rpm-fusion repo 2
+      ansible.builtin.rpm_key:
+        state: present
+        key: "{{ item }}"
+      loop:
+        - /usr/share/distribution-gpg-keys/rpmfusion/RPM-GPG-KEY-rpmfusion-free-fedora-36
+        - /usr/share/distribution-gpg-keys/rpmfusion/RPM-GPG-KEY-rpmfusion-free-el-9 
+
+    - name: rpm-fusion repo 3
+      yum:
+        name: https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm
+        state: present
+
+  become: true

@@ -2,13 +2,11 @@
   yum:
     state: latest
     name:
-      - gedit
       - gedit-plugin-textsize
       - evince
       - gnome-screenshot
       - libreoffice-writer
       - libreoffice-calc
-      - gvim
   become: true
 
 - name: gedit settings

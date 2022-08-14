@@ -1,31 +1,38 @@
-- block:
-    - name: internet rpm-fusion repo 1
-      yum:
-        name: distribution-gpg-keys
-        state: present
-    
-    - name: internet rpm-fusion repo 2
-      ansible.builtin.rpm_key:
-        state: present
-        key: /usr/share/distribution-gpg-keys/rpmfusion/RPM-GPG-KEY-rpmfusion-free-fedora-36
-    
-    - name: internet rpm-fusion repo 3
-      yum:
-        name: https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm
-        state: present
+- include_tasks: "rpmfusion.yml"
+
+- name: media utilites 1
+  yum: name=flatpak state=latest
   become: true
 
-- name: media utilites
-  yum:
-    state: latest
-    name:
-      - mirage
-      - gnome-mpv
+- name: media utilites 2
+  community.general.flatpak_remote:
+    name: flathub
+    state: present
+    flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
   become: true
 
-- name: celluloid disable fullscreen tearing
-  dconf: key="/io/github/celluloid-player/celluloid/csd-enable" value="false"
+- name: media utilites 3
+  community.general.flatpak:
+    name: "{{ item }}"
+    state: present
+  become: true
+  loop:
+    - io.github.celluloid_player.Celluloid
+    - com.xnview.XnViewMP
 
-- name: celluloid enable hardware decoding
-  dconf: key="/io/github/celluloid-player/celluloid/mpv-options" value="'hwdec=auto'"
+- name: celluloid settings 1
+  file:
+    path: ~/.var/app/io.github.celluloid_player.Celluloid/config/glib-2.0/settings/
+    state: directory
 
+# https://blogs.gnome.org/mclasen/2019/07/12/settings-in-a-sandbox-world/
+- name: celluloid settings 2
+  blockinfile:
+    dest: ~/.var/app/io.github.celluloid_player.Celluloid/config/glib-2.0/settings/keyfile
+    create: yes
+    mode: u+rw,g-rwx,o-rwx
+    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK -->"
+    block: |-
+      [io/github/celluloid-player/celluloid]
+      mpv-options='hwdec=auto'
+      csd-enable=false

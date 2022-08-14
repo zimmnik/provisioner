@@ -154,7 +154,7 @@
     
     - name: gnome restart GUI 3
       pause:
-        seconds: 30
+        seconds: 15
     
     - name: gnome restart GUI 4
       blockinfile:
@@ -175,13 +175,17 @@
     loop_var: extension_name
 
 - name: gnome extension manager 1
+  yum: name=flatpak state=latest
+  become: true
+
+- name: gnome extension manager 2
   community.general.flatpak_remote:
     name: flathub
     state: present
     flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
   become: true
 
-- name: gnome extension manager 2
+- name: gnome extension manager 3
   community.general.flatpak:
     name: org.gnome.Extensions
     state: present
@@ -205,19 +209,22 @@
 - name: gnome color theme 2
   dconf: key="/org/gnome/desktop/interface/gtk-theme" value="'Adwaita-dark'"
 
-- name: gnome cursor theme 1
-  yum: name=dmz-cursor-themes state=latest
-  become: true
+- block:
+    - name: gnome cursor theme 1
+      yum: name=dmz-cursor-themes state=latest
+      become: true
+    
+    - name: gnome cursor theme 2
+      dconf: key="/org/gnome/desktop/interface/cursor-theme" value="'DMZ-White'"
 
-- name: gnome cursor theme 2
-  dconf: key="/org/gnome/desktop/interface/cursor-theme" value="'DMZ-White'"
+    - name: gnome icon theme 1
+      yum: name=gnome-icon-theme state=latest
+      become: true
+    
+    - name: gnome icon theme 2
+      dconf: key="/org/gnome/desktop/interface/icon-theme" value="'gnome'"
 
-- name: gnome icon theme 1
-  yum: name=gnome-icon-theme state=latest
-  become: true
-
-- name: gnome icon theme 2
-  dconf: key="/org/gnome/desktop/interface/icon-theme" value="'gnome'"
+  when: ansible_distribution == "Fedora" and ansible_distribution_major_version == "36"
 
 - name: gnome fonts 1
   file:

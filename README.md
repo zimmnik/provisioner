@@ -5,6 +5,7 @@ Provisioner is an ansible playbook that allow to quickly configure Gnome DE on F
 Supported distributions
 -----------------------------
 -   **Fedora** 36
+-   **Oracle Linux** 9
 
 ## Quick Start
 To deploy the system you can use :
@@ -15,6 +16,8 @@ To deploy the system you can use :
 Anaconda stage: [use kickstart file] (https://anaconda-installer.readthedocs.io/en/latest/boot-options.html#inst-ks)
 ```raw
 inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/f36.cfg
+or
+inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/ol9.cfg
 ```
 System stage:
 ```ShellSession
@@ -62,7 +65,7 @@ ansible-playbook -i hosts -K -e "hostname=host01" run.yml
 git clone https://github.com/zimmnik/provisioner.git && cd provisioner/
 
 # Deploy
-time vagrant up --color
+time vagrant up --color [ol9]
 
 # Open GUI window
 virt-manager --connect qemu:///system --show-domain-console provisioner_default

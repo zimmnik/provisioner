@@ -4,7 +4,7 @@
     name:
       - nautilus
       - gnome-terminal-nautilus
-      - file-roller-nautilus
+      - engrampa
       - gvfs-mtp
       - gvfs-smb
       - gvfs-gphoto2

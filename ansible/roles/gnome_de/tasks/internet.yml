@@ -1,19 +1,9 @@
-- block:
-    - name: internet rpm-fusion repo 1
-      yum:
-        name: distribution-gpg-keys
-        state: present
-    
-    - name: internet rpm-fusion repo 2
-      ansible.builtin.rpm_key:
-        state: present
-        key: /usr/share/distribution-gpg-keys/rpmfusion/RPM-GPG-KEY-rpmfusion-free-fedora-36
-    
-    - name: internet rpm-fusion repo 3
-      yum:
-        name: https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm
-        state: present
+- name: internet oracle epel repo
+  yum: name=oracle-epel-release-el9 state=latest
   become: true
+  when: ansible_distribution == "OracleLinux" and ansible_distribution_major_version == "9"
+
+- include_tasks: "rpmfusion.yml"
 
 - name: internet firefox 1
   yum:
@@ -72,6 +62,7 @@
 - name: internet chromium
   yum: name=chromium-freeworld state=latest
   become: true
+  when: ansible_distribution == "Fedora" and ansible_distribution_major_version == "36"
 
 - name: internet keepassxc 1
   yum:
@@ -79,7 +70,6 @@
     name:
       - seahorse
       - keepassxc
-      - kpcli
   become: true
 
 - name: internet keepassxc 2
