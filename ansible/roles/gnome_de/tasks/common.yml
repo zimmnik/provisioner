@@ -3,7 +3,7 @@
     - name: hostname
       hostname: name={{ hostname }}
     
-    - name: internet oracle epel repo
+    - name: common oracle epel repo
       yum: name=oracle-epel-release-el9 state=latest
       when: ansible_distribution == "OracleLinux" and ansible_distribution_major_version == "9"
 
