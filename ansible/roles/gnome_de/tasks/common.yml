@@ -1,7 +1,12 @@
+
 - block:
     - name: hostname
       hostname: name={{ hostname }}
     
+    - name: internet oracle epel repo
+      yum: name=oracle-epel-release-el9 state=latest
+      when: ansible_distribution == "OracleLinux" and ansible_distribution_major_version == "9"
+
     - name: common utilites
       yum:
         state: latest
@@ -11,19 +16,19 @@
           - tmux
           - vim
           - less
-#          - atop
+          - atop
           - lshw
 
     - name: file utilites
       yum:
         state: latest
         name:
-#          - ncdu
+          - ncdu
           - tree
           - mc
           - unzip
-#          - p7zip
-#          - p7zip-plugins
+          - p7zip
+          - p7zip-plugins
           - tar
           - zstd
           - cifs-utils
@@ -37,9 +42,9 @@
         name:
           - bind-utils
           - curl
-#          - arp-scan
-#          - iftop
-#          - nload
+          - arp-scan
+          - iftop
+          - nload
           - nmap
           - iperf3
           - traceroute
