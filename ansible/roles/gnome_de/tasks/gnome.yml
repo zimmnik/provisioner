@@ -135,6 +135,13 @@
     - { key: "/org/gnome/shell/overrides/workspaces-only-on-primary", value: "false" }
     - { key: "/org/gnome/shell/app-switcher/current-workspace-only", value: "true" }
 
+- name: gnome extension no-overview
+  import_role:
+    name: jaredhocutt.gnome_extensions
+  vars:
+    gnome_extension_ids:
+      - 4099
+
 # FYI https://discourse.gnome.org/t/enable-gnome-extensions-without-session-restart/7936
 - block:
     - name: gnome restart GUI 1
@@ -164,13 +171,6 @@
       when: autologin_state.changed
 
   become: true
-
-- name: gnome extension no-overview
-  import_role:
-    name: jaredhocutt.gnome_extensions
-  vars:
-    gnome_extension_ids:
-      - 4099
 
 - include_tasks: "gnome_enable_extension.yml"
   loop:
