@@ -67,4 +67,7 @@
     - name: power-profiles 2
       service: name=power-profiles-daemon enabled=yes state=started
 
+    - name: fstrim timer
+      systemd: name=fstrim.timer enabled=yes
+
   become: true
