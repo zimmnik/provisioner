@@ -11,6 +11,7 @@
     name:
       - firefox
       - ffmpeg
+      - gstreamer1-libav
       - libva
       - libva-utils
   become: true

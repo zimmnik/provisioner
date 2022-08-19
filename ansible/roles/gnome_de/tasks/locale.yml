@@ -1,5 +1,9 @@
-- name: locale glibc
-  yum: name=glibc-langpack-ru state=latest
+- name: locale common packages
+  yum:
+    state: latest
+    name:
+      - langpacks-ru
+      - glibc-langpack-ru
   become: true
 
 - name: locale env_lang 1
@@ -8,7 +12,7 @@
   changed_when: false
 
 - name: locale env_lang 2
-  shell: localectl set-locale LANG="ru_RU.UTF-8"
+  shell: localectl set-locale "LANG=ru_RU.UTF-8"
   become: true
   when: env_lang.stdout != "ru_RU.UTF-8"
 
@@ -18,7 +22,7 @@
   changed_when: false
 
 - name: locale env_lc_messages 2
-  shell: localectl set-locale LC_MESSAGES="en_US.UTF-8"
+  shell: localectl set-locale "LC_MESSAGES=en_US.UTF-8"
   become: true
   when: env_lc_messages.stdout != "en_US.UTF-8"
 

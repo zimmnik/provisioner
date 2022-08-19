@@ -165,8 +165,16 @@
 
   become: true
 
+- name: gnome extension no-overview
+  import_role:
+    name: jaredhocutt.gnome_extensions
+  vars:
+    gnome_extension_ids:
+      - 4099
+
 - include_tasks: "gnome_enable_extension.yml"
   loop:
+    - no-overview@fthx
     - ding@rastersoft.com
     - quake-mode@repsac-by.github.com
     - unite@hardpixel.eu
