@@ -182,15 +182,26 @@
   loop_control:
     loop_var: extension_name
 
-- name: gnome extension manager 1
+- name: gnome flatpak 1
   yum: name=flatpak state=latest
   become: true
 
-- name: gnome extension manager 2
+- name: gnome flatpak 2
   community.general.flatpak_remote:
     name: flathub
     state: present
     flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
+  become: true
+
+#https://askubuntu.com/questions/1403931/how-to-apply-system-theme-to-flatpak-apps-that-use-gtk4
+- name: gnome flatpak 3
+  community.general.flatpak:
+    name: org.gtk.Gtk3theme.Adwaita-dark
+    state: present
+  become: true
+
+- name: gnome flatpak 4
+  command: flatpak override --env GTK_THEME=Adwaita-dark
   become: true
 
 - name: gnome extension manager 3
