@@ -1,8 +1,4 @@
-- name: internet oracle epel repo
-  yum: name=oracle-epel-release-el9 state=latest
-  become: true
-  when: ansible_distribution == "OracleLinux" and ansible_distribution_major_version == "9"
-
+- include_tasks: "epel.yml"
 - include_tasks: "rpmfusion.yml"
 
 - name: internet firefox 1
@@ -63,7 +59,7 @@
 - name: internet chromium
   yum: name=chromium-freeworld state=latest
   become: true
-  when: ansible_distribution == "Fedora" and ansible_distribution_major_version == "36"
+  when: ansible_distribution == "Fedora"
 
 - name: internet keepassxc 1
   yum:

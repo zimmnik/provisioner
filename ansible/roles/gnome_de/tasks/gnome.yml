@@ -243,7 +243,7 @@
     - name: gnome icon theme 2
       dconf: key="/org/gnome/desktop/interface/icon-theme" value="'gnome'"
 
-  when: ansible_distribution == "Fedora" and ansible_distribution_major_version == "36"
+  when: ansible_distribution == "Fedora"
 
 - name: gnome fonts 1
   file:

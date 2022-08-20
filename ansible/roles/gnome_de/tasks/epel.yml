@@ -1,0 +1,4 @@
+- name: epel
+  yum: name=oracle-epel-release-el{{ ansible_distribution_major_version }} state=latest
+  when: ansible_distribution == "OracleLinux"
+  become: true

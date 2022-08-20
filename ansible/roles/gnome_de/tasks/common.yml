@@ -1,11 +1,8 @@
+- include_tasks: "epel.yml"
 
 - block:
     - name: hostname
       hostname: name={{ hostname }}
-    
-    - name: common oracle epel repo
-      yum: name=oracle-epel-release-el9 state=latest
-      when: ansible_distribution == "OracleLinux" and ansible_distribution_major_version == "9"
 
     - name: common utilites
       yum:

@@ -1,20 +1,38 @@
+- name: rpm-fusion repo 1
+  yum:
+    name: distribution-gpg-keys
+    state: present
+  become: true
+
 - block:
-    - name: rpm-fusion repo 1
-      yum:
-        name: distribution-gpg-keys
-        state: present
-    
-    - name: rpm-fusion repo 2
+    - name: rpm-fusion repo 2 fedora
       ansible.builtin.rpm_key:
         state: present
         key: "{{ item }}"
       loop:
         - /usr/share/distribution-gpg-keys/rpmfusion/RPM-GPG-KEY-rpmfusion-free-fedora-36
+
+    - name: rpm-fusion repo 3 fedora
+      yum:
+        #name: https://mirror.yandex.ru/fedora/rpmfusion/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm
+        name: https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm
+        state: present
+
+  become: true
+  when: ansible_distribution == "Fedora"
+
+- block:
+    - name: rpm-fusion repo 2 oracle
+      ansible.builtin.rpm_key:
+        state: present
+        key: "{{ item }}"
+      loop:
         - /usr/share/distribution-gpg-keys/rpmfusion/RPM-GPG-KEY-rpmfusion-free-el-9 
 
-    - name: rpm-fusion repo 3
+    - name: rpm-fusion repo 3 oracle
       yum:
         name: https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm
         state: present
 
   become: true
+  when: ansible_distribution == "OracleLinux"
