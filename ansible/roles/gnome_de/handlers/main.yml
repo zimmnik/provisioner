@@ -1,4 +1,5 @@
 ---
-- name: gnome logout
-  shell: gnome-session-quit --no-prompt
+- name: "Force gnome logout"
+  ansible.builtin.shell:  # noqa command-instead-of-shell
+    cmd: gnome-session-quit --no-prompt
   listen: "session_logout"

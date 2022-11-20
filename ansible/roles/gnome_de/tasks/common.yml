@@ -1,12 +1,16 @@
-- include_tasks: "epel.yml"
+- name: "Add Fedora EPEL repo"
+  ansible.builtin.include_tasks: "epel.yml"
 
-- block:
-    - name: hostname
-      hostname: name={{ hostname }}
+- name: "Basic setup"
+  become: true
+  block:
+    - name: "Setup hostname"
+      ansible.builtin.hostname:
+        name: "{{ hostname }}"
 
-    - name: common utilites
-      yum:
-        state: latest
+    - name: "Add common utilites"
+      ansible.builtin.yum:
+        state: present
         name:
           - man
           - bash-completion
@@ -16,9 +20,9 @@
           - atop
           - lshw
 
-    - name: file utilites
-      yum:
-        state: latest
+    - name: "Add file utilites"
+      ansible.builtin.yum:
+        state: present
         name:
           - ncdu
           - tree
@@ -33,9 +37,9 @@
           - iotop
           - sysstat
 
-    - name: network utilites
-      yum:
-        state: latest
+    - name: "Add network utilites"
+      ansible.builtin.yum:
+        state: present
         name:
           - bind-utils
           - curl
@@ -45,26 +49,38 @@
           - nmap
           - iperf3
           - traceroute
-    
-    - name: SSH 1
-      yum: name=openssh-server state=latest
-    
-    - name: SSH 2
-      service: name=sshd enabled=yes state=started
-    
-    - name: time sync 1
-      yum: name=chrony state=latest
-    
-    - name: time sync 2
-      service: name=chronyd enabled=yes state=started
 
-    - name: power-profiles 1
-      yum: name=power-profiles-daemon state=latest
+    - name: "Add SSH server"
+      ansible.builtin.yum:
+        name: openssh-server
+        state: present
+    - name: "Enable SSH server"
+      ansible.builtin.service:
+        name: sshd
+        enabled: true
+        state: started
 
-    - name: power-profiles 2
-      service: name=power-profiles-daemon enabled=yes state=started
+    - name: "Add Chrony"
+      ansible.builtin.yum:
+        name: chrony
+        state: present
+    - name: "Enable Chrony"
+      ansible.builtin.service:
+        name: chronyd
+        enabled: true
+        state: started
 
-    - name: fstrim timer
-      systemd: name=fstrim.timer enabled=yes
+    - name: "Add power-profiles daemon"
+      ansible.builtin.yum:
+        name: power-profiles-daemon
+        state: present
+    - name: "Enable power-profiles daemon"
+      ansible.builtin.service:
+        name: power-profiles-daemon
+        enabled: true
+        state: started
 
-  become: true
+    - name: "Enable fstrim timer"
+      ansible.builtin.systemd:
+        name: fstrim.timer
+        enabled: true

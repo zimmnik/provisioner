@@ -1,8 +1,6 @@
-#-----------------------------------------------------------------------------------------------
-# GNOME
-- name: gnome packages
-  yum:
-    state: latest
+- name: "Add gnome packages"
+  ansible.builtin.yum:
+    state: present
     name:
       - "@base-x"
       - gnome-session-xsession
@@ -15,70 +13,70 @@
       - dnsmasq
   become: true
 
-- name: gnome gdm wayland disable
-  lineinfile:
+- name: "Disable wayland"
+  ansible.builtin.lineinfile:
     path: /etc/gdm/custom.conf
     regexp: 'WaylandEnable='
     line: WaylandEnable=false
   become: true
 
-- name: gnome systemd target 1
-  command: systemctl get-default
+- name: "Get default systemd target"
+  ansible.builtin.command: systemctl get-default # noqa: command-instead-of-module
   register: contents
   changed_when: false
 
-- name: gnome systemd target 2
-  command: systemctl set-default graphical.target
+- name: "Set default systemd target"
+  ansible.builtin.command: systemctl set-default graphical.target
   when: contents.stdout != "graphical.target"
   become: true
-#-----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------
 # GNOME EXTENSIONS
-
-#- name: gnome extension drop-down terminal
-#  import_role:
-#    name: jaredhocutt.gnome_extensions
-#  vars:
-#    gnome_extension_ids:
-#      - 3780
 #
-#- name: gnome extension drop-down terminal 2
-#  dconf:
-#    key: "{{ item.key }}"
-#    value: "{{ item.value |string }}"
-#  loop:
-#    - { key: "/com/github/amezin/ddterm/custom-font", value: "'Bitstream Vera Sans Mono 14'" }
-#    - { key: "/com/github/amezin/ddterm/ddterm-toggle-hotkey", value: "['<Control>grave']" }
-#    - { key: "/com/github/amezin/ddterm/detect-urls-news-man", value: "false" }
-#    - { key: "/com/github/amezin/ddterm/detect-urls-voip", value: "false" }
-#    - { key: "/com/github/amezin/ddterm/notebook-border", value: "false" }
-#    - { key: "/com/github/amezin/ddterm/override-window-animation", value: "false" }
-#    - { key: "/com/github/amezin/ddterm/scroll-on-keystroke", value: "false" }
-#    - { key: "/com/github/amezin/ddterm/scrollback-unlimited", value: "true" }
-#    - { key: "/com/github/amezin/ddterm/tab-policy", value: "'automatic'" }
-#    - { key: "/com/github/amezin/ddterm/theme-variant", value: "'dark'" }
-#    - { key: "/com/github/amezin/ddterm/use-system-font", value: "false" }
-#    - { key: "/com/github/amezin/ddterm/use-theme-colors", value: "true" }
-#    - { key: "/com/github/amezin/ddterm/window-maximize", value: "false" }
-#    - { key: "/com/github/amezin/ddterm/window-size", value: "1.0" }
+# - name: gnome extension drop-down terminal
+#   ansible.builtin.import_role:
+#     name: jaredhocutt.gnome_extensions
+#   vars:
+#     gnome_extension_ids:
+#       - 3780
+#
+# - name: gnome extension drop-down terminal 2
+#   community.general.system.dconf:
+#     key: "{{ item.key }}"
+#     value: "{{ item.value | string }}"
+#   loop:
+#     - { key: "/com/github/amezin/ddterm/custom-font", value: "'Bitstream Vera Sans Mono 14'" }
+#     - { key: "/com/github/amezin/ddterm/ddterm-toggle-hotkey", value: "['<Control>grave']" }
+#     - { key: "/com/github/amezin/ddterm/detect-urls-news-man", value: "false" }
+#     - { key: "/com/github/amezin/ddterm/detect-urls-voip", value: "false" }
+#     - { key: "/com/github/amezin/ddterm/notebook-border", value: "false" }
+#     - { key: "/com/github/amezin/ddterm/override-window-animation", value: "false" }
+#     - { key: "/com/github/amezin/ddterm/scroll-on-keystroke", value: "false" }
+#     - { key: "/com/github/amezin/ddterm/scrollback-unlimited", value: "true" }
+#     - { key: "/com/github/amezin/ddterm/tab-policy", value: "'automatic'" }
+#     - { key: "/com/github/amezin/ddterm/theme-variant", value: "'dark'" }
+#     - { key: "/com/github/amezin/ddterm/use-system-font", value: "false" }
+#     - { key: "/com/github/amezin/ddterm/use-theme-colors", value: "true" }
+#     - { key: "/com/github/amezin/ddterm/window-maximize", value: "false" }
+#     - { key: "/com/github/amezin/ddterm/window-size", value: "1.0" }
 
-- name: gnome extension gnome desktop icons 1
-  import_role:
+- name: "Add Desktop Icons NG extenstion"
+  ansible.builtin.import_role:
     name: jaredhocutt.gnome_extensions
   vars:
     gnome_extension_ids:
       - 2087
 
-- name: extension gnome quake-mode 1
-  import_role:
+- name: "Add quake-mode extenstion"
+  ansible.builtin.import_role:
     name: jaredhocutt.gnome_extensions
   vars:
     gnome_extension_ids:
       - 1411
 
-- name: extension gnome quake-mode 2
-  dconf:
+- name: "Setup quake-mode extenstion"
+  community.general.system.dconf:
     key: "{{ item.key }}"
-    value: "{{ item.value |string }}"
+    value: "{{ item.value | string }}"
   loop:
     - { key: "/com/github/repsac-by/quake-mode/quake-mode-tray", value: "true" }
     - { key: "/com/github/repsac-by/quake-mode/quake-mode-width", value: "100" }
@@ -88,21 +86,23 @@
     - { key: "/com/github/repsac-by/quake-mode/quake-mode-hotkey", value: "['<Primary>grave']" }
     - { key: "/com/github/repsac-by/quake-mode/quake-mode-app", value: "'org.gnome.Terminal.desktop'" }
 
-- name: gnome extension gnome unite 1
-  yum: name=xprop state=latest
+- name: "Add quake-mode extenstion dependency"
+  ansible.builtin.yum:
+    name: xprop
+    state: present
   become: true
 
-- name: gnome extension gnome unite 2
-  import_role:
+- name: "Add Unite extenstion"
+  ansible.builtin.import_role:
     name: jaredhocutt.gnome_extensions
   vars:
     gnome_extension_ids:
       - 1287
 
-- name: gnome extension gnome unite 3
-  dconf:
+- name: "Setup Unite extenstion"
+  community.general.system.dconf:
     key: "{{ item.key }}"
-    value: "{{ item.value |string }}"
+    value: "{{ item.value | string }}"
   loop:
     - { key: "/org/gnome/shell/extensions/unite/extend-left-box", value: "false" }
     - { key: "/org/gnome/shell/extensions/unite/show-desktop-name", value: "false" }
@@ -117,17 +117,17 @@
     - { key: "/org/gnome/shell/extensions/unite/window-buttons-placement", value: "'last'" }
     - { key: "/org/gnome/shell/extensions/unite/window-buttons-theme", value: "'united-dark'" }
 
-- name: gnome extension gnome workspace 1
-  import_role:
+- name: "Add Workspace indicator extenstion"
+  ansible.builtin.import_role:
     name: jaredhocutt.gnome_extensions
   vars:
     gnome_extension_ids:
       - 21
 
-- name: gnome extension gnome workspace 2
-  dconf:
+- name: "Add Unite extenstion"
+  community.general.system.dconf:
     key: "{{ item.key }}"
-    value: "{{ item.value |string }}"
+    value: "{{ item.value | string }}"
   loop:
     - { key: "/org/gnome/mutter/dynamic-workspaces", value: "false" }
     - { key: "/org/gnome/mutter/workspaces-only-on-primary", value: "false" }
@@ -135,17 +135,19 @@
     - { key: "/org/gnome/shell/overrides/workspaces-only-on-primary", value: "false" }
     - { key: "/org/gnome/shell/app-switcher/current-workspace-only", value: "true" }
 
-- name: gnome extension no-overview
-  import_role:
+- name: "Add No overview at start-up extenstion"
+  ansible.builtin.import_role:
     name: jaredhocutt.gnome_extensions
   vars:
     gnome_extension_ids:
       - 4099
 
 # FYI https://discourse.gnome.org/t/enable-gnome-extensions-without-session-restart/7936
-- block:
-    - name: gnome restart GUI 1
-      blockinfile:
+- name: "Start X session"
+  become: true
+  block:
+    - name: "Enable gdm autologin"
+      ansible.builtin.blockinfile:
         dest: /etc/gdm/custom.conf
         marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
         insertafter: "\\[daemon\\]"
@@ -153,26 +155,24 @@
           AutomaticLoginEnable=True
           AutomaticLogin={{ ansible_user_id }}
       register: autologin_state
-    
-    - name: gnome restart GUI 2
-      service: name=gdm state=restarted
+    - name: "Restart gdm"
+      ansible.builtin.service:
+        name: gdm
+        state: restarted
       notify:
         - session_logout
-    
-    - name: gnome restart GUI 3
-      pause:
+    - name: "Wait X session"
+      ansible.builtin.pause:
         seconds: 15
-    
-    - name: gnome restart GUI 4
-      blockinfile:
+    - name: "Disable gdm autologin"
+      ansible.builtin.blockinfile:
         dest: /etc/gdm/custom.conf
         marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
         state: absent
       when: autologin_state.changed
 
-  become: true
-
-- include_tasks: "gnome_enable_extension.yml"
+- name: "Enable extensions"
+  ansible.builtin.include_tasks: "gnome_enable_extension.yml"
   loop:
     - no-overview@fthx
     - ding@rastersoft.com
@@ -182,98 +182,100 @@
   loop_control:
     loop_var: extension_name
 
-- name: gnome flatpak 1
-  yum: name=flatpak state=latest
-  become: true
+- name: "Add flathub repo"
+  ansible.builtin.include_tasks: "flathub.yml"
 
-- name: gnome flatpak 2
-  community.general.flatpak_remote:
-    name: flathub
-    state: present
-    flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
-  become: true
-
-#https://askubuntu.com/questions/1403931/how-to-apply-system-theme-to-flatpak-apps-that-use-gtk4
-- name: gnome flatpak 3
+# https://askubuntu.com/questions/1403931/how-to-apply-system-theme-to-flatpak-apps-that-use-gtk4
+- name: "Add dark theme for flatpak"
   community.general.flatpak:
     name: org.gtk.Gtk3theme.Adwaita-dark
     state: present
   become: true
+  register: flatpak_theme
 
-- name: gnome flatpak 4
-  command: flatpak override --env GTK_THEME=Adwaita-dark
+- name: "Enable dark theme for flatpak"
+  ansible.builtin.command: flatpak override --env GTK_THEME=Adwaita-dark
+  when: flatpak_theme.changed # noqa: no-handler
   become: true
 
-- name: gnome extension manager 3
+- name: "Add extensions app"
   community.general.flatpak:
     name: org.gnome.Extensions
     state: present
   become: true
 
-#-----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------
 # GNOME VNC
-- name: gnome vnc 1
-  dconf:
+- name: "Disable build-in vnc encryption"
+  community.general.system.dconf:
     key: "{{ item.key }}"
-    value: "{{ item.value |string }}"
+    value: "{{ item.value | string }}"
   loop:
     - { key: "/org/gnome/desktop/remote-desktop/vnc/encryption", value: "['none']" }
-    
-#-----------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------
 # GNOME APPEARANCE
 
-- name: gnome color theme 1
-  dconf: key="/org/gnome/desktop/interface/color-scheme" value="'prefer-dark'"
+- name: "Enable dark color scheme"
+  community.general.system.dconf:
+    key: "/org/gnome/desktop/interface/color-scheme"
+    value: "'prefer-dark'"
 
-- name: gnome color theme 2
-  dconf: key="/org/gnome/desktop/interface/gtk-theme" value="'Adwaita-dark'"
+- name: "Enable dark gtk theme"
+  community.general.system.dconf:
+    key: "/org/gnome/desktop/interface/gtk-theme"
+    value: "'Adwaita-dark'"
 
-- block:
-    - name: gnome cursor theme 1
-      yum: name=dmz-cursor-themes state=latest
-      become: true
-    
-    - name: gnome cursor theme 2
-      dconf: key="/org/gnome/desktop/interface/cursor-theme" value="'DMZ-White'"
-
-    - name: gnome icon theme 1
-      yum: name=gnome-icon-theme state=latest
-      become: true
-    
-    - name: gnome icon theme 2
-      dconf: key="/org/gnome/desktop/interface/icon-theme" value="'gnome'"
-
+- name: "Enable personal cursors and icond"
   when: ansible_distribution == "Fedora"
+  block:
+    - name: "Add dmz cursors"
+      ansible.builtin.yum:
+        name: dmz-cursor-themes
+        state: present
+      become: true
+    - name: "Enable dmz cursor"
+      community.general.system.dconf:
+        key: "/org/gnome/desktop/interface/cursor-theme"
+        value: "'DMZ-White'"
 
-- name: gnome fonts 1
-  file:
+    - name: "Add gnome icon theme"
+      ansible.builtin.yum:
+        name: gnome-icon-theme
+        state: present
+      become: true
+    - name: "Enable gnome icon theme"
+      community.general.system.dconf:
+        key: "/org/gnome/desktop/interface/icon-theme"
+        value: "'gnome'"
+- name: "Create personal fonts directory"
+  ansible.builtin.file:
     path: ~/.local/share/fonts/
     state: directory
-
-- name: gnome fonts 2
-  unarchive:
+    mode: u=rwx,g=rx,o=rx
+- name: "Add bitstream-vera fonts"
+  ansible.builtin.unarchive:
     src: https://ftp.gnome.org/pub/GNOME/sources/ttf-bitstream-vera/1.10/ttf-bitstream-vera-1.10.zip
     dest: ~/.local/share/fonts/
-    remote_src: yes
+    remote_src: true
     creates: ~/.local/share/fonts/ttf-bitstream-vera-1.10/
   register: fonts_state
 
-- name: gnome fonts 3
-  unarchive:
+- name: "Add ubuntu fonts"
+  ansible.builtin.unarchive:
     src: https://assets.ubuntu.com/v1/0cef8205-ubuntu-font-family-0.83.zip
     dest: ~/.local/share/fonts/
-    remote_src: yes
+    remote_src: true
     creates: ~/.local/share/fonts/ubuntu-font-family-0.83/
   register: fonts_state
 
-- name: gnome fonts 3
-  command: fc-cache -f ~/.local/share/fonts/
-  when: fonts_state.changed
+- name: "Caching personal fonts"
+  ansible.builtin.command: fc-cache -f ~/.local/share/fonts/
+  when: fonts_state.changed # noqa: no-handler
 
-- name: gnome fonts 4
-  dconf:
+- name: "Enable personal fonts"
+  community.general.system.dconf:
     key: "{{ item.key }}"
-    value: "{{ item.value |string }}"
+    value: "{{ item.value | string }}"
   loop:
     - { key: "/org/gnome/desktop/interface/monospace-font-name", value: "'Ubuntu Mono 11'" }
     - { key: "/org/gnome/desktop/interface/document-font-name", value: "'Ubuntu Italic 11'" }
@@ -282,32 +284,40 @@
     - { key: "/org/gnome/desktop/wm/preferences/titlebar-font", value: "'Ubuntu Medium 11'" }
     - { key: "/org/gnome/desktop/interface/font-antialiasing", value: "'rgba'" }
 
-- name: gnome background and screensaver
-  dconf:
+- name: "Setup background and screensaver"
+  community.general.system.dconf:
     key: "{{ item.key }}"
-    value: "{{ item.value |string }}"
+    value: "{{ item.value | string }}"
   loop:
     - { key: "/org/gnome/desktop/background/primary-color", value: "'#2e3436'" }
     - { key: "/org/gnome/desktop/background/picture-options", value: "'wallpaper'" }
     - { key: "/org/gnome/desktop/screensaver/primary-color", value: "'#2e3436'" }
     - { key: "/org/gnome/desktop/screensaver/picture-options", value: "'wallpaper'" }
 
-- name: gnome nightlight
-  dconf: key="/org/gnome/settings-daemon/plugins/color/night-light-enabled" value="true"
+- name: "Enable nignt-light"
+  community.general.system.dconf:
+    key: "/org/gnome/settings-daemon/plugins/color/night-light-enabled"
+    value: true
 
-- name: gnome button-layout
-  dconf: key="/org/gnome/desktop/wm/preferences/button-layout" value="'appmenu:minimize,maximize,close'"
+- name: "Setup button layout"
+  community.general.system.dconf:
+    key: "/org/gnome/desktop/wm/preferences/button-layout"
+    value: "'appmenu:minimize,maximize,close'"
 
-- name: gnome clock
-  dconf: key="/org/gnome/desktop/interface/clock-show-weekday" value="true"
+- name: "Enable weekday on clock"
+  community.general.system.dconf:
+    key: "/org/gnome/desktop/interface/clock-show-weekday"
+    value: true
 
-- name: gnome battery
-  dconf: key="/org/gnome/desktop/interface/show-battery-percentage" value="true"
+- name: "Setup battery indicator"
+  community.general.system.dconf:
+    key: "/org/gnome/desktop/interface/show-battery-percentage"
+    value: true
 
-- name: gnome wm hotkeys
-  dconf:
+- name: "Setup wm keybindings"
+  community.general.system.dconf:
     key: "{{ item.key }}"
-    value: "{{ item.value |string }}"
+    value: "{{ item.value | string }}"
   loop:
     - { key: "/org/gnome/desktop/wm/keybindings/close", value: "['<Super>q']" }
     - { key: "/org/gnome/desktop/wm/keybindings/show-desktop", value: "['<Super>d']" }
@@ -323,23 +333,27 @@
     - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-3", value: "['<Primary><Shift>numbersign']" }
     - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-4", value: "['<Primary><Shift>dollar']" }
 
-- block:
-    - name: gnome lock&sleep
-      dconf:
+- name: "Remove useless settings on virtual env"
+  when: ansible_virtualization_role == "guest"
+  block:
+    - name: "Disable lock screen and auto sleeping"
+      community.general.system.dconf:
         key: "{{ item.key }}"
-        value: "{{ item.value |string }}"
+        value: "{{ item.value | string }}"
       loop:
         - { key: "/org/gnome/desktop/lockdown/disable-lock-screen", value: "true" }
         - { key: "/org/gnome/desktop/screensaver/lock-enabled", value: "false" }
         - { key: "/org/gnome/desktop/session/idle-delay", value: "uint32 0" }
         - { key: "/org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type", value: "'nothing'" }
         - { key: "/org/gnome/desktop/notifications/show-in-lock-screen", value: "false" }
-    
-    - name: gnome monitors
-      copy: src=monitors.xml dest=~/.config/
+    - name: "Setup virtual screen"
+      ansible.builtin.copy:
+        src: monitors.xml
+        dest: ~/.config/
+        mode: u=rw,g=r,o=r
 
-    - name: gnome autologin
-      blockinfile:
+    - name: "Enable gdm autologin"
+      ansible.builtin.blockinfile:
         dest: /etc/gdm/custom.conf
         marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
         insertafter: "\\[daemon\\]"
@@ -347,5 +361,3 @@
           AutomaticLoginEnable=True
           AutomaticLogin={{ ansible_user_id }}
       become: true
-
-  when: ansible_virtualization_role == "guest"

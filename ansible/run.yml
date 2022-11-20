@@ -1,4 +1,5 @@
 ---
-- hosts: all
+- name: "Setup Gnome DE"
+  hosts: all
   roles:
     - gnome_de

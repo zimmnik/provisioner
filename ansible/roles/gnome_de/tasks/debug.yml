@@ -1,43 +1,43 @@
-#- name: gnome workspace 4
-#  command: dbus-launch --exit-with-session gnome-extensions enable workspace-indicator@gnome-shell-extensions.gcampax.github.com
+# - name: gnome workspace 4
+#   ansible.builtin.command: dbus-launch --exit-with-session gnome-extensions enable workspace-indicator@gnome-shell-extensions.gcampax.github.com
 #
-#- name: Print some debug information 
-#  vars: 
-#    msg: |
-#      Module Variables ("vars"):
-#      --------------------------------
-#      {{ vars | to_nice_json }} 
-#      
-#      Environment Variables ("environment"):
-#      --------------------------------
-#      {{ environment | to_nice_json }} 
-#      
-#      GROUP NAMES Variables ("group_names"):
-#      --------------------------------
-#      {{ group_names | to_nice_json }}
-#      
-#      GROUPS Variables ("groups"):
-#      --------------------------------
-#      {{ groups | to_nice_json }}
-#      
-#      HOST Variables ("hostvars"):
-#      --------------------------------
-#      {{ hostvars | to_nice_json }} 
+# - name: Print some debug information
+#   vars:
+#     msg: |
+#       Module Variables ("vars"):
+#       --------------------------------
+#       {{ vars | to_nice_json }}
 #
-#  debug: 
-#    msg: "{{ msg.split('\n') }}"       
-#  tags: debug_info
+#       Environment Variables ("environment"):
+#       --------------------------------
+#       {{ environment | to_nice_json }}
 #
-#- debug:
-#    msg: System {{ ansible_user_dir }}
-#- command: id
-#  register: out
-#- debug: var=out.stdout_lines
+#       GROUP NAMES Variables ("group_names"):
+#       --------------------------------
+#       {{ group_names | to_nice_json }}
 #
-#- debug:
-#    msg: System {{ ansible_user_dir }}
-#  become: true
-#- command: id
-#  register: out
-#  become: true
-#- debug: var=out.stdout_lines
+#       GROUPS Variables ("groups"):
+#       --------------------------------
+#       {{ groups | to_nice_json }}
+#
+#       HOST Variables ("hostvars"):
+#       --------------------------------
+#       {{ hostvars | to_nice_json }}
+#
+#   debug:
+#     msg: "{{ msg.split('\n') }}"
+#   tags: debug_info
+#
+# - debug:
+#     msg: System {{ ansible_user_dir }}
+# - ansible.builtin.command: id
+#   register: out
+# - debug: var=out.stdout_lines
+#
+# - debug:
+#     msg: System {{ ansible_user_dir }}
+#   become: true
+# - ansible.builtin.command: id
+#   register: out
+#   become: true
+# - debug: var=out.stdout_lines

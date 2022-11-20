@@ -1,4 +1,20 @@
-- name: epel
-  yum: name=oracle-epel-release-el{{ ansible_distribution_major_version }} state=latest
-  when: ansible_distribution == "OracleLinux"
+- name: "Add Fedora EPEL repo"
+  when: ansible_distribution == "AlmaLinux"
   become: true
+  block:
+    - name: "Enable AlmaLinux PowerTools/CRB repo"
+      community.general.ini_file:
+        path: /etc/yum.repos.d/almalinux-crb.repo
+        section: crb
+        option: enabled
+        value: 1
+        create: false
+    - name: "Add Fedora EPEL repo"
+      ansible.builtin.dnf:
+        name: epel-release
+        state: present
+
+# - name: epel
+#   ansible.builtin.yum: name=oracle-epel-release-el{{ ansible_distribution_major_version }} state=latest
+#   when: ansible_distribution == "OracleLinux"
+#   become: true

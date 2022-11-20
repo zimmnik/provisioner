@@ -1,6 +1,6 @@
-- name: filemanager 1
-  yum:
-    state: latest
+- name: "Add file tools"
+  ansible.builtin.yum:
+    state: present
     name:
       - nautilus
       - gnome-terminal-nautilus
@@ -13,10 +13,10 @@
       - xdg-user-dirs-gtk
   become: true
 
-- name: filemanager 2
-  dconf:
+- name: "Setup file manager"
+  community.general.system.dconf:
     key: "{{ item.key }}"
-    value: "{{ item.value |string}}"
+    value: "{{ item.value | string }}"
   loop:
     - { key: "/org/gnome/nautilus/list-view/use-tree-view", value: "true" }
     - { key: "/org/gnome/desktop/media-handling/autorun-never", value: "true" }
@@ -25,8 +25,8 @@
     - { key: "/org/gnome/nautilus/preferences/default-folder-viewer", value: "'list-view'" }
     - { key: "/org/gnome/nautilus/preferences/search-filter-time-type", value: "'last_modified'" }
 
-- name: filemanager mc
-  blockinfile:
+- name: "Add bash link to mc"
+  ansible.builtin.blockinfile:
     dest: ~/.bashrc
     marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK filemanager mc -->"
     block: |

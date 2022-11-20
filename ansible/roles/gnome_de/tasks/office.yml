@@ -1,6 +1,6 @@
-- name: office utilites
-  yum:
-    state: latest
+- name: "Add office utilites"
+  ansible.builtin.yum:
+    state: present
     name:
       - gedit-plugin-textsize
       - evince
@@ -9,21 +9,23 @@
       - libreoffice-calc
   become: true
 
-- name: gedit settings
-  dconf:
+- name: "Setup gedit"
+  community.general.system.dconf:
     key: "{{ item.key }}"
-    value: "{{ item.value |string }}"
+    value: "{{ item.value | string }}"
   loop:
     - { key: "/org/gnome/gedit/preferences/editor/scheme", value: "'oblivion'" }
     - { key: "/org/gnome/gedit/plugins/active-plugins", value: "['textsize', 'spell', 'sort', 'modelines', 'filebrowser', 'docinfo']" }
-    
-- name: office vim root
-  copy:
+
+- name: "Setup vim"
+  ansible.builtin.copy:
     src: .vimrc
+    mode: u=rw,g=r,o=r
     dest: /root
   become: true
 
-- name: office vim 
-  copy:
+- name: "Setup vim for root"
+  ansible.builtin.copy:
     src: .vimrc
+    mode: u=rw,g=r,o=r
     dest: ~/

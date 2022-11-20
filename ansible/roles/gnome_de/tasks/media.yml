@@ -1,17 +1,10 @@
-- include_tasks: "rpmfusion.yml"
+- name: "Add RPM Fusion free repo"
+  ansible.builtin.include_tasks: "rpmfusion.yml"
 
-- name: media utilites 1
-  yum: name=flatpak state=latest
-  become: true
+- name: "Add flathub repo"
+  ansible.builtin.include_tasks: "flathub.yml"
 
-- name: media utilites 2
-  community.general.flatpak_remote:
-    name: flathub
-    state: present
-    flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
-  become: true
-
-- name: media utilites 3
+- name: "Add media utils"
   community.general.flatpak:
     name: "{{ item }}"
     state: present
@@ -20,16 +13,17 @@
     - io.github.celluloid_player.Celluloid
     - com.xnview.XnViewMP
 
-- name: celluloid settings 1
-  file:
+- name: "Add celluloid config directory"
+  ansible.builtin.file:
     path: ~/.var/app/io.github.celluloid_player.Celluloid/config/glib-2.0/settings/
+    mode: u+rw,g-rx,o-rx
     state: directory
 
 # https://blogs.gnome.org/mclasen/2019/07/12/settings-in-a-sandbox-world/
-- name: celluloid settings 2
-  blockinfile:
+- name: "Setup Celluloid"
+  ansible.builtin.blockinfile:
     dest: ~/.var/app/io.github.celluloid_player.Celluloid/config/glib-2.0/settings/keyfile
-    create: yes
+    create: true
     mode: u+rw,g-rwx,o-rwx
     marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK -->"
     block: |-

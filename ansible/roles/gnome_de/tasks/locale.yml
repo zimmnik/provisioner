@@ -1,43 +1,50 @@
-- name: locale common packages
-  yum:
-    state: latest
+- name: "Add locale packages"
+  ansible.builtin.yum:
+    state: present
     name:
       - langpacks-ru
       - glibc-langpack-ru
   become: true
 
-- name: locale env_lang 1
-  shell: locale | grep LANG | cut -d "=" -f2
+- name: "Get LANG locale"
+  ansible.builtin.command:
+    cmd: locale | grep LANG | cut -d "=" -f2
   register: env_lang
   changed_when: false
 
-- name: locale env_lang 2
-  shell: localectl set-locale "LANG=ru_RU.UTF-8"
+- name: "Setup RU locale"
   become: true
   when: env_lang.stdout != "ru_RU.UTF-8"
+  ansible.builtin.command:
+    cmd: localectl set-locale "LANG=ru_RU.UTF-8"
 
-- name: locale env_lc_messages 1
-  shell: locale | grep LC_MESSAGES | cut -d "=" -f2
+- name: "Get LC_MESSAGES locale"
+  ansible.builtin.command:
+    cmd: locale | grep LC_MESSAGES | cut -d "=" -f2
   register: env_lc_messages
   changed_when: false
 
-- name: locale env_lc_messages 2
-  shell: localectl set-locale "LC_MESSAGES=en_US.UTF-8"
+- name: "Setup LC_MESSAGES locale"
   become: true
   when: env_lc_messages.stdout != "en_US.UTF-8"
+  ansible.builtin.command:
+    cmd: localectl set-locale "LC_MESSAGES=en_US.UTF-8"
 
-- name: locale timezone
-  timezone: name=Europe/Moscow
+- name: "Setup Moscow timezone"
+  community.general.system.timezone:
+    name: Europe/Moscow
   become: true
 
-- name: locale gnome input languages
-  dconf: key="/org/gnome/desktop/input-sources/sources" value="[('xkb', 'us'), ('xkb', 'ru')]"
+- name: "Setup locale switcher"
+  community.general.system.dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value | string }}"
+  loop:
+    - { key: "/org/gnome/desktop/input-sources/sources", value: "[('xkb', 'us'), ('xkb', 'ru')]" }
+    - { key: "/org/gnome/desktop/input-sources/xkb-options", value: "['lv3:ralt_switch', 'grp:alt_shift_toggle']" }
+    - { key: "/org/gnome/desktop/input-sources/per-window", value: "true" }
 
-- name: locale gnome input hotkey
-  dconf: key="/org/gnome/desktop/input-sources/xkb-options" value="['lv3:ralt_switch', 'grp:alt_shift_toggle']"
-
-- name: locale gnome input per window
-  dconf: key="/org/gnome/desktop/input-sources/per-window" value="true"
-
-- name: locale gnome region
-  dconf: key="/system/locale/region" value="'ru_RU.UTF-8'"
+- name: "Setup gnome region"
+  community.general.system.dconf:
+    key: "/system/locale/region"
+    value: "'ru_RU.UTF-8'"

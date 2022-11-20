@@ -1,9 +1,12 @@
-- include_tasks: "epel.yml"
-- include_tasks: "rpmfusion.yml"
+- name: "Add Fedora EPEL repo"
+  ansible.builtin.include_tasks: "epel.yml"
 
-- name: internet firefox 1
-  yum:
-    state: latest
+- name: "Add RPM Fusion free repo"
+  ansible.builtin.include_tasks: "rpmfusion.yml"
+
+- name: "Add Firefox"
+  ansible.builtin.yum:
+    state: present
     name:
       - firefox
       - ffmpeg
@@ -12,94 +15,112 @@
       - libva-utils
   become: true
 
-- name: internet firefox 2
-  stat:
+- name: "Add Firefox config directory"
+  ansible.builtin.stat:
     path: ~/.mozilla
+    mode: u=rw,g=r,o=r
   register: mozilla
 
-- block:
-    - name: internet firefox 3 #https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode 
-      shell: firefox --headless -CreateProfile default && firefox --headless -P default --screenshot about:logo && rm screenshot.png
+- name: "Setup Firefox"
+  when: not mozilla.stat.exists
+  block:
+# https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode
+    - name: "Create Firefox default config"
+      ansible.builtin.shell: # noqa no-changed-when
+        cmd: firefox --headless -CreateProfile default && firefox --headless -P default --screenshot about:logo && rm screenshot.png
 
-    - name: internet firefox 4
-      shell: find ~/.mozilla/firefox/ -maxdepth 1 -type d -name "*.default" -printf '%f\n'
+    - name: "Register Firefox default profile"
+      ansible.builtin.shell: # noqa no-changed-when
+        cmd: find ~/.mozilla/firefox/ -maxdepth 1 -type d -name "*.default" -printf '%f\n'
       register: out
-      ignore_errors: True
+      ignore_errors: true
 
-    - name: internet firefox 5
-      set_fact:
+    - name: "Make ff_profile variable"
+      ansible.builtin.set_fact:
         ff_profile: "{{ out.stdout }}"
 
-    - name: internet firefox 6
-      copy:
+    - name: "Setup Firefox"
+      ansible.builtin.copy:
         src: firefox/user.js
+        mode: u=rw,g=,o=
         dest: "~/.mozilla/firefox/{{ ff_profile }}/"
 
-    - name: internet firefox 7
-      file:
+    - name: "Made Firefox extensions directory"
+      ansible.builtin.file:
         path: "~/.mozilla/firefox/{{ ff_profile }}/extensions"
+        mode: u=rw,g=,o=
         state: directory
 
-    - name: internet firefox 8
-      get_url:
+    - name: "Add Firefox simple-translate extension"
+      ansible.builtin.get_url:
         url: https://addons.mozilla.org/firefox/downloads/file/3561208/
         dest: ~/.mozilla/firefox/{{ ff_profile }}/extensions/simple-translate@sienori.xpi
+        mode: u=rw,g=r,o=r
 
-    - name: internet firefox 9
-      get_url:
+    - name: "Add Firefox uBlock extension"
+      ansible.builtin.get_url:
         url: https://addons.mozilla.org/firefox/downloads/file/3579401/
         dest: ~/.mozilla/firefox/{{ ff_profile }}/extensions/uBlock0@raymondhill.net.xpi
+        mode: u=rw,g=r,o=r
 
-    - name: internet firefox 10
-      get_url:
+    - name: "Add Firefox Vimium extension"
+      ansible.builtin.get_url:
         url: https://addons.mozilla.org/firefox/downloads/file/3518684/
         dest: ~/.mozilla/firefox/{{ ff_profile }}/extensions/{d7742d87-e61d-4b78-b8a1-b469842139fa}.xpi
-  when: not mozilla.stat.exists
+        mode: u=rw,g=r,o=r
 
-- name: internet chromium
-  yum: name=chromium-freeworld state=latest
+- name: "Add Chromium"
   become: true
   when: ansible_distribution == "Fedora"
+  ansible.builtin.yum:
+    name: chromium-freeworld
+    state: present
 
-- name: internet keepassxc 1
-  yum:
-    state: latest
+- name: "Add keepassxc"
+  become: true
+  ansible.builtin.yum:
+    state: present
     name:
       - seahorse
       - keepassxc
-  become: true
 
-- name: internet keepassxc 2
-  file:
+- name: "Add keepassxc config directory"
+  ansible.builtin.file:
     path: "~/.config/keepassxc"
+    mode: u=rw,g=,o=
     state: directory
 
-- name: internet keepassxc 3
-  copy: src=keepassxc.ini dest=~/.config/keepassxc/
+- name: "Setup keepassxc"
+  ansible.builtin.copy:
+    src: keepassxc.ini
+    mode: u=rw,g=,o=
+    dest: ~/.config/keepassxc/
 
-- name: internet keepassxc 4
-  file:
+- name: "Add autostart config directory"
+  ansible.builtin.file:
     path: "~/.config/autostart"
+    mode: u=rw,g=,o=
     state: directory
 
-- name: internet keepassxc 5
-  copy:
+- name: "Add keepassxc to autostart"
+  ansible.builtin.copy:
     src: /usr/share/applications/org.keepassxc.KeePassXC.desktop
+    mode: u=rw,g=r,o=r
     dest: ~/.config/autostart/
-    remote_src: yes
+    remote_src: true
 
-- name: internet freerdp 1
-  yum: name=freerdp state=latest
-  become: true
-
-- name: internet freerdp 2
-  blockinfile:
-    dest: ~/.bashrc
-    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK internet freerdp 2 -->"
-    block: |
-      alias home="xfreerdp \
-      /aero /decorations /themes /fonts /network:lan \
-      /grab-keyboard /clipboard /kbd:Russian \
-      /drive:REMOTE,$HOME/Desktop \
-      /floatbar /monitors:0 /size:1920x1043 \
-      /u:username /v:host:port"
+# - name: internet freerdp 1
+#   ansible.builtin.yum: name=freerdp state=latest
+#   become: true
+#
+# - name: internet freerdp 2
+#   ansible.builtin.blockinfile:
+#     dest: ~/.bashrc
+#     marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK internet freerdp 2 -->"
+#     block: |
+#       alias home="xfreerdp \
+#       /aero /decorations /themes /fonts /network:lan \
+#       /grab-keyboard /clipboard /kbd:Russian \
+#       /drive:REMOTE,$HOME/Desktop \
+#       /floatbar /monitors:0 /size:1920x1043 \
+#       /u:username /v:host:port"
