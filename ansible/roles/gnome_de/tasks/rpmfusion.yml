@@ -13,11 +13,30 @@
         state: present
         key: "{{ item }}"
       loop:
-        - /usr/share/distribution-gpg-keys/rpmfusion/RPM-GPG-KEY-rpmfusion-free-fedora-36
+        - /usr/share/distribution-gpg-keys/rpmfusion/RPM-GPG-KEY-rpmfusion-free-fedora-{{ ansible_distribution_major_version }}.
 
     - name: "Add RPM Fusion free repo for Fedora"
       ansible.builtin.yum:
         name: https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm
+        state: present
+
+- name: "Setup RPM Fusion free repo for AlmaLinux"
+  become: true
+  when: ansible_distribution == "AlmaLinux"
+  block:
+    - name: "Add Fedora EPEL repo"
+      ansible.builtin.include_tasks: "epel.yml"
+
+    - name: "Add RPM Fusion gpg key"
+      ansible.builtin.rpm_key:
+        state: present
+        key: "{{ item }}"
+      loop:
+        - /usr/share/distribution-gpg-keys/rpmfusion/RPM-GPG-KEY-rpmfusion-free-el-{{ ansible_distribution_major_version }}
+
+    - name: "Add RPM Fusion free repo for AlmaLinux"
+      ansible.builtin.yum:
+        name: https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm
         state: present
 
 # - block:

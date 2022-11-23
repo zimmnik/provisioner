@@ -1,18 +1,16 @@
 Vagrant.configure("2") do |config|
 
-  config.vm.define "f36", autostart: true, primary: true do |f36|
-    f36.vm.box = "fedora/36-cloud-base"
-    f36.vm.box_version = "36-20220504.1"
-    f36.vm.provider :libvirt do |lv|
-      lv.title = 'f36'
+  config.vm.define "fedora", autostart: true, primary: true do |fedora|
+    fedora.vm.box = "fedora/36-cloud-base"
+    fedora.vm.provider :libvirt do |lv|
+      lv.title = 'fedora'
     end
   end
 
-  config.vm.define "alma9", autostart: false do |alma9|
-    alma9.vm.box = "almalinux/9"
-    alma9.vm.box_version = "9.1.20221117"
-    alma9.vm.provider :libvirt do |lv|
-      lv.title = 'alma9'
+  config.vm.define "alma", autostart: false do |alma|
+    alma.vm.box = "almalinux/9"
+    alma.vm.provider :libvirt do |lv|
+      lv.title = 'alma'
     end
   end
  
@@ -26,8 +24,9 @@ Vagrant.configure("2") do |config|
 
   config.vm.synced_folder ".", "/vagrant", type: "rsync"
 
+  config.vm.provision "shell", path: "deploy.sh"
   #config.vm.provision "shell", path: "proxy_setup.sh"
-  config.vm.provision "shell", inline: "yum -y -q install git"
+  #config.vm.provision "shell", inline: "yum -y -q install git"
   #config.vm.provision :ansible_local do |ansible|
   #  #ansible.verbose = "vvvv"
   #  ansible.compatibility_mode = "2.0"
