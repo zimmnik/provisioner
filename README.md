@@ -5,7 +5,7 @@ Provisioner is an ansible playbook that allow to quickly configure Gnome DE on F
 Supported distributions
 -----------------------------
 -   **Fedora** 36
--   **Oracle Linux** 9
+-   **AlmaLinux** 9
 
 ## Quick Start
 To deploy the system you can use :
@@ -48,7 +48,7 @@ pip3 install ansible-lint psutil
 ansible-galaxy install -r requirements.yml
 
 # Run playbook with desired hostname
-ansible-playbook -i hosts -K -e "hostname=host01" run.yml
+ansible-playbook -i hosts -K -e "hostname=somename" run.yml
 ```
 ### 2) Libvirt + Vagrant
 
@@ -65,8 +65,8 @@ ansible-playbook -i hosts -K -e "hostname=host01" run.yml
 git clone https://github.com/zimmnik/provisioner.git && cd provisioner/
 
 # Deploy
-time vagrant up --color [ol9]
+time vagrant up --color [alma]
 
 # Open GUI window
-virt-manager --connect qemu:///system --show-domain-console provisioner_default
+virt-manager --connect qemu:///system --show-domain-console [fedora|alma]
 ```
