@@ -247,11 +247,13 @@
       community.general.system.dconf:
         key: "/org/gnome/desktop/interface/icon-theme"
         value: "'gnome'"
+
 - name: "Create personal fonts directory"
   ansible.builtin.file:
     path: ~/.local/share/fonts/
     state: directory
     mode: u=rwx,g=rx,o=rx
+
 - name: "Add bitstream-vera fonts"
   ansible.builtin.unarchive:
     src: https://ftp.gnome.org/pub/GNOME/sources/ttf-bitstream-vera/1.10/ttf-bitstream-vera-1.10.zip
@@ -291,13 +293,15 @@
   loop:
     - { key: "/org/gnome/desktop/background/primary-color", value: "'#2e3436'" }
     - { key: "/org/gnome/desktop/background/picture-options", value: "'wallpaper'" }
+    - { key: "/org/gnome/desktop/background/picture-uri", value: "''" }
     - { key: "/org/gnome/desktop/screensaver/primary-color", value: "'#2e3436'" }
     - { key: "/org/gnome/desktop/screensaver/picture-options", value: "'wallpaper'" }
+    - { key: "/org/gnome/desktop/screensaver/picture-uri", value: "''" }
 
 - name: "Enable nignt-light"
   community.general.system.dconf:
     key: "/org/gnome/settings-daemon/plugins/color/night-light-enabled"
-    value: true
+    value: "true"
 
 - name: "Setup button layout"
   community.general.system.dconf:
@@ -307,12 +311,12 @@
 - name: "Enable weekday on clock"
   community.general.system.dconf:
     key: "/org/gnome/desktop/interface/clock-show-weekday"
-    value: true
+    value: "true"
 
 - name: "Setup battery indicator"
   community.general.system.dconf:
     key: "/org/gnome/desktop/interface/show-battery-percentage"
-    value: true
+    value: "true"
 
 - name: "Setup wm keybindings"
   community.general.system.dconf:
@@ -351,7 +355,6 @@
         src: monitors.xml
         dest: ~/.config/
         mode: u=rw,g=r,o=r
-
     - name: "Enable gdm autologin"
       ansible.builtin.blockinfile:
         dest: /etc/gdm/custom.conf

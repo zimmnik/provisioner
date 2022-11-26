@@ -7,7 +7,7 @@
   become: true
 
 - name: "Get LANG locale"
-  ansible.builtin.command:
+  ansible.builtin.shell:
     cmd: locale | grep LANG | cut -d "=" -f2
   register: env_lang
   changed_when: false
@@ -19,7 +19,7 @@
     cmd: localectl set-locale "LANG=ru_RU.UTF-8"
 
 - name: "Get LC_MESSAGES locale"
-  ansible.builtin.command:
+  ansible.builtin.shell:
     cmd: locale | grep LC_MESSAGES | cut -d "=" -f2
   register: env_lc_messages
   changed_when: false

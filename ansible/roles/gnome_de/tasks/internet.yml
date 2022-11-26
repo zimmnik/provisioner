@@ -18,7 +18,6 @@
 - name: "Add Firefox config directory"
   ansible.builtin.stat:
     path: ~/.mozilla
-    mode: u=rw,g=r,o=r
   register: mozilla
 
 - name: "Setup Firefox"
@@ -48,7 +47,7 @@
     - name: "Made Firefox extensions directory"
       ansible.builtin.file:
         path: "~/.mozilla/firefox/{{ ff_profile }}/extensions"
-        mode: u=rw,g=,o=
+        mode: u=rwx,g=rx,o=
         state: directory
 
     - name: "Add Firefox simple-translate extension"
@@ -87,25 +86,25 @@
 - name: "Add keepassxc config directory"
   ansible.builtin.file:
     path: "~/.config/keepassxc"
-    mode: u=rw,g=,o=
+    mode: u=rwx,g=rwx,o=
     state: directory
 
 - name: "Setup keepassxc"
   ansible.builtin.copy:
     src: keepassxc.ini
-    mode: u=rw,g=,o=
+    mode: u=rw,g=rw,o=r
     dest: ~/.config/keepassxc/
 
 - name: "Add autostart config directory"
   ansible.builtin.file:
     path: "~/.config/autostart"
-    mode: u=rw,g=,o=
+    mode: u=rwx,g=rwx,o=rx
     state: directory
 
 - name: "Add keepassxc to autostart"
   ansible.builtin.copy:
     src: /usr/share/applications/org.keepassxc.KeePassXC.desktop
-    mode: u=rw,g=r,o=r
+    mode: u=rw,g=rw,o=r
     dest: ~/.config/autostart/
     remote_src: true
 
