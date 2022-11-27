@@ -39,7 +39,7 @@ git clone https://github.com/zimmnik/provisioner.git && cd provisioner/ansible
 
 # Install Ansible
 python3 -m venv --upgrade-deps .py-env && source .py-env/bin/activate
-pip3 install ansible-lint psutil
+pip3 install ansible-core psutil
 
 # Install playbook requirements
 ansible-galaxy install -r requirements.yml
