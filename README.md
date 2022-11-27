@@ -17,7 +17,7 @@ Anaconda stage: [use kickstart file] (https://anaconda-installer.readthedocs.io/
 ```raw
 inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/f36.cfg
 or
-inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/ol9.cfg
+inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/al9.cfg
 ```
 System stage:
 ```ShellSession
