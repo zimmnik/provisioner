@@ -13,6 +13,7 @@
     - { key: "/org/gnome/terminal/legacy/profiles:/list", value: "'b1dcc9dd-5262-4d8d-a863-c897e6d979b9'" }
     - { key: "/org/gnome/terminal/legacy/profiles:/default", value: "'b1dcc9dd-5262-4d8d-a863-c897e6d979b9'" }
     - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/font", value: "'Ubuntu Mono 16'" }
+    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/audible-bell", value: "false" }
     - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/use-system-font", value: "false" }
     - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/scroll-on-output", value: "false" }
     - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/scrollbar-policy", value: "'never'" }

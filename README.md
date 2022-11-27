@@ -1,10 +1,10 @@
 # provisioner
 
-Provisioner is an ansible playbook that allow to quickly configure Gnome DE on Fedora system.
+Provisioner is an ansible playbook that allow to quickly configure Gnome DE on RHEL-like systems.
 
 Supported distributions
 -----------------------------
--   **Fedora** 36
+-   **Fedora** 37
 -   **AlmaLinux** 9
 
 ## Quick Start
@@ -15,7 +15,7 @@ To deploy the system you can use :
 
 Anaconda stage: [use kickstart file] (https://anaconda-installer.readthedocs.io/en/latest/boot-options.html#inst-ks)
 ```raw
-inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/f36.cfg
+inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/f37.cfg
 or
 inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/al9.cfg
 ```
@@ -50,10 +50,10 @@ ansible-playbook -i hosts -K -e "hostname=somename" run.yml
 ### 2) Libvirt + Vagrant
 
 #### Requirements
-- **git v2.31.1+**
-- **libvirt v7+**
-- **vagrant v2.2.16+**
-- **vagrant-libvirt v0.4.1+**
+- **git**
+- **libvirt**
+- **vagrant**
+- **vagrant-libvirt**
 - **4GB RAM for guest**
 
 #### Usage:

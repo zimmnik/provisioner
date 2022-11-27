@@ -1,7 +1,7 @@
 Vagrant.configure("2") do |config|
 
   config.vm.define "fedora", autostart: true, primary: true do |fedora|
-    fedora.vm.box = "fedora/36-cloud-base"
+    fedora.vm.box = "fedora/37-cloud-base"
     fedora.vm.provider :libvirt do |lv|
       lv.title = 'fedora'
     end
