@@ -27,9 +27,6 @@ passwd
 # Add sudo user and set password
 useradd --groups wheel --create-home username && passwd username
 
-# Update packages and reboot
-yum -y update && reboot
-
 # WARNING! Don't use tty1 console, use tty4, because playbook will start systemd's graphical.target
 # login as sudo user
 logout
