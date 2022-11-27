@@ -10,7 +10,7 @@
   become: true
 
 - name: "Setup gedit"
-  community.general.system.dconf:
+  community.general.dconf:
     key: "{{ item.key }}"
     value: "{{ item.value | string }}"
   loop:

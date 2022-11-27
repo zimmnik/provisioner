@@ -14,7 +14,7 @@
   become: true
 
 - name: "Setup file manager"
-  community.general.system.dconf:
+  community.general.dconf:
     key: "{{ item.key }}"
     value: "{{ item.value | string }}"
   loop:

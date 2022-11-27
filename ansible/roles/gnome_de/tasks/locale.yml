@@ -31,12 +31,12 @@
     cmd: localectl set-locale "LC_MESSAGES=en_US.UTF-8"
 
 - name: "Setup Moscow timezone"
-  community.general.system.timezone:
+  community.general.timezone:
     name: Europe/Moscow
   become: true
 
 - name: "Setup locale switcher"
-  community.general.system.dconf:
+  community.general.dconf:
     key: "{{ item.key }}"
     value: "{{ item.value | string }}"
   loop:
@@ -45,6 +45,6 @@
     - { key: "/org/gnome/desktop/input-sources/per-window", value: "true" }
 
 - name: "Setup gnome region"
-  community.general.system.dconf:
+  community.general.dconf:
     key: "/system/locale/region"
     value: "'ru_RU.UTF-8'"

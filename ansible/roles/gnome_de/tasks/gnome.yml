@@ -40,7 +40,7 @@
 #       - 3780
 #
 # - name: gnome extension drop-down terminal 2
-#   community.general.system.dconf:
+#   community.general.dconf:
 #     key: "{{ item.key }}"
 #     value: "{{ item.value | string }}"
 #   loop:
@@ -74,7 +74,7 @@
       - 1411
 
 - name: "Setup quake-mode extenstion"
-  community.general.system.dconf:
+  community.general.dconf:
     key: "{{ item.key }}"
     value: "{{ item.value | string }}"
   loop:
@@ -100,7 +100,7 @@
       - 1287
 
 - name: "Setup Unite extenstion"
-  community.general.system.dconf:
+  community.general.dconf:
     key: "{{ item.key }}"
     value: "{{ item.value | string }}"
   loop:
@@ -125,7 +125,7 @@
       - 21
 
 - name: "Add Unite extenstion"
-  community.general.system.dconf:
+  community.general.dconf:
     key: "{{ item.key }}"
     value: "{{ item.value | string }}"
   loop:
@@ -207,7 +207,7 @@
 # -----------------------------------------------------------------------------------------------
 # GNOME VNC
 - name: "Disable build-in vnc encryption"
-  community.general.system.dconf:
+  community.general.dconf:
     key: "{{ item.key }}"
     value: "{{ item.value | string }}"
   loop:
@@ -216,12 +216,12 @@
 # GNOME APPEARANCE
 
 - name: "Enable dark color scheme"
-  community.general.system.dconf:
+  community.general.dconf:
     key: "/org/gnome/desktop/interface/color-scheme"
     value: "'prefer-dark'"
 
 - name: "Enable dark gtk theme"
-  community.general.system.dconf:
+  community.general.dconf:
     key: "/org/gnome/desktop/interface/gtk-theme"
     value: "'Adwaita-dark'"
 
@@ -234,7 +234,7 @@
         state: present
       become: true
     - name: "Enable dmz cursor"
-      community.general.system.dconf:
+      community.general.dconf:
         key: "/org/gnome/desktop/interface/cursor-theme"
         value: "'DMZ-White'"
 
@@ -244,7 +244,7 @@
         state: present
       become: true
     - name: "Enable gnome icon theme"
-      community.general.system.dconf:
+      community.general.dconf:
         key: "/org/gnome/desktop/interface/icon-theme"
         value: "'gnome'"
 
@@ -275,7 +275,7 @@
   when: fonts_state.changed # noqa: no-handler
 
 - name: "Enable personal fonts"
-  community.general.system.dconf:
+  community.general.dconf:
     key: "{{ item.key }}"
     value: "{{ item.value | string }}"
   loop:
@@ -287,7 +287,7 @@
     - { key: "/org/gnome/desktop/interface/font-antialiasing", value: "'rgba'" }
 
 - name: "Setup background and screensaver"
-  community.general.system.dconf:
+  community.general.dconf:
     key: "{{ item.key }}"
     value: "{{ item.value | string }}"
   loop:
@@ -299,27 +299,27 @@
     - { key: "/org/gnome/desktop/screensaver/picture-uri", value: "''" }
 
 - name: "Enable nignt-light"
-  community.general.system.dconf:
+  community.general.dconf:
     key: "/org/gnome/settings-daemon/plugins/color/night-light-enabled"
     value: "true"
 
 - name: "Setup button layout"
-  community.general.system.dconf:
+  community.general.dconf:
     key: "/org/gnome/desktop/wm/preferences/button-layout"
     value: "'appmenu:minimize,maximize,close'"
 
 - name: "Enable weekday on clock"
-  community.general.system.dconf:
+  community.general.dconf:
     key: "/org/gnome/desktop/interface/clock-show-weekday"
     value: "true"
 
 - name: "Setup battery indicator"
-  community.general.system.dconf:
+  community.general.dconf:
     key: "/org/gnome/desktop/interface/show-battery-percentage"
     value: "true"
 
 - name: "Setup wm keybindings"
-  community.general.system.dconf:
+  community.general.dconf:
     key: "{{ item.key }}"
     value: "{{ item.value | string }}"
   loop:
@@ -341,7 +341,7 @@
   when: ansible_virtualization_role == "guest"
   block:
     - name: "Disable lock screen and auto sleeping"
-      community.general.system.dconf:
+      community.general.dconf:
         key: "{{ item.key }}"
         value: "{{ item.value | string }}"
       loop:

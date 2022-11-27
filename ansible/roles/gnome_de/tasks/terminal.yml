@@ -5,7 +5,7 @@
   become: true
 
 - name: "Setup terminal app"
-  community.general.system.dconf:
+  community.general.dconf:
     key: "{{ item.key }}"
     value: "{{ item.value | string }}"
   loop:
