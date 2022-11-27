@@ -31,7 +31,7 @@
   become: true
 # -----------------------------------------------------------------------------------------------
 # GNOME EXTENSIONS
-#
+
 # - name: gnome extension drop-down terminal
 #   ansible.builtin.import_role:
 #     name: jaredhocutt.gnome_extensions
@@ -66,301 +66,301 @@
     gnome_extension_ids:
       - 2087
 
-# - name: "Add quake-mode extenstion"
-#   ansible.builtin.import_role:
-#     name: jaredhocutt.gnome_extensions
-#   vars:
-#     gnome_extension_ids:
-#       - 1411
-# 
-# - name: "Setup quake-mode extenstion"
-#   community.general.system.dconf:
-#     key: "{{ item.key }}"
-#     value: "{{ item.value | string }}"
-#   loop:
-#     - { key: "/com/github/repsac-by/quake-mode/quake-mode-tray", value: "true" }
-#     - { key: "/com/github/repsac-by/quake-mode/quake-mode-width", value: "100" }
-#     - { key: "/com/github/repsac-by/quake-mode/quake-mode-height", value: "100" }
-#     - { key: "/com/github/repsac-by/quake-mode/quake-mode-animation-time", value: "0.25" }
-#     - { key: "/com/github/repsac-by/quake-mode/quake-mode-hide-from-overview", value: "true" }
-#     - { key: "/com/github/repsac-by/quake-mode/quake-mode-hotkey", value: "['<Primary>grave']" }
-#     - { key: "/com/github/repsac-by/quake-mode/quake-mode-app", value: "'org.gnome.Terminal.desktop'" }
-# 
-# - name: "Add quake-mode extenstion dependency"
-#   ansible.builtin.yum:
-#     name: xprop
-#     state: present
-#   become: true
-# 
-# - name: "Add Unite extenstion"
-#   ansible.builtin.import_role:
-#     name: jaredhocutt.gnome_extensions
-#   vars:
-#     gnome_extension_ids:
-#       - 1287
-# 
-# - name: "Setup Unite extenstion"
-#   community.general.system.dconf:
-#     key: "{{ item.key }}"
-#     value: "{{ item.value | string }}"
-#   loop:
-#     - { key: "/org/gnome/shell/extensions/unite/extend-left-box", value: "false" }
-#     - { key: "/org/gnome/shell/extensions/unite/show-desktop-name", value: "false" }
-#     - { key: "/org/gnome/shell/extensions/unite/hide-app-menu-icon", value: "true" }
-#     - { key: "/org/gnome/shell/extensions/unite/hide-app-menu-arrow", value: "true" }
-#     - { key: "/org/gnome/shell/extensions/unite/show-window-title", value: "'never'" }
-#     - { key: "/org/gnome/shell/extensions/unite/greyscale-tray-icons", value: "true" }
-#     - { key: "/org/gnome/shell/extensions/unite/show-window-buttons", value: "'never'" }
-#     - { key: "/org/gnome/shell/extensions/unite/hide-window-titlebars", value: "'never'" }
-#     - { key: "/org/gnome/shell/extensions/unite/hide-aggregate-menu-arrow", value: "true" }
-#     - { key: "/org/gnome/shell/extensions/unite/hide-activities-button", value: "'never'" }
-#     - { key: "/org/gnome/shell/extensions/unite/window-buttons-placement", value: "'last'" }
-#     - { key: "/org/gnome/shell/extensions/unite/window-buttons-theme", value: "'united-dark'" }
-# 
-# - name: "Add Workspace indicator extenstion"
-#   ansible.builtin.import_role:
-#     name: jaredhocutt.gnome_extensions
-#   vars:
-#     gnome_extension_ids:
-#       - 21
-# 
-# - name: "Add Unite extenstion"
-#   community.general.system.dconf:
-#     key: "{{ item.key }}"
-#     value: "{{ item.value | string }}"
-#   loop:
-#     - { key: "/org/gnome/mutter/dynamic-workspaces", value: "false" }
-#     - { key: "/org/gnome/mutter/workspaces-only-on-primary", value: "false" }
-#     - { key: "/org/gnome/shell/overrides/dynamic-workspaces", value: "false" }
-#     - { key: "/org/gnome/shell/overrides/workspaces-only-on-primary", value: "false" }
-#     - { key: "/org/gnome/shell/app-switcher/current-workspace-only", value: "true" }
-# 
-# - name: "Add No overview at start-up extenstion"
-#   ansible.builtin.import_role:
-#     name: jaredhocutt.gnome_extensions
-#   vars:
-#     gnome_extension_ids:
-#       - 4099
-# 
-# # FYI https://discourse.gnome.org/t/enable-gnome-extensions-without-session-restart/7936
-# - name: "Start X session"
-#   become: true
-#   block:
-#     - name: "Enable gdm autologin"
-#       ansible.builtin.blockinfile:
-#         dest: /etc/gdm/custom.conf
-#         marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
-#         insertafter: "\\[daemon\\]"
-#         block: |
-#           AutomaticLoginEnable=True
-#           AutomaticLogin={{ ansible_user_id }}
-#       register: autologin_state
-#     - name: "Restart gdm"
-#       ansible.builtin.service:
-#         name: gdm
-#         state: restarted
-#       notify:
-#         - session_logout
-#     - name: "Wait X session"
-#       ansible.builtin.pause:
-#         seconds: 15
-#     - name: "Disable gdm autologin"
-#       ansible.builtin.blockinfile:
-#         dest: /etc/gdm/custom.conf
-#         marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
-#         state: absent
-#       when: autologin_state.changed
-# 
-# - name: "Enable extensions"
-#   ansible.builtin.include_tasks: "gnome_enable_extension.yml"
-#   loop:
-#     - no-overview@fthx
-#     - ding@rastersoft.com
-#     - quake-mode@repsac-by.github.com
-#     - unite@hardpixel.eu
-#     - workspace-indicator@gnome-shell-extensions.gcampax.github.com
-#   loop_control:
-#     loop_var: extension_name
-# 
-# - name: "Add flathub repo"
-#   ansible.builtin.include_tasks: "flathub.yml"
-# 
-# # https://askubuntu.com/questions/1403931/how-to-apply-system-theme-to-flatpak-apps-that-use-gtk4
-# - name: "Add dark theme for flatpak"
-#   community.general.flatpak:
-#     name: org.gtk.Gtk3theme.Adwaita-dark
-#     state: present
-#   become: true
-#   register: flatpak_theme
-# 
-# - name: "Enable dark theme for flatpak"
-#   ansible.builtin.command: flatpak override --env GTK_THEME=Adwaita-dark
-#   when: flatpak_theme.changed # noqa: no-handler
-#   become: true
-# 
-# - name: "Add extensions app"
-#   community.general.flatpak:
-#     name: org.gnome.Extensions
-#     state: present
-#   become: true
-# 
-# # -----------------------------------------------------------------------------------------------
-# # GNOME VNC
-# - name: "Disable build-in vnc encryption"
-#   community.general.system.dconf:
-#     key: "{{ item.key }}"
-#     value: "{{ item.value | string }}"
-#   loop:
-#     - { key: "/org/gnome/desktop/remote-desktop/vnc/encryption", value: "['none']" }
-# # -----------------------------------------------------------------------------------------------
-# # GNOME APPEARANCE
-# 
-# - name: "Enable dark color scheme"
-#   community.general.system.dconf:
-#     key: "/org/gnome/desktop/interface/color-scheme"
-#     value: "'prefer-dark'"
-# 
-# - name: "Enable dark gtk theme"
-#   community.general.system.dconf:
-#     key: "/org/gnome/desktop/interface/gtk-theme"
-#     value: "'Adwaita-dark'"
-# 
-# - name: "Enable personal cursors and icond"
-#   when: ansible_distribution == "Fedora"
-#   block:
-#     - name: "Add dmz cursors"
-#       ansible.builtin.yum:
-#         name: dmz-cursor-themes
-#         state: present
-#       become: true
-#     - name: "Enable dmz cursor"
-#       community.general.system.dconf:
-#         key: "/org/gnome/desktop/interface/cursor-theme"
-#         value: "'DMZ-White'"
-# 
-#     - name: "Add gnome icon theme"
-#       ansible.builtin.yum:
-#         name: gnome-icon-theme
-#         state: present
-#       become: true
-#     - name: "Enable gnome icon theme"
-#       community.general.system.dconf:
-#         key: "/org/gnome/desktop/interface/icon-theme"
-#         value: "'gnome'"
-# 
-# - name: "Create personal fonts directory"
-#   ansible.builtin.file:
-#     path: ~/.local/share/fonts/
-#     state: directory
-#     mode: u=rwx,g=rx,o=rx
-# 
-# - name: "Add bitstream-vera fonts"
-#   ansible.builtin.unarchive:
-#     src: https://ftp.gnome.org/pub/GNOME/sources/ttf-bitstream-vera/1.10/ttf-bitstream-vera-1.10.zip
-#     dest: ~/.local/share/fonts/
-#     remote_src: true
-#     creates: ~/.local/share/fonts/ttf-bitstream-vera-1.10/
-#   register: fonts_state
-# 
-# - name: "Add ubuntu fonts"
-#   ansible.builtin.unarchive:
-#     src: https://assets.ubuntu.com/v1/0cef8205-ubuntu-font-family-0.83.zip
-#     dest: ~/.local/share/fonts/
-#     remote_src: true
-#     creates: ~/.local/share/fonts/ubuntu-font-family-0.83/
-#   register: fonts_state
-# 
-# - name: "Caching personal fonts"
-#   ansible.builtin.command: fc-cache -f ~/.local/share/fonts/
-#   when: fonts_state.changed # noqa: no-handler
-# 
-# - name: "Enable personal fonts"
-#   community.general.system.dconf:
-#     key: "{{ item.key }}"
-#     value: "{{ item.value | string }}"
-#   loop:
-#     - { key: "/org/gnome/desktop/interface/monospace-font-name", value: "'Ubuntu Mono 11'" }
-#     - { key: "/org/gnome/desktop/interface/document-font-name", value: "'Ubuntu Italic 11'" }
-#     - { key: "/org/gnome/desktop/interface/font-name", value: "'Ubuntu 11'" }
-#     - { key: "/org/gnome/desktop/wm/preferences/titlebar-uses-system-font", value: "true" }
-#     - { key: "/org/gnome/desktop/wm/preferences/titlebar-font", value: "'Ubuntu Medium 11'" }
-#     - { key: "/org/gnome/desktop/interface/font-antialiasing", value: "'rgba'" }
-# 
-# - name: "Setup background and screensaver"
-#   community.general.system.dconf:
-#     key: "{{ item.key }}"
-#     value: "{{ item.value | string }}"
-#   loop:
-#     - { key: "/org/gnome/desktop/background/primary-color", value: "'#2e3436'" }
-#     - { key: "/org/gnome/desktop/background/picture-options", value: "'wallpaper'" }
-#     - { key: "/org/gnome/desktop/background/picture-uri", value: "''" }
-#     - { key: "/org/gnome/desktop/screensaver/primary-color", value: "'#2e3436'" }
-#     - { key: "/org/gnome/desktop/screensaver/picture-options", value: "'wallpaper'" }
-#     - { key: "/org/gnome/desktop/screensaver/picture-uri", value: "''" }
-# 
-# - name: "Enable nignt-light"
-#   community.general.system.dconf:
-#     key: "/org/gnome/settings-daemon/plugins/color/night-light-enabled"
-#     value: "true"
-# 
-# - name: "Setup button layout"
-#   community.general.system.dconf:
-#     key: "/org/gnome/desktop/wm/preferences/button-layout"
-#     value: "'appmenu:minimize,maximize,close'"
-# 
-# - name: "Enable weekday on clock"
-#   community.general.system.dconf:
-#     key: "/org/gnome/desktop/interface/clock-show-weekday"
-#     value: "true"
-# 
-# - name: "Setup battery indicator"
-#   community.general.system.dconf:
-#     key: "/org/gnome/desktop/interface/show-battery-percentage"
-#     value: "true"
-# 
-# - name: "Setup wm keybindings"
-#   community.general.system.dconf:
-#     key: "{{ item.key }}"
-#     value: "{{ item.value | string }}"
-#   loop:
-#     - { key: "/org/gnome/desktop/wm/keybindings/close", value: "['<Super>q']" }
-#     - { key: "/org/gnome/desktop/wm/keybindings/show-desktop", value: "['<Super>d']" }
-#     - { key: "/org/gnome/desktop/wm/keybindings/switch-applications", value: "@as []" }
-#     - { key: "/org/gnome/desktop/wm/keybindings/switch-applications-backward", value: "@as []" }
-#     - { key: "/org/gnome/desktop/wm/keybindings/switch-windows", value: "['<Alt>Tab']" }
-#     - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-1", value: "['<Primary>1']" }
-#     - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-2", value: "['<Primary>2']" }
-#     - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-3", value: "['<Primary>3']" }
-#     - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-4", value: "['<Primary>4']" }
-#     - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-1", value: "['<Primary><Shift>exclam']" }
-#     - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-2", value: "['<Primary><Shift>at']" }
-#     - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-3", value: "['<Primary><Shift>numbersign']" }
-#     - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-4", value: "['<Primary><Shift>dollar']" }
-# 
-# - name: "Remove useless settings on virtual env"
-#   when: ansible_virtualization_role == "guest"
-#   block:
-#     - name: "Disable lock screen and auto sleeping"
-#       community.general.system.dconf:
-#         key: "{{ item.key }}"
-#         value: "{{ item.value | string }}"
-#       loop:
-#         - { key: "/org/gnome/desktop/lockdown/disable-lock-screen", value: "true" }
-#         - { key: "/org/gnome/desktop/screensaver/lock-enabled", value: "false" }
-#         - { key: "/org/gnome/desktop/session/idle-delay", value: "uint32 0" }
-#         - { key: "/org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type", value: "'nothing'" }
-#         - { key: "/org/gnome/desktop/notifications/show-in-lock-screen", value: "false" }
-#     - name: "Setup virtual screen"
-#       ansible.builtin.copy:
-#         src: monitors.xml
-#         dest: ~/.config/
-#         mode: u=rw,g=r,o=r
-#     - name: "Enable gdm autologin"
-#       ansible.builtin.blockinfile:
-#         dest: /etc/gdm/custom.conf
-#         marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
-#         insertafter: "\\[daemon\\]"
-#         block: |
-#           AutomaticLoginEnable=True
-#           AutomaticLogin={{ ansible_user_id }}
-#       become: true
+- name: "Add quake-mode extenstion"
+  ansible.builtin.import_role:
+    name: jaredhocutt.gnome_extensions
+  vars:
+    gnome_extension_ids:
+      - 1411
+
+- name: "Setup quake-mode extenstion"
+  community.general.system.dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value | string }}"
+  loop:
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-tray", value: "true" }
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-width", value: "100" }
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-height", value: "100" }
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-animation-time", value: "0.25" }
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-hide-from-overview", value: "true" }
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-hotkey", value: "['<Primary>grave']" }
+    - { key: "/com/github/repsac-by/quake-mode/quake-mode-app", value: "'org.gnome.Terminal.desktop'" }
+
+- name: "Add quake-mode extenstion dependency"
+  ansible.builtin.yum:
+    name: xprop
+    state: present
+  become: true
+
+- name: "Add Unite extenstion"
+  ansible.builtin.import_role:
+    name: jaredhocutt.gnome_extensions
+  vars:
+    gnome_extension_ids:
+      - 1287
+
+- name: "Setup Unite extenstion"
+  community.general.system.dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value | string }}"
+  loop:
+    - { key: "/org/gnome/shell/extensions/unite/extend-left-box", value: "false" }
+    - { key: "/org/gnome/shell/extensions/unite/show-desktop-name", value: "false" }
+    - { key: "/org/gnome/shell/extensions/unite/hide-app-menu-icon", value: "true" }
+    - { key: "/org/gnome/shell/extensions/unite/hide-app-menu-arrow", value: "true" }
+    - { key: "/org/gnome/shell/extensions/unite/show-window-title", value: "'never'" }
+    - { key: "/org/gnome/shell/extensions/unite/greyscale-tray-icons", value: "true" }
+    - { key: "/org/gnome/shell/extensions/unite/show-window-buttons", value: "'never'" }
+    - { key: "/org/gnome/shell/extensions/unite/hide-window-titlebars", value: "'never'" }
+    - { key: "/org/gnome/shell/extensions/unite/hide-aggregate-menu-arrow", value: "true" }
+    - { key: "/org/gnome/shell/extensions/unite/hide-activities-button", value: "'never'" }
+    - { key: "/org/gnome/shell/extensions/unite/window-buttons-placement", value: "'last'" }
+    - { key: "/org/gnome/shell/extensions/unite/window-buttons-theme", value: "'united-dark'" }
+
+- name: "Add Workspace indicator extenstion"
+  ansible.builtin.import_role:
+    name: jaredhocutt.gnome_extensions
+  vars:
+    gnome_extension_ids:
+      - 21
+
+- name: "Add Unite extenstion"
+  community.general.system.dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value | string }}"
+  loop:
+    - { key: "/org/gnome/mutter/dynamic-workspaces", value: "false" }
+    - { key: "/org/gnome/mutter/workspaces-only-on-primary", value: "false" }
+    - { key: "/org/gnome/shell/overrides/dynamic-workspaces", value: "false" }
+    - { key: "/org/gnome/shell/overrides/workspaces-only-on-primary", value: "false" }
+    - { key: "/org/gnome/shell/app-switcher/current-workspace-only", value: "true" }
+
+- name: "Add No overview at start-up extenstion"
+  ansible.builtin.import_role:
+    name: jaredhocutt.gnome_extensions
+  vars:
+    gnome_extension_ids:
+      - 4099
+
+# FYI https://discourse.gnome.org/t/enable-gnome-extensions-without-session-restart/7936
+- name: "Start X session"
+  become: true
+  block:
+    - name: "Enable gdm autologin"
+      ansible.builtin.blockinfile:
+        dest: /etc/gdm/custom.conf
+        marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
+        insertafter: "\\[daemon\\]"
+        block: |
+          AutomaticLoginEnable=True
+          AutomaticLogin={{ ansible_user_id }}
+      register: autologin_state
+    - name: "Restart gdm"
+      ansible.builtin.service:
+        name: gdm
+        state: restarted
+      notify:
+        - session_logout
+    - name: "Wait X session"
+      ansible.builtin.pause:
+        seconds: 15
+    - name: "Disable gdm autologin"
+      ansible.builtin.blockinfile:
+        dest: /etc/gdm/custom.conf
+        marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
+        state: absent
+      when: autologin_state.changed
+
+- name: "Enable extensions"
+  ansible.builtin.include_tasks: "gnome_enable_extension.yml"
+  loop:
+    - no-overview@fthx
+    - ding@rastersoft.com
+    - quake-mode@repsac-by.github.com
+    - unite@hardpixel.eu
+    - workspace-indicator@gnome-shell-extensions.gcampax.github.com
+  loop_control:
+    loop_var: extension_name
+
+- name: "Add flathub repo"
+  ansible.builtin.include_tasks: "flathub.yml"
+
+# https://askubuntu.com/questions/1403931/how-to-apply-system-theme-to-flatpak-apps-that-use-gtk4
+- name: "Add dark theme for flatpak"
+  community.general.flatpak:
+    name: org.gtk.Gtk3theme.Adwaita-dark
+    state: present
+  become: true
+  register: flatpak_theme
+
+- name: "Enable dark theme for flatpak"
+  ansible.builtin.command: flatpak override --env GTK_THEME=Adwaita-dark
+  when: flatpak_theme.changed # noqa: no-handler
+  become: true
+
+- name: "Add extensions app"
+  community.general.flatpak:
+    name: org.gnome.Extensions
+    state: present
+  become: true
+
+# -----------------------------------------------------------------------------------------------
+# GNOME VNC
+- name: "Disable build-in vnc encryption"
+  community.general.system.dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value | string }}"
+  loop:
+    - { key: "/org/gnome/desktop/remote-desktop/vnc/encryption", value: "['none']" }
+# -----------------------------------------------------------------------------------------------
+# GNOME APPEARANCE
+
+- name: "Enable dark color scheme"
+  community.general.system.dconf:
+    key: "/org/gnome/desktop/interface/color-scheme"
+    value: "'prefer-dark'"
+
+- name: "Enable dark gtk theme"
+  community.general.system.dconf:
+    key: "/org/gnome/desktop/interface/gtk-theme"
+    value: "'Adwaita-dark'"
+
+- name: "Enable personal cursors and icond"
+  when: ansible_distribution == "Fedora"
+  block:
+    - name: "Add dmz cursors"
+      ansible.builtin.yum:
+        name: dmz-cursor-themes
+        state: present
+      become: true
+    - name: "Enable dmz cursor"
+      community.general.system.dconf:
+        key: "/org/gnome/desktop/interface/cursor-theme"
+        value: "'DMZ-White'"
+
+    - name: "Add gnome icon theme"
+      ansible.builtin.yum:
+        name: gnome-icon-theme
+        state: present
+      become: true
+    - name: "Enable gnome icon theme"
+      community.general.system.dconf:
+        key: "/org/gnome/desktop/interface/icon-theme"
+        value: "'gnome'"
+
+- name: "Create personal fonts directory"
+  ansible.builtin.file:
+    path: ~/.local/share/fonts/
+    state: directory
+    mode: u=rwx,g=rx,o=rx
+
+- name: "Add bitstream-vera fonts"
+  ansible.builtin.unarchive:
+    src: https://ftp.gnome.org/pub/GNOME/sources/ttf-bitstream-vera/1.10/ttf-bitstream-vera-1.10.zip
+    dest: ~/.local/share/fonts/
+    remote_src: true
+    creates: ~/.local/share/fonts/ttf-bitstream-vera-1.10/
+  register: fonts_state
+
+- name: "Add ubuntu fonts"
+  ansible.builtin.unarchive:
+    src: https://assets.ubuntu.com/v1/0cef8205-ubuntu-font-family-0.83.zip
+    dest: ~/.local/share/fonts/
+    remote_src: true
+    creates: ~/.local/share/fonts/ubuntu-font-family-0.83/
+  register: fonts_state
+
+- name: "Caching personal fonts"
+  ansible.builtin.command: fc-cache -f ~/.local/share/fonts/
+  when: fonts_state.changed # noqa: no-handler
+
+- name: "Enable personal fonts"
+  community.general.system.dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value | string }}"
+  loop:
+    - { key: "/org/gnome/desktop/interface/monospace-font-name", value: "'Ubuntu Mono 11'" }
+    - { key: "/org/gnome/desktop/interface/document-font-name", value: "'Ubuntu Italic 11'" }
+    - { key: "/org/gnome/desktop/interface/font-name", value: "'Ubuntu 11'" }
+    - { key: "/org/gnome/desktop/wm/preferences/titlebar-uses-system-font", value: "true" }
+    - { key: "/org/gnome/desktop/wm/preferences/titlebar-font", value: "'Ubuntu Medium 11'" }
+    - { key: "/org/gnome/desktop/interface/font-antialiasing", value: "'rgba'" }
+
+- name: "Setup background and screensaver"
+  community.general.system.dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value | string }}"
+  loop:
+    - { key: "/org/gnome/desktop/background/primary-color", value: "'#2e3436'" }
+    - { key: "/org/gnome/desktop/background/picture-options", value: "'wallpaper'" }
+    - { key: "/org/gnome/desktop/background/picture-uri", value: "''" }
+    - { key: "/org/gnome/desktop/screensaver/primary-color", value: "'#2e3436'" }
+    - { key: "/org/gnome/desktop/screensaver/picture-options", value: "'wallpaper'" }
+    - { key: "/org/gnome/desktop/screensaver/picture-uri", value: "''" }
+
+- name: "Enable nignt-light"
+  community.general.system.dconf:
+    key: "/org/gnome/settings-daemon/plugins/color/night-light-enabled"
+    value: "true"
+
+- name: "Setup button layout"
+  community.general.system.dconf:
+    key: "/org/gnome/desktop/wm/preferences/button-layout"
+    value: "'appmenu:minimize,maximize,close'"
+
+- name: "Enable weekday on clock"
+  community.general.system.dconf:
+    key: "/org/gnome/desktop/interface/clock-show-weekday"
+    value: "true"
+
+- name: "Setup battery indicator"
+  community.general.system.dconf:
+    key: "/org/gnome/desktop/interface/show-battery-percentage"
+    value: "true"
+
+- name: "Setup wm keybindings"
+  community.general.system.dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value | string }}"
+  loop:
+    - { key: "/org/gnome/desktop/wm/keybindings/close", value: "['<Super>q']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/show-desktop", value: "['<Super>d']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-applications", value: "@as []" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-applications-backward", value: "@as []" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-windows", value: "['<Alt>Tab']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-1", value: "['<Primary>1']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-2", value: "['<Primary>2']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-3", value: "['<Primary>3']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-4", value: "['<Primary>4']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-1", value: "['<Primary><Shift>exclam']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-2", value: "['<Primary><Shift>at']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-3", value: "['<Primary><Shift>numbersign']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-4", value: "['<Primary><Shift>dollar']" }
+
+- name: "Remove useless settings on virtual env"
+  when: ansible_virtualization_role == "guest"
+  block:
+    - name: "Disable lock screen and auto sleeping"
+      community.general.system.dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value | string }}"
+      loop:
+        - { key: "/org/gnome/desktop/lockdown/disable-lock-screen", value: "true" }
+        - { key: "/org/gnome/desktop/screensaver/lock-enabled", value: "false" }
+        - { key: "/org/gnome/desktop/session/idle-delay", value: "uint32 0" }
+        - { key: "/org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type", value: "'nothing'" }
+        - { key: "/org/gnome/desktop/notifications/show-in-lock-screen", value: "false" }
+    - name: "Setup virtual screen"
+      ansible.builtin.copy:
+        src: monitors.xml
+        dest: ~/.config/
+        mode: u=rw,g=r,o=r
+    - name: "Enable gdm autologin"
+      ansible.builtin.blockinfile:
+        dest: /etc/gdm/custom.conf
+        marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
+        insertafter: "\\[daemon\\]"
+        block: |
+          AutomaticLoginEnable=True
+          AutomaticLogin={{ ansible_user_id }}
+      become: true
