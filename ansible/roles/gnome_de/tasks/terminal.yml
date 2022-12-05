@@ -27,6 +27,7 @@
     create: true
     marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK terminal bash -->"
     block: |
+      export EDITOR="vim"
       set -o vi
       bind -m vi-insert "\C-l":clear-screen
       # ---------------------
