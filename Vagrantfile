@@ -1,5 +1,12 @@
 Vagrant.configure("2") do |config|
 
+  config.vm.define "alma", autostart: false do |alma|
+    alma.vm.box = "almalinux/9"
+    alma.vm.provider :libvirt do |lv|
+      lv.title = 'alma'
+    end
+  end
+
   config.vm.define "fedora", autostart: true, primary: true do |fedora|
     fedora.vm.box = "fedora/37-cloud-base"
     fedora.vm.provider :libvirt do |lv|
@@ -7,10 +14,11 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.define "alma", autostart: false do |alma|
-    alma.vm.box = "almalinux/9"
-    alma.vm.provider :libvirt do |lv|
-      lv.title = 'alma'
+  config.vm.define "oracle", autostart: false do |oracle|
+    oracle.vm.box = "oraclelinux/9-btrfs"
+    oracle.vm.box_url = "https://oracle.github.io/vagrant-projects/boxes/oraclelinux/9-btrfs.json"
+    oracle.vm.provider :libvirt do |lv|
+      lv.title = 'oracle'
     end
   end
  
@@ -28,9 +36,10 @@ Vagrant.configure("2") do |config|
   config.vm.provision :ansible_local do |ansible|
     #ansible.verbose = "vvvv"
     ansible.compatibility_mode = "2.0"
+    ansible.raw_arguments = "--diff"
     ansible.playbook = "ansible/run.yml"
     ansible.config_file = "ansible/ansible.cfg"
-    ansible.galaxy_role_file = "ansible/requirements.yml"
+    ansible.galaxy_role_file = "ansible/galaxy_requirements.yml"
     ansible.galaxy_command = "ansible-galaxy install --role-file %{role_file}"
   end
 end

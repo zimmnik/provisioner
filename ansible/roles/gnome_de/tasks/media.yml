@@ -1,8 +1,8 @@
 - name: "Add RPM Fusion free repo"
-  ansible.builtin.include_tasks: "rpmfusion.yml"
+  ansible.builtin.include_tasks: "repos/rpmfusion.yml"
 
 - name: "Add flathub repo"
-  ansible.builtin.include_tasks: "flathub.yml"
+  ansible.builtin.include_tasks: "repos/flathub.yml"
 
 - name: "Add media utils"
   community.general.flatpak:
@@ -10,23 +10,37 @@
     state: present
   become: true
   loop:
-    - io.github.celluloid_player.Celluloid
+#    - org.freedesktop.Platform.VAAPI.Intel//22.08
+    - info.smplayer.SMPlayer
     - com.xnview.XnViewMP
 
-- name: "Add celluloid config directory"
+- name: "Add SMPlayer config directory"
   ansible.builtin.file:
-    path: ~/.var/app/io.github.celluloid_player.Celluloid/config/glib-2.0/settings/
-    mode: u+rw,g-rx,o-rx
     state: directory
+    path: ~/.var/app/info.smplayer.SMPlayer/config/smplayer/
+    mode: u+rw,g-rx,o-rx
 
 # https://blogs.gnome.org/mclasen/2019/07/12/settings-in-a-sandbox-world/
-- name: "Setup Celluloid"
-  ansible.builtin.blockinfile:
-    dest: ~/.var/app/io.github.celluloid_player.Celluloid/config/glib-2.0/settings/keyfile
-    create: true
-    mode: u+rw,g-rwx,o-rwx
-    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK -->"
-    block: |-
-      [io/github/celluloid-player/celluloid]
-      mpv-options='hwdec=auto'
-      csd-enable=false
+- name: "Setup SMPlayer"
+  ansible.builtin.copy:
+    src: smplayer.ini
+    dest: ~/.var/app/info.smplayer.SMPlayer/config/smplayer/
+    mode: u=rw,g=,o=r
+
+# - name: "Add celluloid config directory"
+#   ansible.builtin.file:
+#     path: ~/.var/app/io.github.celluloid_player.Celluloid/config/glib-2.0/settings/
+#     mode: u+rw,g-rx,o-rx
+#     state: directory
+#
+# # https://blogs.gnome.org/mclasen/2019/07/12/settings-in-a-sandbox-world/
+# - name: "Setup Celluloid"
+#   ansible.builtin.blockinfile:
+#     dest: ~/.var/app/io.github.celluloid_player.Celluloid/config/glib-2.0/settings/keyfile
+#     create: true
+#     mode: u+rw,g-rwx,o-rwx
+#     marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK -->"
+#     block: |-
+#       [io/github/celluloid-player/celluloid]
+#       mpv-options='hwdec=auto'
+#       csd-enable=false

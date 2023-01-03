@@ -1,74 +1,10 @@
-- name: "Add Fedora EPEL repo"
-  ansible.builtin.include_tasks: "epel.yml"
-
-- name: "Add RPM Fusion free repo"
-  ansible.builtin.include_tasks: "rpmfusion.yml"
-
 - name: "Add Firefox"
-  ansible.builtin.yum:
-    state: present
-    name:
-      - firefox
-      - ffmpeg
-      - gstreamer1-libav
-      - libva
-      - libva-utils
-  become: true
+  ansible.builtin.include_tasks: "firefox.yml"
 
-- name: "Add Firefox config directory"
-  ansible.builtin.stat:
-    path: ~/.mozilla
-  register: mozilla
+- name: "Added RPMFusion"
+  ansible.builtin.include_tasks: repos/rpmfusion.yml
 
-- name: "Setup Firefox"
-  when: not mozilla.stat.exists
-  block:
-# https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode
-    - name: "Create Firefox default config"
-      ansible.builtin.shell: # noqa no-changed-when
-        cmd: firefox --headless -CreateProfile default && firefox --headless -P default --screenshot about:logo && rm screenshot.png
-
-    - name: "Register Firefox default profile"
-      ansible.builtin.shell: # noqa no-changed-when
-        cmd: find ~/.mozilla/firefox/ -maxdepth 1 -type d -name "*.default" -printf '%f\n'
-      register: out
-      ignore_errors: true
-
-    - name: "Make ff_profile variable"
-      ansible.builtin.set_fact:
-        ff_profile: "{{ out.stdout }}"
-
-    - name: "Setup Firefox"
-      ansible.builtin.copy:
-        src: firefox/user.js
-        mode: u=rw,g=,o=
-        dest: "~/.mozilla/firefox/{{ ff_profile }}/"
-
-    - name: "Made Firefox extensions directory"
-      ansible.builtin.file:
-        path: "~/.mozilla/firefox/{{ ff_profile }}/extensions"
-        mode: u=rwx,g=rx,o=
-        state: directory
-
-    - name: "Add Firefox simple-translate extension"
-      ansible.builtin.get_url:
-        url: https://addons.mozilla.org/firefox/downloads/file/3561208/
-        dest: ~/.mozilla/firefox/{{ ff_profile }}/extensions/simple-translate@sienori.xpi
-        mode: u=rw,g=r,o=r
-
-    - name: "Add Firefox uBlock extension"
-      ansible.builtin.get_url:
-        url: https://addons.mozilla.org/firefox/downloads/file/3579401/
-        dest: ~/.mozilla/firefox/{{ ff_profile }}/extensions/uBlock0@raymondhill.net.xpi
-        mode: u=rw,g=r,o=r
-
-    - name: "Add Firefox Vimium extension"
-      ansible.builtin.get_url:
-        url: https://addons.mozilla.org/firefox/downloads/file/3518684/
-        dest: ~/.mozilla/firefox/{{ ff_profile }}/extensions/{d7742d87-e61d-4b78-b8a1-b469842139fa}.xpi
-        mode: u=rw,g=r,o=r
-
-- name: "Add Chromium"
+- name: "Add Chromium Freeworld"
   become: true
   when: ansible_distribution == "Fedora"
   ansible.builtin.yum:

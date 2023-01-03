@@ -1,4 +1,5 @@
 - name: "Add public gpg keys"
+  when: ansible_distribution == "Fedora" or ansible_distribution == "AlmaLinux"
   ansible.builtin.yum:
     name: distribution-gpg-keys
     state: present
@@ -25,7 +26,7 @@
   when: ansible_distribution == "AlmaLinux"
   block:
     - name: "Add Fedora EPEL repo"
-      ansible.builtin.include_tasks: "epel.yml"
+      ansible.builtin.include_tasks: "repos/epel.yml"
 
     - name: "Add RPM Fusion gpg key"
       ansible.builtin.rpm_key:
@@ -38,19 +39,3 @@
       ansible.builtin.yum:
         name: https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm
         state: present
-
-# - block:
-#     - name: rpm-fusion repo 2 oracle
-#       ansible.builtin.rpm_key:
-#         state: present
-#         key: "{{ item }}"
-#       loop:
-#         - /usr/share/distribution-gpg-keys/rpmfusion/RPM-GPG-KEY-rpmfusion-free-el-9
-#
-#     - name: rpm-fusion repo 3 oracle
-#       ansible.builtin.yum:
-#         name: https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm
-#         state: present
-#
-#   become: true
-#   when: ansible_distribution == "OracleLinux"

@@ -1,5 +1,5 @@
-- name: "Add Fedora EPEL repo"
-  ansible.builtin.include_tasks: "epel.yml"
+- name: "Added EPEL"
+  ansible.builtin.include_tasks: repos/epel.yml
 
 - name: "Basic setup"
   become: true

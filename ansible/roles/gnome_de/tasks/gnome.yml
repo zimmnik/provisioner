@@ -83,8 +83,8 @@
     - { key: "/com/github/repsac-by/quake-mode/quake-mode-height", value: "100" }
     - { key: "/com/github/repsac-by/quake-mode/quake-mode-animation-time", value: "0.25" }
     - { key: "/com/github/repsac-by/quake-mode/quake-mode-hide-from-overview", value: "true" }
-    - { key: "/com/github/repsac-by/quake-mode/quake-mode-hotkey", value: "['<Primary>grave']" }
-    - { key: "/com/github/repsac-by/quake-mode/quake-mode-app", value: "'org.gnome.Terminal.desktop'" }
+    - { key: "/com/github/repsac-by/quake-mode/accelerators/quake-mode-accelerator-1", value: "['<Primary>grave']" }
+    - { key: "/com/github/repsac-by/quake-mode/apps/app-1", value: "'org.gnome.Terminal.desktop'" }
 
 - name: "Add quake-mode extenstion dependency"
   ansible.builtin.yum:
@@ -155,15 +155,18 @@
           AutomaticLoginEnable=True
           AutomaticLogin={{ ansible_user_id }}
       register: autologin_state
+      changed_when: false
     - name: "Restart gdm"
       ansible.builtin.service:
         name: gdm
         state: restarted
       notify:
         - session_logout
+      changed_when: false
     - name: "Wait X session"
       ansible.builtin.pause:
         seconds: 15
+      changed_when: false
     - name: "Disable gdm autologin"
       ansible.builtin.blockinfile:
         dest: /etc/gdm/custom.conf
@@ -183,20 +186,26 @@
     loop_var: extension_name
 
 - name: "Add flathub repo"
-  ansible.builtin.include_tasks: "flathub.yml"
+  ansible.builtin.include_tasks: "repos/flathub.yml"
 
 # https://askubuntu.com/questions/1403931/how-to-apply-system-theme-to-flatpak-apps-that-use-gtk4
+- name: "Get flatpak GTK_THEME"
+  ansible.builtin.shell:
+    cmd: flatpak override --show | grep GTK_THEME | cut -d "=" -f2
+  register: flatpak_gtk_theme
+  changed_when: false
+
 - name: "Add dark theme for flatpak"
   community.general.flatpak:
     name: org.gtk.Gtk3theme.Adwaita-dark
     state: present
   become: true
-  register: flatpak_theme
+  when: flatpak_gtk_theme.stdout != "Adwaita-dark"
 
 - name: "Enable dark theme for flatpak"
   ansible.builtin.command: flatpak override --env GTK_THEME=Adwaita-dark
-  when: flatpak_theme.changed # noqa: no-handler
   become: true
+  when: flatpak_gtk_theme.stdout != "Adwaita-dark"
 
 - name: "Add extensions app"
   community.general.flatpak:
@@ -238,15 +247,15 @@
         key: "/org/gnome/desktop/interface/cursor-theme"
         value: "'DMZ-White'"
 
-    - name: "Add gnome icon theme"
-      ansible.builtin.yum:
-        name: gnome-icon-theme
-        state: present
-      become: true
-    - name: "Enable gnome icon theme"
-      community.general.dconf:
-        key: "/org/gnome/desktop/interface/icon-theme"
-        value: "'gnome'"
+#    - name: "Add gnome icon theme"
+#      ansible.builtin.yum:
+#        name: gnome-icon-theme
+#        state: present
+#      become: true
+#    - name: "Enable gnome icon theme"
+#      community.general.dconf:
+#        key: "/org/gnome/desktop/interface/icon-theme"
+#        value: "'gnome'"
 
 - name: "Create personal fonts directory"
   ansible.builtin.file:
@@ -254,13 +263,13 @@
     state: directory
     mode: u=rwx,g=rx,o=rx
 
-- name: "Add bitstream-vera fonts"
-  ansible.builtin.unarchive:
-    src: https://ftp.gnome.org/pub/GNOME/sources/ttf-bitstream-vera/1.10/ttf-bitstream-vera-1.10.zip
-    dest: ~/.local/share/fonts/
-    remote_src: true
-    creates: ~/.local/share/fonts/ttf-bitstream-vera-1.10/
-  register: fonts_state
+# - name: "Add bitstream-vera fonts"
+#   ansible.builtin.unarchive:
+#     src: https://ftp.gnome.org/pub/GNOME/sources/ttf-bitstream-vera/1.10/ttf-bitstream-vera-1.10.zip
+#     dest: ~/.local/share/fonts/
+#     remote_src: true
+#     creates: ~/.local/share/fonts/ttf-bitstream-vera-1.10/
+#   register: fonts_state
 
 - name: "Add ubuntu fonts"
   ansible.builtin.unarchive:
@@ -337,7 +346,7 @@
     - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-3", value: "['<Primary><Shift>numbersign']" }
     - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-4", value: "['<Primary><Shift>dollar']" }
 
-- name: "Remove useless settings on virtual env"
+- name: "Special settings on virtual env"
   when: ansible_virtualization_role == "guest"
   block:
     - name: "Disable lock screen and auto sleeping"
