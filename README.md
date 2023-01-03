@@ -6,6 +6,7 @@ Supported distributions
 -----------------------------
 -   **Fedora** 37
 -   **AlmaLinux** 9
+-   **OracleLinux** 9
 
 ## Quick Start
 To deploy the system you can use :
@@ -13,11 +14,13 @@ To deploy the system you can use :
 ### 1) BareMetal + Kickstart + Ansible
 #### Usage:
 
-Anaconda stage: [use kickstart file] (https://anaconda-installer.readthedocs.io/en/latest/boot-options.html#inst-ks)
+Anaconda stage: [use kickstart file] (https://anaconda-installer.readthedocs.io/en/latest/boot-options.html#inst-ks) 
 ```raw
 inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/f37.cfg
 or
 inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/al9.cfg
+or
+inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/ol9.cfg
 ```
 System stage:
 ```ShellSession
@@ -62,8 +65,8 @@ ansible-playbook -i hosts -K -e "hostname=somename" run.yml
 git clone https://github.com/zimmnik/provisioner.git && cd provisioner/
 
 # Deploy
-time vagrant up --color [alma]
+time vagrant up --color [fedora|alma|oracle]
 
 # Open GUI window
-virt-manager --connect qemu:///system --show-domain-console [fedora|alma]
+virt-manager --connect qemu:///system --show-domain-console [fedora|alma|oracle]
 ```
