@@ -37,7 +37,12 @@
 #  - debug:
 #      msg: System {{ ansible_user_dir }}
 #    become: true
-#  - ansible.builtin.command: id
-#    register: out
-#    become: true
-#  - debug: var=out.stdout_lines
+- name: Get user id
+  ansible.builtin.command: id
+  register: out
+  become: true
+  changed_when: false
+- name: Show user id
+  ansible.builtin.debug:
+    var: out.stdout_lines
+  changed_when: false

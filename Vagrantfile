@@ -23,11 +23,12 @@ Vagrant.configure("2") do |config|
   end
  
   config.vm.provider :libvirt do |lv|
-    lv.qemu_use_session = false
     lv.cpus = 4
     lv.memory = 4096
     lv.video_type = 'virtio'
     lv.graphics_type = 'spice'
+    lv.default_prefix = ''
+    lv.qemu_use_session = false
   end
 
   config.vm.synced_folder ".", "/vagrant", type: "rsync"
@@ -38,7 +39,7 @@ Vagrant.configure("2") do |config|
     ansible.compatibility_mode = "2.0"
     ansible.raw_arguments = "--diff"
     ansible.playbook = "ansible/run.yml"
-    ansible.config_file = "ansible/ansible.cfg"
+#    ansible.config_file = "ansible/ansible.cfg"
     ansible.galaxy_role_file = "ansible/galaxy_requirements.yml"
     ansible.galaxy_command = "ansible-galaxy install --role-file %{role_file}"
   end

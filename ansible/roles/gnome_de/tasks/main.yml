@@ -1,7 +1,7 @@
 - name: "Setup Gnome DE"
   ansible.builtin.include_tasks: "{{ taskslist }}"
   loop:
-    - debug.yml
+#    - debug.yml
     - common.yml
     - gnome.yml
     - filemanager.yml
