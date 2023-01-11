@@ -64,8 +64,8 @@ pip3 install molecule ansible-core ansible-lint psutil molecule-vagrant
 
 # Deploy
 molecule drivers -f plain
-tree /home/zorg/.cache/molecule/
 time molecule test --destroy never -p alma
+tree /home/zorg/.cache/molecule/
 
 # Open GUI window
 virt-manager --connect qemu:///system --show-domain-console [fedora|alma|oracle]
