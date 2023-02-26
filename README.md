@@ -33,7 +33,7 @@ sudo yum -y install git
 git clone https://github.com/zimmnik/provisioner.git && cd provisioner/ansible
 
 # Install Ansible
-python3 -m venv --upgrade-deps .py-env && source .py-env/bin/activate
+python3 -m venv --upgrade-deps .venv && source .venv/bin/activate
 pip3 install ansible-core psutil
 
 # Install playbook requirements
@@ -55,7 +55,7 @@ ansible-playbook -i hosts -K -e "hostname=somename" run.yml
 git clone https://github.com/zimmnik/provisioner.git && cd provisioner/ansible
 
 # Prepare virtual python environment
-python3 -m venv --upgrade-deps .py-env && source .py-env/bin/activate
+python3 -m venv --upgrade-deps .venv && source .venv/bin/activate
 pip3 install molecule ansible-core ansible-lint psutil molecule-vagrant
 
 # Deploy
