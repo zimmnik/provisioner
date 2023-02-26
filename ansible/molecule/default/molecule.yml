@@ -21,7 +21,7 @@ platforms:
     memory: 4096
     provider_options:
       title: 'alma'
-      default_prefix: ''
+      #default_prefix: ''
       video_type: 'virtio'
       graphics_type: 'spice'
       qemu_use_session: false
@@ -32,7 +32,7 @@ platforms:
     memory: 4096
     provider_options:
       title: 'fedora'
-      default_prefix: ''
+      #default_prefix: ''
       video_type: 'virtio'
       graphics_type: 'spice'
       qemu_use_session: false
@@ -44,7 +44,7 @@ platforms:
     memory: 4096
     provider_options:
       title: 'oracle'
-      default_prefix: ''
+      #default_prefix: ''
       video_type: 'virtio'
       graphics_type: 'spice'
       qemu_use_session: false

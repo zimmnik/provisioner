@@ -12,11 +12,7 @@ Supported distributions
 
 Anaconda stage: [use kickstart file] (https://anaconda-installer.readthedocs.io/en/latest/boot-options.html#inst-ks) 
 ```raw
-inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/f37.cfg
-or
-inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/al9.cfg
-or
-inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/ol9.cfg
+inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/[f37,al9,ol9].cfg
 ```
 System stage:
 ```ShellSession
@@ -65,7 +61,7 @@ pip3 install molecule ansible-core ansible-lint psutil molecule-vagrant
 # Deploy
 molecule drivers -f plain
 time molecule test --destroy never -p alma
-tree /home/zorg/.cache/molecule/
+tree ~/.cache/molecule/
 
 # Open GUI window
 virt-manager --connect qemu:///system --show-domain-console [fedora|alma|oracle]
