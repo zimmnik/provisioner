@@ -8,21 +8,22 @@ Supported distributions
 -   **AlmaLinux** 9
 -   **OracleLinux** 9
 
-## Deploy
+## Bare metal usage
 
 Anaconda stage: [use kickstart file] (https://anaconda-installer.readthedocs.io/en/latest/boot-options.html#inst-ks) 
 ```raw
-inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/[f37,al9,ol9].cfg
+inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/[fedora,alma,oracle].cfg
 ```
 System stage:
 ```ShellSession
+# WARNING! Don't use tty1 console, use tty4, because playbook will start systemd's graphical.target
+
 # Set root password
 passwd
 
 # Add sudo user and set password
 useradd --groups wheel --create-home username && passwd username
 
-# WARNING! Don't use tty1 console, use tty4, because playbook will start systemd's graphical.target
 # login as sudo user
 logout
 
