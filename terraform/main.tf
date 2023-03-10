@@ -12,33 +12,26 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
-resource "libvirt_volume" "fedora_base_img" {
-  name   = "Fedora-Cloud-Base-37-1.7.x86_64.qcow2"
-  source = "https://download.fedoraproject.org/pub/fedora/linux/releases/37/Cloud/x86_64/images/Fedora-Cloud-Base-37-1.7.x86_64.qcow2"
-  #lifecycle {
-  #  prevent_destroy = true
-  #}
-}
-
-resource "libvirt_volume" "system_disk" {
-  name           = "provisioner_fedora.qcow2"
-  base_volume_id = libvirt_volume.fedora_base_img.id
+resource "libvirt_volume" "main" {
+  name             = "provisioner-terraform-fedora.qcow2"
+  pool             = "default"
+  base_volume_name = "provisioner-packer-fedora37.v2.qcow2"
 }
 
 data "template_file" "user_data" {
   template = file("${path.module}/cloud_init.cfg")
 }
 
-resource "libvirt_cloudinit_disk" "commoninit" {
-  name           = "commoninit.iso"
-  user_data      = data.template_file.user_data.rendered
+resource "libvirt_cloudinit_disk" "main" {
+  name      = "provisioner-terraform-fedora-cloudinit.iso"
+  user_data = data.template_file.user_data.rendered
 }
 
-resource "libvirt_domain" "demo" {
-  name      = "demo"
-  running   = true
+resource "libvirt_domain" "main" {
+  name    = "provisioner-terraform-fedora"
+  running = true
 
-  vcpu      = 4
+  vcpu = 4
   cpu {
     mode = "host-passthrough"
   }
@@ -50,11 +43,11 @@ resource "libvirt_domain" "demo" {
     type = "spice"
   }
   disk {
-    volume_id = libvirt_volume.system_disk.id
+    volume_id = libvirt_volume.main.id
   }
   network_interface {
     network_name = "default"
   }
 
-  cloudinit = libvirt_cloudinit_disk.commoninit.id
+  cloudinit = libvirt_cloudinit_disk.main.id
 }

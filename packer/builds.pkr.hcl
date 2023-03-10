@@ -1,3 +1,4 @@
+
 build {
   name = "stage1"
   source "libvirt.main" {
@@ -48,7 +49,7 @@ build {
   source "libvirt.main" {
     volume {
       alias = "artifact"
-      name  = "${local.name_prefix}.final${var.uuid}.qcow2"
+      name  = "${local.name_prefix}${var.uuid}.qcow2"
       pool  = "default"
       source {
         type   = "cloning"
@@ -69,7 +70,10 @@ build {
   }
   #provisioner "breakpoint" {}
   provisioner "shell" {
-    inline           = ["sudo yum clean all"]
+    inline           = [
+      "sudo yum clean all",
+      "rm -v ~/.ssh/authorized_keys"
+    ]
   }
   post-processor "shell-local" {
     inline = [
@@ -87,3 +91,18 @@ build {
 #post-processor "shell-local" {
 #  inline = ["cat ${path.cwd}/packer-manifest.json"]
 #}
+
+#virsh net-start default                             
+#virsh net-dhcp-leases default
+#ssh -i ~/.cache/packer/ssh_private_key_packer_rsa.pem -o "StrictHostKeyChecking=no" cloud-user@192.168.122.30
+ 
+#virsh vol-list --pool default 
+#virsh vol-delete packer-provisioner-fedora.qcow2 --pool default
+ 
+#python3 -m venv --upgrade-deps .venv && source .venv/bin/activate
+#pip3 install molecule ansible-core ansible-lint psutil molecule-vagrant
+ 
+#export CHECKPOINT_DISABLE=1
+#export PACKER_LOG=1
+ 
+#export PKR_VAR_uuid=".$(uuidgen)"; set -e; for I in 1 2 3; do packer build -only="stage$I.libvirt.main" -force -on-error=ask -var-file="packer/oracle.pkrvars.hcl" packer; done
