@@ -368,12 +368,12 @@
         src: monitors.xml
         dest: ~/.config/
         mode: u=rw,g=r,o=r
-    - name: "Enable gdm autologin"
-      ansible.builtin.blockinfile:
-        dest: /etc/gdm/custom.conf
-        marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
-        insertafter: "\\[daemon\\]"
-        block: |
-          AutomaticLoginEnable=True
-          AutomaticLogin={{ ansible_user_id }}
-      become: true
+    #- name: "Enable gdm autologin"
+    #  ansible.builtin.blockinfile:
+    #    dest: /etc/gdm/custom.conf
+    #    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
+    #    insertafter: "\\[daemon\\]"
+    #    block: |
+    #      AutomaticLoginEnable=True
+    #      AutomaticLogin={{ ansible_user_id }}
+    #  become: true

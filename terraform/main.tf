@@ -13,24 +13,30 @@ provider "libvirt" {
 }
 
 resource "libvirt_volume" "main" {
-  name             = "provisioner-terraform-fedora.qcow2"
+  name             = "provisioner-terraform-oracle.qcow2"
   pool             = "default"
-  base_volume_name = "provisioner-packer-fedora37.v2.qcow2"
+  base_volume_name = "provisioner-packer-oracle9.v8.qcow2"
+}
+
+data "template_file" "meta_data" {
+  template = file("${path.module}/cloud_init_meta.cfg")
 }
 
 data "template_file" "user_data" {
-  template = file("${path.module}/cloud_init.cfg")
+  template = file("${path.module}/cloud_init_user.cfg")
 }
 
 resource "libvirt_cloudinit_disk" "main" {
-  name      = "provisioner-terraform-fedora-cloudinit.iso"
+  name      = "provisioner-terraform-oracle-cloudinit.iso"
+  meta_data = data.template_file.meta_data.rendered
   user_data = data.template_file.user_data.rendered
 }
 
 resource "libvirt_domain" "main" {
-  name    = "provisioner-terraform-fedora"
+  name    = "provisioner-terraform-oracle"
   running = true
 
+  #firmware = "/usr/share/edk2/ovmf/OVMF_CODE.fd"
   vcpu = 4
   cpu {
     mode = "host-passthrough"
@@ -47,6 +53,11 @@ resource "libvirt_domain" "main" {
   }
   network_interface {
     network_name = "default"
+  }
+  console {
+    type        = "pty"
+    target_port = "0"
+    source_path = "/dev/pts/0"
   }
 
   cloudinit = libvirt_cloudinit_disk.main.id
