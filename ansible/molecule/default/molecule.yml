@@ -17,22 +17,24 @@ platforms:
   - name: alma
     hostname: alma
     box: almalinux/9
+    box_url: https://app.vagrantup.com/almalinux/boxes/9/versions/9.1.20221117/providers/libvirt.box
     cpus: 4
     memory: 4096
     provider_options:
       title: 'alma'
-      #default_prefix: ''
+      # default_prefix: ''
       video_type: 'virtio'
       graphics_type: 'spice'
       qemu_use_session: false
   - name: fedora
     hostname: fedora
-    box: fedora/37-cloud-base
+    box: fedora/38-cloud-base
+    box_url: https://mirror.yandex.ru/fedora/linux/releases/38/Cloud/x86_64/images/Fedora-Cloud-Base-Vagrant-38-1.6.x86_64.vagrant-libvirt.box
     cpus: 4
     memory: 4096
     provider_options:
       title: 'fedora'
-      #default_prefix: ''
+      # default_prefix: ''
       video_type: 'virtio'
       graphics_type: 'spice'
       qemu_use_session: false
@@ -44,7 +46,7 @@ platforms:
     memory: 4096
     provider_options:
       title: 'oracle'
-      #default_prefix: ''
+      # default_prefix: ''
       video_type: 'virtio'
       graphics_type: 'spice'
       qemu_use_session: false
@@ -58,6 +60,7 @@ provisioner:
   env:
     ANSIBLE_VERBOSITY: 0
   playbooks:
+    prepare: ../../prerun.yml
     converge: ../../run.yml
 
 verifier:

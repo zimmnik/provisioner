@@ -6,7 +6,7 @@
       - glibc-langpack-ru
   become: true
 
-- name: "Get LANG locale"
+- name: "Get LANG locale" # noqa risky-shell-pipe
   ansible.builtin.shell:
     cmd: locale | grep LANG | cut -d "=" -f2
   register: env_lang
@@ -17,8 +17,9 @@
   when: env_lang.stdout != "ru_RU.UTF-8"
   ansible.builtin.command:
     cmd: localectl set-locale "LANG=ru_RU.UTF-8"
+  changed_when: true
 
-- name: "Get LC_MESSAGES locale"
+- name: "Get LC_MESSAGES locale" # noqa risky-shell-pipe
   ansible.builtin.shell:
     cmd: locale | grep LC_MESSAGES | cut -d "=" -f2
   register: env_lc_messages
@@ -29,6 +30,7 @@
   when: env_lc_messages.stdout != "en_US.UTF-8"
   ansible.builtin.command:
     cmd: localectl set-locale "LC_MESSAGES=en_US.UTF-8"
+  changed_when: true
 
 - name: "Setup Moscow timezone"
   community.general.timezone:

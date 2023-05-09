@@ -3,3 +3,4 @@
   ansible.builtin.shell:  # noqa command-instead-of-shell
     cmd: gnome-session-quit --no-prompt
   listen: "session_logout"
+  changed_when: false

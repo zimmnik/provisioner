@@ -1,15 +1,15 @@
 - name: "Add Firefox"
   ansible.builtin.include_tasks: "firefox.yml"
 
-- name: "Added RPMFusion"
-  ansible.builtin.include_tasks: repos/rpmfusion.yml
-
-- name: "Add Chromium Freeworld"
-  become: true
-  when: ansible_distribution == "Fedora"
-  ansible.builtin.yum:
-    name: chromium-freeworld
-    state: present
+# - name: "Added RPMFusion"
+#   ansible.builtin.include_tasks: repos/rpmfusion.yml
+#
+# - name: "Add Chromium Freeworld"
+#   become: true
+#   when: ansible_distribution == "Fedora"
+#   ansible.builtin.yum:
+#     name: chromium-freeworld
+#     state: present
 
 - name: "Add keepassxc"
   become: true

@@ -70,15 +70,15 @@
         enabled: true
         state: started
 
-    - name: "Add power-profiles daemon"
-      ansible.builtin.yum:
-        name: power-profiles-daemon
-        state: present
-    - name: "Enable power-profiles daemon"
-      ansible.builtin.service:
-        name: power-profiles-daemon
-        enabled: true
-        state: started
+  # - name: "Add power-profiles daemon"
+  #   ansible.builtin.yum:
+  #     name: power-profiles-daemon
+  #     state: present
+  # - name: "Enable power-profiles daemon"
+  #   ansible.builtin.service:
+  #     name: power-profiles-daemon
+  #     enabled: true
+  #     state: started
 
     - name: "Enable fstrim timer"
       ansible.builtin.systemd:

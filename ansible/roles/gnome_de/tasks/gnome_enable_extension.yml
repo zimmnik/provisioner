@@ -7,3 +7,4 @@
 - name: "Enable extension {{ extension_name }}"
   ansible.builtin.command: gnome-extensions enable {{ extension_name }}
   when: "'State: ENABLED' not in contents.stdout"
+  changed_when: true

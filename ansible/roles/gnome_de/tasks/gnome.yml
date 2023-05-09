@@ -29,6 +29,7 @@
   ansible.builtin.command: systemctl set-default graphical.target
   when: contents.stdout != "graphical.target"
   become: true
+  changed_when: false
 # -----------------------------------------------------------------------------------------------
 # GNOME EXTENSIONS
 
@@ -176,7 +177,7 @@
         dest: /etc/gdm/custom.conf
         marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
         state: absent
-      when: autologin_state.changed
+      when: autologin_state.changed # noqa: no-handler
 
 - name: "Enable extensions"
   ansible.builtin.include_tasks: "gnome_enable_extension.yml"
@@ -193,7 +194,7 @@
   ansible.builtin.include_tasks: "repos/flathub.yml"
 
 # https://askubuntu.com/questions/1403931/how-to-apply-system-theme-to-flatpak-apps-that-use-gtk4
-- name: "Get flatpak GTK_THEME"
+- name: "Get flatpak GTK_THEME" # noqa risky-shell-pipe
   ansible.builtin.shell:
     cmd: flatpak override --show | grep GTK_THEME | cut -d "=" -f2
   register: flatpak_gtk_theme
@@ -210,6 +211,7 @@
   ansible.builtin.command: flatpak override --env GTK_THEME=Adwaita-dark
   become: true
   when: flatpak_gtk_theme.stdout != "Adwaita-dark"
+  changed_when: true
 
 - name: "Add extensions app"
   community.general.flatpak:
@@ -238,28 +240,28 @@
     key: "/org/gnome/desktop/interface/gtk-theme"
     value: "'Adwaita-dark'"
 
-- name: "Enable personal cursors and icond"
-  when: ansible_distribution == "Fedora"
-  block:
-    - name: "Add dmz cursors"
-      ansible.builtin.yum:
-        name: dmz-cursor-themes
-        state: present
-      become: true
-    - name: "Enable dmz cursor"
-      community.general.dconf:
-        key: "/org/gnome/desktop/interface/cursor-theme"
-        value: "'DMZ-White'"
+# - name: "Enable personal cursors and icond"
+#   when: ansible_distribution == "Fedora"
+#   block:
+#     - name: "Add dmz cursors"
+#       ansible.builtin.yum:
+#         name: dmz-cursor-themes
+#         state: present
+#       become: true
+#     - name: "Enable dmz cursor"
+#       community.general.dconf:
+#         key: "/org/gnome/desktop/interface/cursor-theme"
+#         value: "'DMZ-White'"
 
-#    - name: "Add gnome icon theme"
-#      ansible.builtin.yum:
-#        name: gnome-icon-theme
-#        state: present
-#      become: true
-#    - name: "Enable gnome icon theme"
-#      community.general.dconf:
-#        key: "/org/gnome/desktop/interface/icon-theme"
-#        value: "'gnome'"
+#     - name: "Add gnome icon theme"
+#       ansible.builtin.yum:
+#         name: gnome-icon-theme
+#         state: present
+#       become: true
+#     - name: "Enable gnome icon theme"
+#       community.general.dconf:
+#         key: "/org/gnome/desktop/interface/icon-theme"
+#         value: "'gnome'"
 
 - name: "Create personal fonts directory"
   ansible.builtin.file:
@@ -286,6 +288,7 @@
 - name: "Caching personal fonts"
   ansible.builtin.command: fc-cache -f ~/.local/share/fonts/
   when: fonts_state.changed # noqa: no-handler
+  changed_when: true
 
 - name: "Enable personal fonts"
   community.general.dconf:
@@ -368,12 +371,12 @@
         src: monitors.xml
         dest: ~/.config/
         mode: u=rw,g=r,o=r
-    #- name: "Enable gdm autologin"
-    #  ansible.builtin.blockinfile:
-    #    dest: /etc/gdm/custom.conf
-    #    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
-    #    insertafter: "\\[daemon\\]"
-    #    block: |
-    #      AutomaticLoginEnable=True
-    #      AutomaticLogin={{ ansible_user_id }}
-    #  become: true
+  # - name: "Enable gdm autologin"
+  #   ansible.builtin.blockinfile:
+  #     dest: /etc/gdm/custom.conf
+  #     marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
+  #     insertafter: "\\[daemon\\]"
+  #     block: |
+  #       AutomaticLoginEnable=True
+  #       AutomaticLogin={{ ansible_user_id }}
+  #   become: true

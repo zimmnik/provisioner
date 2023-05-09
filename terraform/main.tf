@@ -15,7 +15,7 @@ provider "libvirt" {
 resource "libvirt_volume" "main" {
   name             = "provisioner-terraform-oracle.qcow2"
   pool             = "default"
-  base_volume_name = "provisioner-packer-oracle9.v8.qcow2"
+  base_volume_name = "provisioner-packer-oracle9.v9.qcow2"
 }
 
 data "template_file" "meta_data" {
@@ -29,7 +29,7 @@ data "template_file" "user_data" {
 resource "libvirt_cloudinit_disk" "main" {
   name      = "provisioner-terraform-oracle-cloudinit.iso"
   meta_data = data.template_file.meta_data.rendered
-  user_data = data.template_file.user_data.rendered
+  user_data = jsonencode(data.template_file.user_data.rendered)
 }
 
 resource "libvirt_domain" "main" {
