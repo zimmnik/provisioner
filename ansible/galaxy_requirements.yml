@@ -1,6 +1,9 @@
 collections:
-  - ansible.posix
-  - community.general
+  - name: community.general
+    version: "6.5.0"
+  - name: ansible.posix
+    version: "1.5.1"
+
 roles:
   - name: jaredhocutt.gnome_extensions
     src: https://github.com/jaredhocutt/ansible-gnome-extensions
