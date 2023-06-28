@@ -57,7 +57,7 @@ git clone https://github.com/zimmnik/provisioner.git && cd provisioner/ansible
 
 # Prepare virtual python environment
 python3 -m venv --upgrade-deps .venv && source .venv/bin/activate
-pip3 install molecule ansible-core ansible-lint psutil molecule-vagrant
+pip3 install -r pip_requirements.txt
 
 # Deploy
 molecule drivers -f plain
