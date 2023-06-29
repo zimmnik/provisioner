@@ -213,11 +213,11 @@
   when: flatpak_gtk_theme.stdout != "Adwaita-dark"
   changed_when: true
 
-- name: "Add extensions app"
-  community.general.flatpak:
-    name: org.gnome.Extensions
-    state: present
-  become: true
+#- name: "Add extensions app"
+#  community.general.flatpak:
+#    name: org.gnome.Extensions
+#    state: present
+#  become: true
 
 # -----------------------------------------------------------------------------------------------
 # GNOME VNC

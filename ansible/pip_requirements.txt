@@ -3,6 +3,7 @@ ansible-compat==3.0.2
 ansible-lint
 molecule==5.0.0
 molecule-plugins[vagrant]
+psutil
 
 #ansible-compat==3.0.2
 #ansible-core==2.15.1

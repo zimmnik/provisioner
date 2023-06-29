@@ -16,31 +16,20 @@ inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/[
 ```
 System stage:
 ```ShellSession
-# WARNING! Don't use tty1 console, use tty4, because playbook will start systemd's graphical.target
-
-# Set root password
 passwd
-
-# Add sudo user and set password
 useradd --groups wheel --create-home username && passwd username
 
-# login as sudo user
+# logout and login as sudo user
+# WARNING! Don't use tty1 console, use tty4, because playbook will start systemd's graphical.target
 logout
 
-# Install dependencies
 sudo yum -y install git
-
-# Clone playbooks
 git clone https://github.com/zimmnik/provisioner.git && cd provisioner/ansible
 
-# Install Ansible
 python3 -m venv --upgrade-deps .venv && source .venv/bin/activate
-pip3 install ansible-core psutil
-
-# Install playbook requirements
+pip3 install -r pip_requirements.txt
 ansible-galaxy install -r galaxy_requirements.yml
 
-# Run playbook with desired hostname
 ansible-playbook -i hosts -K -e "hostname=somename" run.yml
 ```
 ### Development
@@ -50,20 +39,23 @@ ansible-playbook -i hosts -K -e "hostname=somename" run.yml
 - **vagrant-libvirt**
 - **4GB RAM free for guest**
 
-#### Usage:
+#### molecule-vagrant way:
 ```ShellSession
-# Install playbooks
 git clone https://github.com/zimmnik/provisioner.git && cd provisioner/ansible
 
-# Prepare virtual python environment
 python3 -m venv --upgrade-deps .venv && source .venv/bin/activate
 pip3 install -r pip_requirements.txt
 
-# Deploy
 molecule drivers -f plain
 time molecule test --destroy never -p alma
 tree ~/.cache/molecule/
 
-# Open GUI window
 virt-manager --connect qemu:///system --show-domain-console [fedora|alma|oracle]
+```
+#### pure-vagrant way:
+```ShellSession
+cd vagrant/
+
+vagrant plugin install vagrant-reload
+vagrant up --no-parallel --no-destroy-on-error [fedora|alma|oracle]
 ```
