@@ -5,6 +5,7 @@ firefox links + proxy.pac + tor
 vpn or ssh tunnel
 mta
 ssd trim (cat /etc/fstab && sudo systemctl list-timers)
+grub amd_pstate=active
 nvidia gpu drivers
 firmware (wifi, sound) 
 smart
