@@ -43,7 +43,8 @@
     value: "{{ item.value | string }}"
   loop:
     - { key: "/org/gnome/desktop/input-sources/sources", value: "[('xkb', 'us'), ('xkb', 'ru')]" }
-    - { key: "/org/gnome/desktop/input-sources/xkb-options", value: "['lv3:ralt_switch', 'grp:alt_shift_toggle']" }
+    - { key: "/org/gnome/desktop/input-sources/xkb-options", value: "['grp:ctrl_space_toggle']" }
+
     - { key: "/org/gnome/desktop/input-sources/per-window", value: "true" }
 
 - name: "Setup gnome region"

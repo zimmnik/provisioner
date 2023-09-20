@@ -220,14 +220,6 @@
 #  become: true
 
 # -----------------------------------------------------------------------------------------------
-# GNOME VNC
-- name: "Disable build-in vnc encryption"
-  community.general.dconf:
-    key: "{{ item.key }}"
-    value: "{{ item.value | string }}"
-  loop:
-    - { key: "/org/gnome/desktop/remote-desktop/vnc/encryption", value: "['none']" }
-# -----------------------------------------------------------------------------------------------
 # GNOME APPEARANCE
 
 - name: "Enable dark color scheme"
