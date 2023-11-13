@@ -27,6 +27,13 @@
     dest: ~/.var/app/info.smplayer.SMPlayer/config/smplayer/
     mode: u=rw,g=,o=r
 
+- name: "Add eog"
+  ansible.builtin.yum:
+    state: present
+    name:
+      - eog
+  become: true
+
 # - name: "Add celluloid config directory"
 #   ansible.builtin.file:
 #     path: ~/.var/app/io.github.celluloid_player.Celluloid/config/glib-2.0/settings/

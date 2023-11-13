@@ -4,7 +4,7 @@ Provisioner is an ansible playbook that allow to quickly configure Gnome DE on R
 
 Supported distributions
 -----------------------------
--   **Fedora** 38
+-   **Fedora** 39
 -   **AlmaLinux** 9
 -   **OracleLinux** 9
 
@@ -47,7 +47,7 @@ python3 -m venv --upgrade-deps .venv && source .venv/bin/activate
 pip3 install -r pip_requirements.txt
 
 molecule drivers -f plain
-time molecule test --destroy never -p alma
+time molecule test --destroy never -p [fedora|alma|oracle]
 tree ~/.cache/molecule/
 
 virt-manager --connect qemu:///system --show-domain-console [fedora|alma|oracle]

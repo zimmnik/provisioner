@@ -28,8 +28,8 @@ platforms:
       qemu_use_session: false
   - name: fedora
     hostname: fedora
-    box: fedora/38-cloud-base
-    box_url: https://mirror.yandex.ru/fedora/linux/releases/38/Cloud/x86_64/images/Fedora-Cloud-Base-Vagrant-38-1.6.x86_64.vagrant-libvirt.box
+    box: fedora/39-cloud-base
+    box_url: https://mirror.yandex.ru/fedora/linux/releases/39/Cloud/x86_64/images/Fedora-Cloud-Base-Vagrant-39-1.5.x86_64.vagrant-libvirt.box
     cpus: 4
     memory: 4096
     provider_options:
