@@ -22,20 +22,16 @@ variable "uuid" {
 
 variable "os" {
   type = string
-  #default = "fedora37"
 }
 
 variable "user" {
   type = string
-  #default = "fedora"
 }
 variable "img-link" {
   type = list(string)
-  #default = ["https://download.fedoraproject.org/pub/fedora/linux/releases/37/Cloud/x86_64/images/Fedora-Cloud-Base-37-1.7.x86_64.qcow2"]
 }
 variable "img-checksum" {
   type = string
-  #default = "b5b9bec91eee65489a5745f6ee620573b23337cbb1eb4501ce200b157a01f3a0"
 }
 
 locals {
@@ -75,11 +71,9 @@ source "libvirt" "main" {
     pool = "default"
     source {
       type = "cloud-init"
-      #FYI cloud-init schema --config-file cloud_init.cfg 
       meta_data = format("#cloud-config\n%s", jsonencode({
-        "instance-id" = "${local.name_prefix}"
+        "instance-id" = "${uuidv4()}"
       }))
-      #user_data = file("${path.root}/cloud_init.cfg")
       user_data = format("#cloud-config\n%s", jsonencode({
         ssh_pwauth = "false"
         ssh_authorized_keys = [
@@ -164,7 +158,6 @@ build {
     ansible_env_vars = ["ANSIBLE_HOST_KEY_CHECKING=False"]
     use_proxy        = false
   }
-  #provisioner "breakpoint" {}
   provisioner "shell" {
     inline           = [
       "sudo yum -y install xterm-resize",
@@ -173,6 +166,7 @@ build {
       "rm -v ~/.ssh/authorized_keys"
     ]
   }
+  provisioner "breakpoint" {}
   post-processor "shell-local" {
     inline = [
       "virsh vol-delete ${local.name_prefix}.stage2${var.uuid}.qcow2 --pool default",
@@ -182,6 +176,7 @@ build {
 }
 
 #WAREHOUSE
+
 #post-processor "manifest" {
 #  custom_data = {
 #    last_uuid = "${local.new_uuid}" }
@@ -190,17 +185,13 @@ build {
 #  inline = ["cat ${path.cwd}/packer-manifest.json"]
 #}
 
-#virsh net-start default                             
+# BREAKPOINT CONNECT
+#virsh dumpxml provisioner-packer-fedora39-0c01393f-5cd8-4443-8cc5-5be701a738bf | grep "mac address"
 #virsh net-dhcp-leases default
 #ssh -i ~/.cache/packer/ssh_private_key_packer_rsa.pem -o "StrictHostKeyChecking=no" cloud-user@192.168.122.30
+
+# CLEANUP 
+#export VL=$(virsh vol-list --pool default | grep provisioner | awk '{print $1}')
+#for V in $VL; do virsh vol-delete $V --pool default; done
+#virsh vol-list --pool default
  
-#virsh vol-list --pool default 
-#virsh vol-delete packer-provisioner-fedora.qcow2 --pool default
- 
-#python3 -m venv --upgrade-deps .venv && source .venv/bin/activate
-#pip3 install molecule ansible-core ansible-lint psutil molecule-vagrant
- 
-#export CHECKPOINT_DISABLE=1
-#export PACKER_LOG=1
- 
-#export PKR_VAR_uuid=".$(uuidgen)"; set -e; for I in 1 2 3; do packer build -only="stage$I.libvirt.main" -force -on-error=ask -var-file="packer/oracle.pkrvars.hcl" packer; done

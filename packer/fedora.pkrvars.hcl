@@ -1,4 +1,4 @@
-os           = "fedora37"
+os           = "fedora39"
 user         = "fedora"
-img-link     = ["https://download.fedoraproject.org/pub/fedora/linux/releases/37/Cloud/x86_64/images/Fedora-Cloud-Base-37-1.7.x86_64.qcow2"]
-img-checksum = "b5b9bec91eee65489a5745f6ee620573b23337cbb1eb4501ce200b157a01f3a0"
+img-link     = ["https://fedora.ipacct.com/fedora/linux/releases/39/Cloud/x86_64/images/Fedora-Cloud-Base-39-1.5.x86_64.qcow2"]
+img-checksum = "ab5be5058c5c839528a7d6373934e0ce5ad6c8f80bd71ed3390032027da52f37"

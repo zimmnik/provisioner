@@ -28,8 +28,19 @@ data "template_file" "user_data" {
 
 resource "libvirt_cloudinit_disk" "main" {
   name      = "provisioner-terraform-oracle-cloudinit.iso"
-  meta_data = data.template_file.meta_data.rendered
-  user_data = jsonencode(data.template_file.user_data.rendered)
+  meta_data = <<-EOT
+    instance-id: ver1
+    hostname:    provisioner-fedora
+  EOT
+  user_data = <<-EOT
+    #cloud-config
+    hostname: fedorahost
+    chpasswd:
+      list: |
+        root:password
+        fedora:password
+      expire: False
+  EOT
 }
 
 resource "libvirt_domain" "main" {
