@@ -1,0 +1,31 @@
+---
+# FYI https://discourse.gnome.org/t/enable-gnome-extensions-without-session-restart/7936
+- name: "Restart GUI session"
+  become: true
+  block:
+    - name: "Enable gdm autologin"
+      ansible.builtin.blockinfile:
+        dest: /etc/gdm/custom.conf
+        marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
+        insertafter: "\\[daemon\\]"
+        block: |
+          AutomaticLoginEnable=True
+          AutomaticLogin={{ ansible_user_id }}
+      register: autologin_state
+      changed_when: false
+    - name: "Restart gdm"
+      ansible.builtin.service:
+        name: gdm
+        state: restarted
+      changed_when: false
+    - name: "Wait GUI session"
+      ansible.builtin.pause:
+        seconds: 15
+      changed_when: false
+    - name: "Disable gdm autologin"
+      ansible.builtin.blockinfile:
+        dest: /etc/gdm/custom.conf
+        marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
+        state: absent
+      when: autologin_state.changed # noqa: no-handler
+      changed_when: false

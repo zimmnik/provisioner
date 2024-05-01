@@ -1,3 +1,20 @@
+- name: "Add file utilites"
+  ansible.builtin.yum:
+    state: present
+    name:
+      - ncdu
+      - tree
+      - mc
+      - unzip
+      - p7zip
+      - p7zip-plugins
+      - tar
+      - zstd
+      - cifs-utils
+      - lsof
+      - iotop
+      - sysstat
+
 - name: "Add file tools"
   ansible.builtin.yum:
     state: present

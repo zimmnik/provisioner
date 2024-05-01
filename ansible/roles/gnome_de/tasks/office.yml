@@ -14,7 +14,7 @@
     key: "{{ item.key }}"
     value: "{{ item.value | string }}"
   loop:
-    - { key: "/org/gnome/gedit/preferences/editor/scheme", value: "'oblivion'" }
+    # - { key: "/org/gnome/gedit/preferences/editor/scheme", value: "'oblivion'" }
     - { key: "/org/gnome/gedit/plugins/active-plugins", value: "['textsize', 'spell', 'sort', 'modelines', 'filebrowser', 'docinfo']" }
 
 - name: "Setup vim"

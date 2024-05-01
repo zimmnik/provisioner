@@ -1,4 +1,4 @@
-"colorscheme pablo
+colorscheme quiet
 
 set guifont=Ubuntu\ Mono\ Regular\ 14
 

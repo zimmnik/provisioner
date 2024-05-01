@@ -1,3 +1,26 @@
+- name: "Add network utilites"
+  ansible.builtin.yum:
+    state: present
+    name:
+      - bind-utils
+      - curl
+      - arp-scan
+      - iftop
+      - nload
+      - nmap
+      - iperf3
+      - traceroute
+
+- name: "Add SSH server"
+  ansible.builtin.yum:
+    name: openssh-server
+    state: present
+- name: "Enable SSH server"
+  ansible.builtin.service:
+    name: sshd
+    enabled: true
+    state: started
+
 - name: "Add Firefox"
   ansible.builtin.include_tasks: "firefox.yml"
 

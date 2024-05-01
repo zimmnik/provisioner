@@ -1,3 +1,4 @@
+          - bash-completion
 - name: "Add terminal app"
   ansible.builtin.yum:
     name: gnome-terminal
@@ -9,6 +10,7 @@
     key: "{{ item.key }}"
     value: "{{ item.value | string }}"
   loop:
+    # - { key: "/org/gnome/terminal/legacy/theme-variant", value: "system" }
     - { key: "/org/gnome/terminal/legacy/menu-accelerator-enabled", value: "false" }
     - { key: "/org/gnome/terminal/legacy/profiles:/list", value: "'b1dcc9dd-5262-4d8d-a863-c897e6d979b9'" }
     - { key: "/org/gnome/terminal/legacy/profiles:/default", value: "'b1dcc9dd-5262-4d8d-a863-c897e6d979b9'" }
