@@ -1,3 +1,7 @@
+---
+- name: "Added EPEL"
+  ansible.builtin.include_tasks: repos/epel.yml
+
 - name: "Add file utilites"
   ansible.builtin.yum:
     state: present
@@ -14,6 +18,7 @@
       - lsof
       - iotop
       - sysstat
+  become: true
 
 - name: "Add file tools"
   ansible.builtin.yum:

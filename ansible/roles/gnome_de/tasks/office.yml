@@ -16,16 +16,3 @@
   loop:
     # - { key: "/org/gnome/gedit/preferences/editor/scheme", value: "'oblivion'" }
     - { key: "/org/gnome/gedit/plugins/active-plugins", value: "['textsize', 'spell', 'sort', 'modelines', 'filebrowser', 'docinfo']" }
-
-- name: "Setup vim"
-  ansible.builtin.copy:
-    src: .vimrc
-    mode: u=rw,g=r,o=r
-    dest: /root
-  become: true
-
-- name: "Setup vim for root"
-  ansible.builtin.copy:
-    src: .vimrc
-    mode: u=rw,g=r,o=r
-    dest: ~/

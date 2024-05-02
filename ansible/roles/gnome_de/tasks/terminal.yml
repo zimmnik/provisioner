@@ -1,26 +1,38 @@
-          - bash-completion
-- name: "Add terminal app"
+- name: "Add basic apps"
   ansible.builtin.yum:
-    name: gnome-terminal
+    name:
+      - man
+      - vim
+      - less
+      - bash-completion
+      - tmux
     state: present
   become: true
 
-- name: "Setup terminal app"
-  community.general.dconf:
-    key: "{{ item.key }}"
-    value: "{{ item.value | string }}"
-  loop:
-    # - { key: "/org/gnome/terminal/legacy/theme-variant", value: "system" }
-    - { key: "/org/gnome/terminal/legacy/menu-accelerator-enabled", value: "false" }
-    - { key: "/org/gnome/terminal/legacy/profiles:/list", value: "'b1dcc9dd-5262-4d8d-a863-c897e6d979b9'" }
-    - { key: "/org/gnome/terminal/legacy/profiles:/default", value: "'b1dcc9dd-5262-4d8d-a863-c897e6d979b9'" }
-    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/font", value: "'Ubuntu Mono 16'" }
-    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/audible-bell", value: "false" }
-    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/use-system-font", value: "false" }
-    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/scroll-on-output", value: "false" }
-    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/scrollbar-policy", value: "'never'" }
-    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/scroll-on-keystroke", value: "false" }
-    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/scrollback-unlimited", value: "true" }
+- name: "Setup vim"
+  ansible.builtin.copy:
+    src: .vimrc
+    mode: u=rw,g=r,o=r
+    dest: /root
+  become: true
+
+- name: "Setup vim for root"
+  ansible.builtin.copy:
+    src: .vimrc
+    mode: u=rw,g=r,o=r
+    dest: ~/
+
+- name: "Setup terminal multiplexor"
+  ansible.builtin.blockinfile:
+    dest: ~/.tmux.conf
+    mode: u=rw,g=r,o=r
+    create: true
+    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK internet tmux 2 -->"
+    block: |
+      unbind-key C-b
+      set-option -g prefix C-a
+      bind-key C-a send-prefix
+      set-option -g history-limit 5000
 
 - name: "Setup bash"
   ansible.builtin.blockinfile:
@@ -45,24 +57,31 @@
       # http://superuser.com/questions/20900/bash-history-loss
       PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 
-- name: "Add terminal multiplexor"
+- name: "Add terminal app"
   ansible.builtin.yum:
-    name: tmux
+    name: gnome-terminal
     state: present
   become: true
 
-- name: "Setup terminal multiplexor"
-  ansible.builtin.blockinfile:
-    dest: ~/.tmux.conf
-    mode: u=rw,g=r,o=r
-    create: true
-    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK internet tmux 2 -->"
-    block: |
-      unbind-key C-b
-      set-option -g prefix C-a
-      bind-key C-a send-prefix
-      set-option -g history-limit 5000
+- name: "Setup terminal app"
+  community.general.dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value | string }}"
+  loop:
+    # - { key: "/org/gnome/terminal/legacy/theme-variant", value: "system" }
+    - { key: "/org/gnome/terminal/legacy/menu-accelerator-enabled", value: "false" }
+    - { key: "/org/gnome/terminal/legacy/profiles:/list", value: "'b1dcc9dd-5262-4d8d-a863-c897e6d979b9'" }
+    - { key: "/org/gnome/terminal/legacy/profiles:/default", value: "'b1dcc9dd-5262-4d8d-a863-c897e6d979b9'" }
+    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/font", value: "'Ubuntu Mono 16'" }
+    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/audible-bell", value: "false" }
+    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/use-system-font", value: "false" }
+    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/scroll-on-output", value: "false" }
+    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/scrollbar-policy", value: "'never'" }
+    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/scroll-on-keystroke", value: "false" }
+    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/scrollback-unlimited", value: "true" }
 
+# WAREHOUSE
+# ------------------------------------------------------------------------------
 # - name: internet ssh-agent 1
 #   ansible.builtin.blockinfile:
 #     dest: ~/.ssh/rc

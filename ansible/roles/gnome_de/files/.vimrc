@@ -1,6 +1,6 @@
-colorscheme quiet
+colorscheme pablo
 
-set guifont=Ubuntu\ Mono\ Regular\ 14
+"set guifont=Ubuntu\ Mono\ Regular\ 14
 
 set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:␣
 "set list

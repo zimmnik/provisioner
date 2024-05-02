@@ -1,5 +1,12 @@
 ---
 - name: "Setup Gnome DE"
   hosts: all
+  tasks:
+    - name: "Setup dnf"
+      ansible.builtin.lineinfile:
+        path: /etc/dnf/dnf.conf
+        regexp: '^install_weak_deps='
+        line: 'install_weak_deps=False'
+      become: true
   roles:
     - gnome_de

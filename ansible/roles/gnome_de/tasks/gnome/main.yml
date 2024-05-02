@@ -1,0 +1,181 @@
+---
+- name: "Add gnome packages"
+  ansible.builtin.yum:
+    state: present
+    name:
+      - "@base-x"
+      - gnome-session-xsession
+      - control-center
+      - krb5-libs
+      - gnome-tweak-tool
+      - dconf-editor
+      - python3-psutil
+      - dbus-x11
+      - dnsmasq
+  become: true
+
+- name: "Setup Wayland"
+  ansible.builtin.lineinfile:
+    path: /etc/gdm/custom.conf
+    regexp: 'WaylandEnable='
+    line: WaylandEnable=true
+  become: true
+
+- name: "Get default systemd target"
+  ansible.builtin.command: systemctl get-default # noqa: command-instead-of-module
+  register: contents
+  changed_when: false
+
+- name: "Set default systemd target"
+  ansible.builtin.command: systemctl set-default graphical.target
+  when: contents.stdout != "graphical.target"
+  become: true
+  changed_when: false
+
+- name: "Create personal fonts directory"
+  ansible.builtin.file:
+    path: ~/.local/share/fonts/
+    state: directory
+    mode: u=rwx,g=rx,o=rx
+
+- name: "Add unzip"
+  ansible.builtin.yum:
+    name: unzip
+    state: present
+  become: true
+
+- name: "Add ubuntu fonts"
+  ansible.builtin.unarchive:
+    src: https://assets.ubuntu.com/v1/0cef8205-ubuntu-font-family-0.83.zip
+    dest: ~/.local/share/fonts/
+    remote_src: true
+    creates: ~/.local/share/fonts/ubuntu-font-family-0.83/
+  register: fonts_state
+
+- name: "Caching personal fonts"
+  ansible.builtin.command: fc-cache -f ~/.local/share/fonts/
+  when: fonts_state.changed # noqa: no-handler
+  changed_when: true
+
+- name: "Enable personal fonts"
+  community.general.dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value | string }}"
+  loop:
+    - { key: "/org/gnome/desktop/interface/monospace-font-name", value: "'Ubuntu Mono 14'" }
+    - { key: "/org/gnome/desktop/interface/document-font-name", value: "'Ubuntu Italic 14'" }
+    - { key: "/org/gnome/desktop/interface/font-name", value: "'Ubuntu 14'" }
+    - { key: "/org/gnome/desktop/wm/preferences/titlebar-uses-system-font", value: "true" }
+    - { key: "/org/gnome/desktop/wm/preferences/titlebar-font", value: "'Ubuntu Medium 14'" }
+    - { key: "/org/gnome/desktop/interface/font-antialiasing", value: "'rgba'" }
+
+# - name: "Setup background and screensaver"
+#   ansible.builtin.file:
+#     path: /usr/share/backgrounds/custom
+#     state: directory
+#     mode: u=rwx,g=rx,o=rx
+#   become: true
+#
+# - name: "Setup background and screensaver"
+#   ansible.builtin.copy:
+#     src: wallpaper.jpg
+#     mode: u=rw,g=r,o=r
+#     dest: /usr/share/backgrounds/custom
+#   become: true
+
+- name: "Setup background and screensaver"
+  community.general.dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value | string }}"
+  loop:
+    - { key: "/org/gnome/desktop/background/primary-color", value: "'#2e3436'" }
+    - { key: "/org/gnome/desktop/background/picture-options", value: "'wallpaper'" }
+    - { key: "/org/gnome/desktop/background/picture-uri", value: "''" }
+    # - { key: "/org/gnome/desktop/background/picture-uri", value: "'file:///usr/share/backgrounds/custom/wallpaper.jpg'" }
+    - { key: "/org/gnome/desktop/screensaver/primary-color", value: "'#2e3436'" }
+    - { key: "/org/gnome/desktop/screensaver/picture-options", value: "'wallpaper'" }
+    - { key: "/org/gnome/desktop/screensaver/picture-uri", value: "''" }
+    # - { key: "/org/gnome/desktop/screensaver/picture-uri", value: "'file:///usr/share/backgrounds/custom/wallpaper.jpg'" }
+
+- name: "Enable nignt-light"
+  community.general.dconf:
+    key: "/org/gnome/settings-daemon/plugins/color/night-light-enabled"
+    value: "true"
+
+- name: "Setup button layout"
+  community.general.dconf:
+    key: "/org/gnome/desktop/wm/preferences/button-layout"
+    value: "'appmenu:minimize,maximize,close'"
+
+- name: "Enable weekday on clock"
+  community.general.dconf:
+    key: "/org/gnome/desktop/interface/clock-show-weekday"
+    value: "true"
+
+- name: "Setup battery indicator"
+  community.general.dconf:
+    key: "/org/gnome/desktop/interface/show-battery-percentage"
+    value: "true"
+
+- name: "Setup Workspaces"
+  community.general.dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value | string }}"
+  loop:
+    - { key: "/org/gnome/mutter/dynamic-workspaces", value: "false" }
+    - { key: "/org/gnome/mutter/workspaces-only-on-primary", value: "false" }
+    - { key: "/org/gnome/shell/overrides/dynamic-workspaces", value: "false" }
+    - { key: "/org/gnome/shell/overrides/workspaces-only-on-primary", value: "false" }
+    - { key: "/org/gnome/shell/app-switcher/current-workspace-only", value: "true" }
+
+- name: "Setup wm keybindings"
+  community.general.dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value | string }}"
+  loop:
+    - { key: "/org/gnome/desktop/wm/keybindings/close", value: "['<Super>q']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/show-desktop", value: "['<Super>d']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-applications", value: "@as []" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-applications-backward", value: "@as []" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-windows", value: "['<Alt>Tab']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-1", value: "['<Primary>1']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-2", value: "['<Primary>2']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-3", value: "['<Primary>3']" }
+    - { key: "/org/gnome/desktop/wm/keybindings/switch-to-workspace-4", value: "['<Primary>4']" }
+#    - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-1", value: "['<Primary><Shift>exclam']" }
+#    - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-2", value: "['<Primary><Shift>at']" }
+#    - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-3", value: "['<Primary><Shift>numbersign']" }
+#    - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-4", value: "['<Primary><Shift>dollar']" }
+
+- name: "Special settings on virtual env"
+  when: ansible_virtualization_role == "guest"
+  block:
+    - name: "Disable lock screen and auto sleeping"
+      community.general.dconf:
+        key: "{{ item.key }}"
+        value: "{{ item.value | string }}"
+      loop:
+        - { key: "/org/gnome/desktop/lockdown/disable-lock-screen", value: "true" }
+        - { key: "/org/gnome/desktop/screensaver/lock-enabled", value: "false" }
+        - { key: "/org/gnome/desktop/session/idle-delay", value: "uint32 0" }
+        - { key: "/org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type", value: "'nothing'" }
+        - { key: "/org/gnome/desktop/notifications/show-in-lock-screen", value: "false" }
+
+    - name: "Setup virtual screen"
+      ansible.builtin.copy:
+        src: monitors.xml
+        dest: ~/.config/
+        mode: u=rw,g=r,o=r
+
+    - name: "Enable gdm autologin"
+      ansible.builtin.blockinfile:
+        dest: /etc/gdm/custom.conf
+        marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
+        insertafter: "\\[daemon\\]"
+        block: |
+          AutomaticLoginEnable=True
+          AutomaticLogin={{ ansible_user_id }}
+      become: true
+
+- name: "Setup Gnome DE"
+  ansible.builtin.include_tasks: gnome/setup_extensions.yml

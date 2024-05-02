@@ -1,8 +1,8 @@
 ---
-- name: "Workaround for Desktop Icons NG extenstion"
-  ansible.builtin.shell: gnome-extensions disable ding@rastersoft.com && gnome-extensions enable ding@rastersoft.com
-  changed_when: false
-
+# - name: "Workaround for Desktop Icons NG extenstion"
+#   ansible.builtin.shell: gnome-extensions disable ding@rastersoft.com && gnome-extensions enable ding@rastersoft.com
+#   changed_when: false
+#
 # - name: "Force gnome logout"
 #   ansible.builtin.shell:  # noqa command-instead-of-shell
 #     cmd: gnome-session-quit --no-prompt

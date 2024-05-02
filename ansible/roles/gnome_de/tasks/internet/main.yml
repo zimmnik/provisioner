@@ -1,38 +1,47 @@
-- name: "Add network utilites"
-  ansible.builtin.yum:
-    state: present
-    name:
-      - bind-utils
-      - curl
-      - arp-scan
-      - iftop
-      - nload
-      - nmap
-      - iperf3
-      - traceroute
+- name: "Basic setup"
+  become: true
+  block:
+    - name: "Setup hostname"
+      ansible.builtin.hostname:
+        name: "{{ hostname }}"
 
-- name: "Add SSH server"
-  ansible.builtin.yum:
-    name: openssh-server
-    state: present
-- name: "Enable SSH server"
-  ansible.builtin.service:
-    name: sshd
-    enabled: true
-    state: started
+    - name: "Add network utilites"
+      ansible.builtin.yum:
+        state: present
+        name:
+          - bind-utils
+          - curl
+          - arp-scan
+          - iftop
+          - nload
+          - nmap
+          - iperf3
+          - traceroute
+
+    - name: "Add SSH server"
+      ansible.builtin.yum:
+        name: openssh-server
+        state: present
+
+    - name: "Enable SSH server"
+      ansible.builtin.service:
+        name: sshd
+        enabled: true
+        state: started
+
+    - name: "Add Chrony"
+      ansible.builtin.yum:
+        name: chrony
+        state: present
+
+    - name: "Enable Chrony"
+      ansible.builtin.service:
+        name: chronyd
+        enabled: true
+        state: started
 
 - name: "Add Firefox"
-  ansible.builtin.include_tasks: "firefox.yml"
-
-# - name: "Added RPMFusion"
-#   ansible.builtin.include_tasks: repos/rpmfusion.yml
-#
-# - name: "Add Chromium Freeworld"
-#   become: true
-#   when: ansible_distribution == "Fedora"
-#   ansible.builtin.yum:
-#     name: chromium-freeworld
-#     state: present
+  ansible.builtin.include_tasks: "internet/firefox.yml"
 
 - name: "Add keepassxc"
   become: true
@@ -66,6 +75,19 @@
     mode: u=rw,g=rw,o=r
     dest: ~/.config/autostart/
     remote_src: true
+
+# WAREHOUSE
+# -----------------------------------------------------------------------------
+# - name: "Added RPMFusion"
+#   ansible.builtin.include_tasks: repos/rpmfusion.yml
+#
+# - name: "Add Chromium Freeworld"
+#   become: true
+#   when: ansible_distribution == "Fedora"
+#   ansible.builtin.yum:
+#     name: chromium-freeworld
+#     state: present
+
 
 # - name: internet freerdp 1
 #   ansible.builtin.yum: name=freerdp state=latest

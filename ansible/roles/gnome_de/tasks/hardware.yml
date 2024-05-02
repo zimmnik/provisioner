@@ -1,0 +1,31 @@
+---
+- name: "Added EPEL"
+  ansible.builtin.include_tasks: repos/epel.yml
+
+- name: "Add basic apps"
+  ansible.builtin.yum:
+    name:
+      - atop
+      - lshw
+    state: present
+  become: true
+
+- name: "Enable fstrim timer"
+  ansible.builtin.systemd:
+    name: fstrim.timer
+    enabled: true
+    state: started
+  # when: ansible_virtualization_role != "guest"
+  become: true
+
+# WAREHOUSE
+# -----------------------------------------------------------------------------
+# - name: "Add power-profiles daemon"
+#   ansible.builtin.yum:
+#     name: power-profiles-daemon
+#     state: present
+# - name: "Enable power-profiles daemon"
+#   ansible.builtin.service:
+#     name: power-profiles-daemon
+#     enabled: true
+#     state: started

@@ -1,0 +1,206 @@
+---
+- name: "Add flathub repo"
+  ansible.builtin.include_tasks: "repos/flathub.yml"
+
+# ------------------------------------------------------------------------------
+# ddterm
+- name: "Add gnome extension drop-down terminal"
+  ansible.builtin.import_role:
+    name: jaredhocutt.gnome_extensions
+  vars:
+    gnome_extension_ids:
+      - 3780
+
+- name: "Setup gnome extension drop-down terminal"
+  community.general.dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value | string }}"
+  loop:
+    - { key: "/com/github/amezin/ddterm/ddterm-toggle-hotkey", value: "['<Control>grave']" }
+    - { key: "/com/github/amezin/ddterm/audible-bell", value: "false" }
+    - { key: "/com/github/amezin/ddterm/background-opacity", value: "0.95" }
+    - { key: "/com/github/amezin/ddterm/cursor-blink-mode", value: "'off'" }
+    - { key: "/com/github/amezin/ddterm/override-window-animation", value: "false" }
+    - { key: "/com/github/amezin/ddterm/panel-icon-type", value: "'toggle-button'" }
+    - { key: "/com/github/amezin/ddterm/scroll-on-keystroke", value: "false" }
+    - { key: "/com/github/amezin/ddterm/show-scrollbar", value: "false" }
+    - { key: "/com/github/amezin/ddterm/transparent-background", value: "false" }
+    - { key: "/com/github/amezin/ddterm/window-above", value: "false" }
+    - { key: "/com/github/amezin/ddterm/window-maximize", value: "true" }
+    - { key: "/com/github/amezin/ddterm/window-resizable", value: "false" }
+    - { key: "/com/github/amezin/ddterm/tab-policy", value: "'never'" }
+    - { key: "/com/github/amezin/ddterm/notebook-border", value: "false" }
+    - { key: "/com/github/amezin/ddterm/use-theme-colors", value: "false" }
+    - { key: "/com/github/amezin/ddterm/background-color", value: "'rgb(23,20,33)'" }
+    - { key: "/com/github/amezin/ddterm/foreground-color", value: "'rgb(208,207,204)'" }
+    - { key: "/com/github/amezin/ddterm/use-system-font", value: "false" }
+    - { key: "/com/github/amezin/ddterm/custom-font", value: "'Ubuntu Mono 16'" }
+
+- name: "Workaround for gnome extension drop-down terminal"
+  ansible.builtin.command:
+    cmd: glib-compile-schemas ~/.local/share/gnome-shell/extensions/ddterm@amezin.github.com/schemas/
+    creates: ~/.local/share/gnome-shell/extensions/ddterm@amezin.github.com/schemas/gschemas.compiled
+
+# ------------------------------------------------------------------------------
+# ding
+- name: "Add Desktop Icons NG extenstion"
+  ansible.builtin.import_role:
+    name: jaredhocutt.gnome_extensions
+  vars:
+    gnome_extension_ids:
+      - 2087
+
+# - name: "Setup Desktop Icons NG extenstion"
+#   community.general.dconf:
+#     key: "{{ item.key }}"
+#     value: "{{ item.value | string }}"
+#   loop:
+#     - { key: "/org/gnome/shell/extensions/ding/use-nemo", value: "true" }
+#     # - { key: "/org/gnome/shell/extensions/ding/dark-text-in-labels", value: "true" }
+#   notify:
+#     - Workaround for Desktop Icons NG extenstion
+
+# ------------------------------------------------------------------------------
+# workspace indicator
+- name: "Add Workspace indicator extenstion"
+  ansible.builtin.import_role:
+    name: jaredhocutt.gnome_extensions
+  vars:
+    gnome_extension_ids:
+      - 21
+
+# ------------------------------------------------------------------------------
+# no-overview
+- name: "Add No overview at start-up extenstion"
+  ansible.builtin.import_role:
+    name: jaredhocutt.gnome_extensions
+  vars:
+    gnome_extension_ids:
+      - 4099
+
+# ------------------------------------------------------------------------------
+# tray-icons-reloaded
+- name: "Add tray icons reloaded"
+  ansible.builtin.import_role:
+    name: jaredhocutt.gnome_extensions
+  vars:
+    gnome_extension_ids:
+      - 2890
+
+- name: "Setup tray icons reloaded"
+  community.general.dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value | string }}"
+  loop:
+    - { key: "/org/gnome/shell/extensions/trayIconsReloaded/icon-margin-horizontal", value: "0" }
+    - { key: "/org/gnome/shell/extensions/trayIconsReloaded/icon-margin-vertical", value: "0" }
+    - { key: "/org/gnome/shell/extensions/trayIconsReloaded/icon-padding-horizontal", value: "0" }
+    - { key: "/org/gnome/shell/extensions/trayIconsReloaded/icon-padding-vertical", value: "0" }
+    - { key: "/org/gnome/shell/extensions/trayIconsReloaded/icon-size", value: "20" }
+    - { key: "/org/gnome/shell/extensions/trayIconsReloaded/icons-limit", value: "4" }
+    - { key: "/org/gnome/shell/extensions/trayIconsReloaded/position-weight", value: "0" }
+    - { key: "/org/gnome/shell/extensions/trayIconsReloaded/tray-margin-left", value: "0" }
+    - { key: "/org/gnome/shell/extensions/trayIconsReloaded/tray-margin-right", value: "0" }
+    - { key: "/org/gnome/shell/extensions/trayIconsReloaded/tray-position", value: "'right'" }
+
+# - name: "Restart GUI session"
+#   ansible.builtin.include_tasks: "restart_gui.yml"
+
+# ------------------------------------------------------------------------------
+# extension manager
+- name: "Add ExtensionsManager app"
+  community.general.flatpak:
+    name: com.mattjakeman.ExtensionManager
+    state: present
+  become: true
+
+# WAREHOUSE
+# ------------------------------------------------------------------------------
+# - name: "Enable extensions"
+#   ansible.builtin.include_tasks: "gnome_enable_extension.yml"
+#   loop:
+#     #- no-overview@fthx
+#     - ding@rastersoft.com
+#     #- quake-mode@repsac-by.github.com
+#     #- ddterm@amezin.github.com
+#     #- unite@hardpixel.eu
+#     - workspace-indicator@gnome-shell-extensions.gcampax.github.com
+#   loop_control:
+#     loop_var: extension_name
+
+# ------------------------------------------------------------------------------
+# quake-mode
+# - name: "Add quake-mode extenstion"
+#   ansible.builtin.import_role:
+#     name: jaredhocutt.gnome_extensions
+#   vars:
+#     gnome_extension_ids:
+#       - 1411
+#
+# - name: "Setup quake-mode extenstion"
+#   community.general.dconf:
+#     key: "{{ item.key }}"
+#     value: "{{ item.value | string }}"
+#   loop:
+#     - { key: "/com/github/repsac-by/quake-mode/quake-mode-tray", value: "true" }
+#     - { key: "/com/github/repsac-by/quake-mode/quake-mode-width", value: "100" }
+#     - { key: "/com/github/repsac-by/quake-mode/quake-mode-height", value: "100" }
+#     - { key: "/com/github/repsac-by/quake-mode/quake-mode-animation-time", value: "0.25" }
+#     - { key: "/com/github/repsac-by/quake-mode/quake-mode-hide-from-overview", value: "true" }
+#     - { key: "/com/github/repsac-by/quake-mode/accelerators/quake-mode-accelerator-1", value: "['<Primary>grave']" }
+#     - { key: "/com/github/repsac-by/quake-mode/apps/app-1", value: "'org.gnome.Terminal.desktop'" }
+#     - { key: "/com/github/repsac-by/quake-mode/quake-mode-hotkey", value: "['<Primary>grave']" }
+#     - { key: "/com/github/repsac-by/quake-mode/quake-mode-app", value: "'org.gnome.Terminal.desktop'" }
+#   tags:
+#     - molecule-idempotence-notest
+#
+# - name: "Add quake-mode extenstion dependency"
+#   ansible.builtin.yum:
+#     name: xprop
+#     state: present
+#   become: true
+# - name: "Add Unite extenstion"
+#   ansible.builtin.import_role:
+#     name: jaredhocutt.gnome_extensions
+#   vars:
+#     gnome_extension_ids:
+#       - 1287
+
+# ------------------------------------------------------------------------------
+# unite
+# - name: "Setup Unite extenstion"
+#   community.general.dconf:
+#     key: "{{ item.key }}"
+#     value: "{{ item.value | string }}"
+#   loop:
+#     - { key: "/org/gnome/shell/extensions/unite/extend-left-box", value: "false" }
+#     - { key: "/org/gnome/shell/extensions/unite/show-desktop-name", value: "false" }
+#     - { key: "/org/gnome/shell/extensions/unite/hide-app-menu-icon", value: "true" }
+#     - { key: "/org/gnome/shell/extensions/unite/hide-app-menu-arrow", value: "true" }
+#     - { key: "/org/gnome/shell/extensions/unite/show-window-title", value: "'never'" }
+#     - { key: "/org/gnome/shell/extensions/unite/greyscale-tray-icons", value: "true" }
+#     - { key: "/org/gnome/shell/extensions/unite/show-window-buttons", value: "'never'" }
+#     - { key: "/org/gnome/shell/extensions/unite/hide-window-titlebars", value: "'never'" }
+#     - { key: "/org/gnome/shell/extensions/unite/hide-aggregate-menu-arrow", value: "true" }
+#     - { key: "/org/gnome/shell/extensions/unite/hide-activities-button", value: "'never'" }
+#     - { key: "/org/gnome/shell/extensions/unite/window-buttons-placement", value: "'last'" }
+#     - { key: "/org/gnome/shell/extensions/unite/window-buttons-theme", value: "'united-dark'" }
+
+# ------------------------------------------------------------------------------
+# gradienttopbar
+# - name: "Add Gradient Top Bar"
+#   ansible.builtin.import_role:
+#     name: jaredhocutt.gnome_extensions
+#   vars:
+#     gnome_extension_ids:
+#       - 4955
+#
+# - name: "Setup Gradient Top Bar"
+#   community.general.dconf:
+#     key: "{{ item.key }}"
+#     value: "{{ item.value | string }}"
+#   loop:
+#     - { key: "/org/gnome/shell/extensions/org/pshow/gradienttopbar/colors", value: "['rgb(90,111,128)', 'rgb(193,206,222)']" }
+#
+# - name: Flush handlers
+#   ansible.builtin.meta: flush_handlers

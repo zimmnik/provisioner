@@ -1,13 +1,3 @@
-- name: "Add Chrony"
-  ansible.builtin.yum:
-    name: chrony
-    state: present
-- name: "Enable Chrony"
-  ansible.builtin.service:
-    name: chronyd
-    enabled: true
-    state: started
-
 - name: "Add locale packages"
   ansible.builtin.yum:
     state: present

@@ -7,3 +7,4 @@ collections:
 roles:
   - name: jaredhocutt.gnome_extensions
     src: https://github.com/jaredhocutt/ansible-gnome-extensions
+    version: "0b8a556"
