@@ -1,54 +1,76 @@
+- name: "Added EPEL"
+  ansible.builtin.include_tasks: repos/epel.yml
+
 - name: "Basic setup"
   become: true
   block:
     - name: "Setup hostname"
+      tags: basic
       ansible.builtin.hostname:
-        name: "{{ hostname }}"
+        name: "{{ hostname | default('newbie') }}"
 
-    - name: "Add network utilites"
+    - name: "Add network utilites, part 1"
+      tags: basic
       ansible.builtin.yum:
         state: present
         name:
           - bind-utils
           - curl
-          - arp-scan
-          - iftop
-          - nload
           - nmap
           - iperf3
           - traceroute
 
+    - name: "Add network utilites, part 2"
+      ansible.builtin.yum:
+        state: present
+        name:
+          - arp-scan
+          - iftop
+          - nload
+
     - name: "Add SSH server"
+      tags: basic
       ansible.builtin.yum:
         name: openssh-server
         state: present
 
     - name: "Enable SSH server"
+      tags: basic
       ansible.builtin.service:
         name: sshd
         enabled: true
         state: started
 
     - name: "Add Chrony"
+      tags: basic
       ansible.builtin.yum:
         name: chrony
         state: present
 
     - name: "Enable Chrony"
+      tags: basic
       ansible.builtin.service:
         name: chronyd
         enabled: true
         state: started
 
 - name: "Add Firefox"
+  tags: basic
   ansible.builtin.include_tasks: "internet/firefox.yml"
+
+- name: "Add seahorse"
+  become: true
+  tags: basic
+  ansible.builtin.yum:
+    state: present
+    name:
+      - seahorse
 
 - name: "Add keepassxc"
   become: true
   ansible.builtin.yum:
     state: present
     name:
-      - seahorse
       - keepassxc
 
 - name: "Add keepassxc config directory"

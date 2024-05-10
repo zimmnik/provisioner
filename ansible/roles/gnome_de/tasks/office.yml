@@ -1,4 +1,6 @@
 - name: "Add office utilites"
+  become: true
+  tags: basic
   ansible.builtin.yum:
     state: present
     name:
@@ -7,9 +9,9 @@
       - gnome-screenshot
       - libreoffice-writer
       - libreoffice-calc
-  become: true
 
 - name: "Setup gedit"
+  tags: basic
   community.general.dconf:
     key: "{{ item.key }}"
     value: "{{ item.value | string }}"

@@ -1,5 +1,7 @@
 ---
 - name: "Add gnome packages"
+  become: true
+  tags: basic
   ansible.builtin.yum:
     state: present
     name:
@@ -12,39 +14,44 @@
       - python3-psutil
       - dbus-x11
       - dnsmasq
-  become: true
 
 - name: "Setup Wayland"
+  become: true
+  tags: basic
   ansible.builtin.lineinfile:
     path: /etc/gdm/custom.conf
     regexp: 'WaylandEnable='
     line: WaylandEnable=true
-  become: true
 
 - name: "Get default systemd target"
+  tags: basic
   ansible.builtin.command: systemctl get-default # noqa: command-instead-of-module
   register: contents
   changed_when: false
 
 - name: "Set default systemd target"
+  tags: basic
   ansible.builtin.command: systemctl set-default graphical.target
   when: contents.stdout != "graphical.target"
   become: true
   changed_when: false
 
 - name: "Create personal fonts directory"
+  tags: basic
   ansible.builtin.file:
     path: ~/.local/share/fonts/
     state: directory
     mode: u=rwx,g=rx,o=rx
 
 - name: "Add unzip"
+  become: true
+  tags: basic
   ansible.builtin.yum:
     name: unzip
     state: present
-  become: true
 
 - name: "Add ubuntu fonts"
+  tags: basic
   ansible.builtin.unarchive:
     src: https://assets.ubuntu.com/v1/0cef8205-ubuntu-font-family-0.83.zip
     dest: ~/.local/share/fonts/
@@ -53,11 +60,13 @@
   register: fonts_state
 
 - name: "Caching personal fonts"
+  tags: basic
   ansible.builtin.command: fc-cache -f ~/.local/share/fonts/
   when: fonts_state.changed # noqa: no-handler
   changed_when: true
 
 - name: "Enable personal fonts"
+  tags: basic
   community.general.dconf:
     key: "{{ item.key }}"
     value: "{{ item.value | string }}"
@@ -84,6 +93,7 @@
 #   become: true
 
 - name: "Setup background and screensaver"
+  tags: basic
   community.general.dconf:
     key: "{{ item.key }}"
     value: "{{ item.value | string }}"
@@ -98,26 +108,31 @@
     # - { key: "/org/gnome/desktop/screensaver/picture-uri", value: "'file:///usr/share/backgrounds/custom/wallpaper.jpg'" }
 
 - name: "Enable nignt-light"
+  tags: basic
   community.general.dconf:
     key: "/org/gnome/settings-daemon/plugins/color/night-light-enabled"
     value: "true"
 
 - name: "Setup button layout"
+  tags: basic
   community.general.dconf:
     key: "/org/gnome/desktop/wm/preferences/button-layout"
     value: "'appmenu:minimize,maximize,close'"
 
 - name: "Enable weekday on clock"
+  tags: basic
   community.general.dconf:
     key: "/org/gnome/desktop/interface/clock-show-weekday"
     value: "true"
 
 - name: "Setup battery indicator"
+  tags: basic
   community.general.dconf:
     key: "/org/gnome/desktop/interface/show-battery-percentage"
     value: "true"
 
 - name: "Setup Workspaces"
+  tags: basic
   community.general.dconf:
     key: "{{ item.key }}"
     value: "{{ item.value | string }}"
@@ -129,6 +144,7 @@
     - { key: "/org/gnome/shell/app-switcher/current-workspace-only", value: "true" }
 
 - name: "Setup wm keybindings"
+  tags: basic
   community.general.dconf:
     key: "{{ item.key }}"
     value: "{{ item.value | string }}"
@@ -148,6 +164,7 @@
 #    - { key: "/org/gnome/desktop/wm/keybindings/move-to-workspace-4", value: "['<Primary><Shift>dollar']" }
 
 - name: "Special settings on virtual env"
+  tags: basic
   when: ansible_virtualization_role == "guest"
   block:
     - name: "Disable lock screen and auto sleeping"

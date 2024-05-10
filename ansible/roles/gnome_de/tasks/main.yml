@@ -1,4 +1,5 @@
 - name: "Setup Gnome DE"
+  tags: basic
   ansible.builtin.include_tasks: "{{ taskslist }}"
   loop:
     # - debug.yml

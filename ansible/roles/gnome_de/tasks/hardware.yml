@@ -3,20 +3,21 @@
   ansible.builtin.include_tasks: repos/epel.yml
 
 - name: "Add basic apps"
+  become: true
   ansible.builtin.yum:
     name:
       - atop
       - lshw
     state: present
-  become: true
 
 - name: "Enable fstrim timer"
+  become: true
+  tags: basic
   ansible.builtin.systemd:
     name: fstrim.timer
     enabled: true
     state: started
   # when: ansible_virtualization_role != "guest"
-  become: true
 
 # WAREHOUSE
 # -----------------------------------------------------------------------------

@@ -1,12 +1,5 @@
 Vagrant.configure("2") do |config|
 
-  config.vm.define "alma", autostart: false do |alma|
-    alma.vm.box = "almalinux/9"
-    alma.vm.provider :libvirt do |lv|
-      lv.title = 'alma'
-    end
-  end
-
   config.vm.define "fedora", autostart: true, primary: true do |fedora|
     fedora.vm.box = "fedora/40-upstream"
     fedora.vm.box_url = "https://download.fedoraproject.org/pub/fedora/linux/releases/40/Cloud/x86_64/images/Fedora-Cloud-Base-Vagrant-libvirt.x86_64-40-1.14.vagrant.libvirt.box"
@@ -21,13 +14,6 @@ Vagrant.configure("2") do |config|
     oracle.vm.box_url = "https://oracle.github.io/vagrant-projects/boxes/oraclelinux/9-btrfs.json"
     oracle.vm.provider :libvirt do |lv|
       lv.title = 'oracle'
-    end
-  end
-
-  config.vm.define "ubuntu", autostart: false do |oracle|
-    oracle.vm.box = "generic/ubuntu2204"
-    oracle.vm.provider :libvirt do |lv|
-      lv.title = 'ubuntu'
     end
   end
  
@@ -53,21 +39,38 @@ Vagrant.configure("2") do |config|
       fi
     SHELL
 
-  #config.vagrant.plugins = ["vagrant-reload"]
   config.vm.provision "update packages", type: "shell", inline: "yum --assumeyes --quiet update"
   config.vm.provision :reload
 
   config.vm.provision "deploy DE", type: "shell",
     privileged: false,
     inline: <<-SHELL
-      sudo yum --assumeyes --quiet install git python3-pip
       cd /vagrant
       rm -r .venv || true
-      python -m venv --upgrade-deps .venv && source .venv/bin/activate
-      #export ANSIBLE_PYTHON_INTERPRETER=/vagrant/.venv/bin/python
-      pip install -r pip_requirements.txt
-      ansible-galaxy install -r galaxy_requirements.yml
-      ansible --version
-      ansible-playbook -i hosts run.yml
+      source /etc/os-release
+      case "${PRETTY_NAME}" in
+      "Fedora Linux 40 (Cloud Edition)")
+        sudo yum --assumeyes --quiet install git python3-pip
+        python -m venv --upgrade-deps .venv && source .venv/bin/activate
+        ;;
+      "Oracle Linux Server 9.4")
+        sudo yum --assumeyes --quiet install python3.12-pip python3.12-pip-wheel git
+        python3.12 -m venv --upgrade-deps .venv && source .venv/bin/activate
+        ;;
+      *)
+        echo "Error, unsupported os"
+        exit 1
+        ;;
+      esac
+        python --version
+      pip install --requirement pip_requirements.txt
+        pip list --format freeze
+        ansible-lint --version
+      export ANSIBLE_CONFIG=ansible.cfg
+      ansible-galaxy install --role-file galaxy_requirements.yml
+        ansible-galaxy collection list --format yaml
+        ansible-lint 
+        ansible-inventory --graph --vars
+      ansible-playbook deploy.yml --tags basic
     SHELL
 end

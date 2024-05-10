@@ -2,7 +2,7 @@
   ansible.builtin.include_tasks: repos/rpmfusion.yml
 
 - name: "Add Firefox hardware acceleration"
-  when: ansible_distribution == "Fedora" or ansible_distribution == "AlmaLinux"
+  when: ansible_distribution == "Fedora"
   block:
     - name: "Add Firefox hardware acceleration"
       ansible.builtin.yum:
@@ -14,12 +14,14 @@
       become: true
 
 - name: "Add Firefox"
+  become: true
+  tags: basic
   ansible.builtin.yum:
     state: present
     name: firefox
-  become: true
 
 - name: "Add Firefox config directory"
+  tags: basic
   ansible.builtin.stat:
     path: ~/.mozilla
   register: mozilla
@@ -29,6 +31,7 @@
   block:
 # https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode
     - name: "Create Firefox default config"
+      tags: basic
       ansible.builtin.shell: # noqa no-changed-when
         cmd: firefox --headless -CreateProfile default && firefox --headless -P default --screenshot about:logo && rm screenshot.png
 

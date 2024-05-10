@@ -5,10 +5,10 @@
   ansible.builtin.include_tasks: "repos/flathub.yml"
 
 - name: "Add media utils"
+  become: true
   community.general.flatpak:
     name: "{{ item }}"
     state: present
-  become: true
   loop:
 #    - com.xnview.XnViewMP
 #    - org.freedesktop.Platform.VAAPI.Intel//22.08
@@ -28,11 +28,12 @@
     mode: u=rw,g=,o=r
 
 - name: "Add eog"
+  become: true
+  tags: basic
   ansible.builtin.yum:
     state: present
     name:
       - eog
-  become: true
 
 # WAREHOUSE
 # -----------------------------------------------------------------------------

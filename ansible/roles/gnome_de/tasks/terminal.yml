@@ -1,4 +1,6 @@
 - name: "Add basic apps"
+  become: true
+  tags: basic
   ansible.builtin.yum:
     name:
       - man
@@ -7,22 +9,24 @@
       - bash-completion
       - tmux
     state: present
-  become: true
 
 - name: "Setup vim"
+  become: true
+  tags: basic
   ansible.builtin.copy:
     src: .vimrc
     mode: u=rw,g=r,o=r
     dest: /root
-  become: true
 
 - name: "Setup vim for root"
+  tags: basic
   ansible.builtin.copy:
     src: .vimrc
     mode: u=rw,g=r,o=r
     dest: ~/
 
 - name: "Setup terminal multiplexor"
+  tags: basic
   ansible.builtin.blockinfile:
     dest: ~/.tmux.conf
     mode: u=rw,g=r,o=r
@@ -35,6 +39,7 @@
       set-option -g history-limit 5000
 
 - name: "Setup bash"
+  tags: basic
   ansible.builtin.blockinfile:
     dest: ~/.bashrc
     mode: u=rw,g=r,o=r
@@ -58,12 +63,14 @@
       PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 
 - name: "Add terminal app"
+  become: true
+  tags: basic
   ansible.builtin.yum:
     name: gnome-terminal
     state: present
-  become: true
 
 - name: "Setup terminal app"
+  tags: basic
   community.general.dconf:
     key: "{{ item.key }}"
     value: "{{ item.value | string }}"

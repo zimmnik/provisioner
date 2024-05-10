@@ -1,5 +1,5 @@
 ---
 exclude_paths:
-  - ansible/external_collections/
-  - ansible/external_roles/
-  - ansible/3rdparty/
+  - .venv
+  - external_collections/
+  - external_roles/

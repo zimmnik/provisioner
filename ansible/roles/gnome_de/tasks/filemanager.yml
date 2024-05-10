@@ -2,40 +2,55 @@
 - name: "Added EPEL"
   ansible.builtin.include_tasks: repos/epel.yml
 
-- name: "Add file utilites"
+- name: "Add file utilites, part 1"
+  become: true
+  tags: basic
   ansible.builtin.yum:
     state: present
     name:
-      - ncdu
       - tree
       - mc
       - unzip
-      - p7zip
-      - p7zip-plugins
       - tar
       - zstd
       - cifs-utils
       - lsof
       - iotop
       - sysstat
-  become: true
 
-- name: "Add file tools"
+- name: "Add file utilites, part 2"
+  become: true
+  ansible.builtin.yum:
+    state: present
+    name:
+      - ncdu
+      - p7zip
+      - p7zip-plugins
+
+- name: "Add file tools, part 1"
+  become: true
+  tags: basic
   ansible.builtin.yum:
     state: present
     name:
       - nautilus
       - gnome-terminal-nautilus
-      - engrampa
       - gvfs-mtp
       - gvfs-smb
       - gvfs-gphoto2
       - gvfs-fuse
       - xdg-utils
       - xdg-user-dirs-gtk
+
+- name: "Add file tools, part 2"
   become: true
+  ansible.builtin.yum:
+    state: present
+    name:
+      - engrampa
 
 - name: "Setup file manager"
+  tags: basic
   community.general.dconf:
     key: "{{ item.key }}"
     value: "{{ item.value | string }}"
@@ -48,6 +63,7 @@
     - { key: "/org/gnome/nautilus/preferences/search-filter-time-type", value: "'last_modified'" }
 
 - name: "Add bash link to mc"
+  tags: basic
   ansible.builtin.blockinfile:
     dest: ~/.bashrc
     marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK filemanager mc -->"

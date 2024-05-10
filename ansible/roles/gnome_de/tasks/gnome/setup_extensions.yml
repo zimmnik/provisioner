@@ -8,7 +8,7 @@
   ansible.builtin.import_role:
     name: jaredhocutt.gnome_extensions
   vars:
-    gnome_extension_ids:
+    gnome_extension_ids: # noqa: var-naming[no-role-prefix]
       - 3780
 
 - name: "Setup gnome extension drop-down terminal"
@@ -47,7 +47,7 @@
   ansible.builtin.import_role:
     name: jaredhocutt.gnome_extensions
   vars:
-    gnome_extension_ids:
+    gnome_extension_ids: # noqa: var-naming[no-role-prefix]
       - 2087
 
 # - name: "Setup Desktop Icons NG extenstion"
@@ -66,7 +66,7 @@
   ansible.builtin.import_role:
     name: jaredhocutt.gnome_extensions
   vars:
-    gnome_extension_ids:
+    gnome_extension_ids: # noqa: var-naming[no-role-prefix]
       - 21
 
 # ------------------------------------------------------------------------------
@@ -75,7 +75,7 @@
   ansible.builtin.import_role:
     name: jaredhocutt.gnome_extensions
   vars:
-    gnome_extension_ids:
+    gnome_extension_ids: # noqa: var-naming[no-role-prefix]
       - 4099
 
 # ------------------------------------------------------------------------------
@@ -84,7 +84,7 @@
   ansible.builtin.import_role:
     name: jaredhocutt.gnome_extensions
   vars:
-    gnome_extension_ids:
+    gnome_extension_ids: # noqa: var-naming[no-role-prefix]
       - 2890
 
 - name: "Setup tray icons reloaded"

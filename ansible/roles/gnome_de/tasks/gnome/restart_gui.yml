@@ -2,6 +2,7 @@
 # FYI https://discourse.gnome.org/t/enable-gnome-extensions-without-session-restart/7936
 - name: "Restart GUI session"
   become: true
+  tags: basic
   block:
     - name: "Enable gdm autologin"
       ansible.builtin.blockinfile:
