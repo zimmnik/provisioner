@@ -39,38 +39,38 @@ Vagrant.configure("2") do |config|
       fi
     SHELL
 
-  config.vm.provision "update packages", type: "shell", inline: "yum --assumeyes --quiet update"
-  config.vm.provision :reload
+   config.vm.provision "update packages", type: "shell", inline: "yum --assumeyes --quiet update", reboot: false
 
-  config.vm.provision "deploy DE", type: "shell",
-    privileged: false,
-    inline: <<-SHELL
-      cd /vagrant
-      rm -r .venv || true
-      source /etc/os-release
-      case "${PRETTY_NAME}" in
-      "Fedora Linux 40 (Cloud Edition)")
-        sudo yum --assumeyes --quiet install git python3-pip
-        python -m venv --upgrade-deps .venv && source .venv/bin/activate
-        ;;
-      "Oracle Linux Server 9.4")
-        sudo yum --assumeyes --quiet install python3.12-pip python3.12-pip-wheel git
-        python3.12 -m venv --upgrade-deps .venv && source .venv/bin/activate
-        ;;
-      *)
-        echo "Error, unsupported os"
-        exit 1
-        ;;
-      esac
-        python --version
-      pip install --requirement pip_requirements.txt
-        pip list --format freeze
-        ansible-lint --version
-      export ANSIBLE_CONFIG=ansible.cfg
-      ansible-galaxy install --role-file galaxy_requirements.yml
-        ansible-galaxy collection list --format yaml
-        ansible-lint 
-        ansible-inventory --graph --vars
-      ansible-playbook deploy.yml --tags basic
-    SHELL
+   config.vm.provision "deploy DE", type: "shell",
+     privileged: false,
+     inline: <<-SHELL
+       cd /vagrant
+       rm -r .venv || true
+       source /etc/os-release
+       case "${PRETTY_NAME}" in
+       "Fedora Linux 40 (Cloud Edition)")
+         sudo yum --assumeyes --quiet install git python3-pip
+         python -m venv --upgrade-deps .venv && source .venv/bin/activate
+         ;;
+       "Oracle Linux Server 9.4")
+         sudo yum --assumeyes --quiet install python3.12-pip python3.12-pip-wheel git
+         python3.12 -m venv --upgrade-deps .venv && source .venv/bin/activate
+         ;;
+       *)
+         echo "Error, unsupported os"
+         exit 1
+         ;;
+       esac
+         python --version
+       pip install --requirement pip_requirements.txt
+         pip list --format freeze
+         ansible-lint --version
+       export ANSIBLE_CONFIG=ansible.cfg
+       ansible-galaxy install --role-file galaxy_requirements.yml
+         ansible-galaxy collection list --format yaml
+         ansible-lint 
+         ansible-inventory --graph --vars
+       ansible-playbook deploy.yml
+       #ansible-playbook deploy.yml --tags basic
+     SHELL
 end

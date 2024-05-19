@@ -47,5 +47,7 @@ ansible-playbook deploy.yml --ask-become-pass --extra-vars "hostname=somename" [
 
 ```ShellSession
 git clone https://github.com/zimmnik/provisioner.git && cd provisioner/vagrant
-vagrant plugin install vagrant-reload
-vagrant up --no-destroy-on-error [fedora|oracle]
+vagrant up --no-destroy-on-error --provision-with "grow up root","update packages" [fedora|oracle]
+vagrant ssh -c "sudo shutdown now" [fedora|oracle]; sleep 10
+vagrant up --no-destroy-on-error --provision-with "deploy DE" [fedora|oracle]
+
