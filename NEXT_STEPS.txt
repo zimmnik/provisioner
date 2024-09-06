@@ -1,3 +1,5 @@
+hidden bash menu
+plymouth
 ssh keys + config
 barrier
 keepassxc db
