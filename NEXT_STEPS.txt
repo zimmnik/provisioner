@@ -12,6 +12,7 @@ nvidia gpu drivers
 firmware (wifi, sound) 
 smart
 fancontrol
+upower
 screen flickering (https://github.com/edio/intelpwm-udev)
 screen tearing 
 disable useless devices

@@ -1,7 +1,7 @@
 - name: "Add office utilites"
   become: true
   tags: basic
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     state: present
     name:
       - gedit-plugin-textsize

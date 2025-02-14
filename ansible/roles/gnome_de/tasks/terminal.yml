@@ -1,7 +1,7 @@
 - name: "Add basic apps"
   become: true
   tags: basic
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name:
       - man
       - vim
@@ -65,7 +65,7 @@
 - name: "Add terminal app"
   become: true
   tags: basic
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: gnome-terminal
     state: present
 

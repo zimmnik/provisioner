@@ -5,7 +5,7 @@
 - name: "Add file utilites, part 1"
   become: true
   tags: basic
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     state: present
     name:
       - tree
@@ -20,7 +20,7 @@
 
 - name: "Add file utilites, part 2"
   become: true
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     state: present
     name:
       - ncdu
@@ -30,7 +30,7 @@
 - name: "Add file tools, part 1"
   become: true
   tags: basic
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     state: present
     name:
       - nautilus
@@ -44,7 +44,7 @@
 
 - name: "Add file tools, part 2"
   become: true
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     state: present
     name:
       - engrampa

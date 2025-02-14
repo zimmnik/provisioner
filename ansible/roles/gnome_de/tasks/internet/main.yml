@@ -11,7 +11,7 @@
 
     - name: "Add network utilites, part 1"
       tags: basic
-      ansible.builtin.yum:
+      ansible.builtin.dnf:
         state: present
         name:
           - bind-utils
@@ -21,7 +21,7 @@
           - traceroute
 
     - name: "Add network utilites, part 2"
-      ansible.builtin.yum:
+      ansible.builtin.dnf:
         state: present
         name:
           - arp-scan
@@ -30,7 +30,7 @@
 
     - name: "Add SSH server"
       tags: basic
-      ansible.builtin.yum:
+      ansible.builtin.dnf:
         name: openssh-server
         state: present
 
@@ -43,7 +43,7 @@
 
     - name: "Add Chrony"
       tags: basic
-      ansible.builtin.yum:
+      ansible.builtin.dnf:
         name: chrony
         state: present
 
@@ -61,14 +61,14 @@
 - name: "Add seahorse"
   become: true
   tags: basic
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     state: present
     name:
       - seahorse
 
 - name: "Add keepassxc"
   become: true
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     state: present
     name:
       - keepassxc
@@ -106,13 +106,13 @@
 # - name: "Add Chromium Freeworld"
 #   become: true
 #   when: ansible_distribution == "Fedora"
-#   ansible.builtin.yum:
+#   ansible.builtin.dnf:
 #     name: chromium-freeworld
 #     state: present
 
 
 # - name: internet freerdp 1
-#   ansible.builtin.yum: name=freerdp state=latest
+#   ansible.builtin.dnf: name=freerdp state=latest
 #   become: true
 #
 # - name: internet freerdp 2

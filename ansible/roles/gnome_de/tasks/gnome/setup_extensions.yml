@@ -69,6 +69,11 @@
     gnome_extension_ids: # noqa: var-naming[no-role-prefix]
       - 21
 
+- name: "Workspace indicator workaround"
+  ansible.builtin.command:
+    cmd: "glib-compile-schemas {{ ansible_facts['user_dir'] }}/.local/share/gnome-shell/extensions/workspace-indicator@gnome-shell-extensions.gcampax.github.com/schemas" # noqa: yaml[line-length]
+    creates: "{{ ansible_facts['user_dir'] }}/.local/share/gnome-shell/extensions/workspace-indicator@gnome-shell-extensions.gcampax.github.com/schemas/gschemas.compiled" # noqa: yaml[line-length]
+
 # ------------------------------------------------------------------------------
 # no-overview
 - name: "Add No overview at start-up extenstion"
@@ -155,7 +160,7 @@
 #     - molecule-idempotence-notest
 #
 # - name: "Add quake-mode extenstion dependency"
-#   ansible.builtin.yum:
+#   ansible.builtin.dnf:
 #     name: xprop
 #     state: present
 #   become: true

@@ -1,8 +1,8 @@
 Vagrant.configure("2") do |config|
 
   config.vm.define "fedora", autostart: true, primary: true do |fedora|
-    fedora.vm.box = "fedora/40-upstream"
-    fedora.vm.box_url = "https://download.fedoraproject.org/pub/fedora/linux/releases/40/Cloud/x86_64/images/Fedora-Cloud-Base-Vagrant-libvirt.x86_64-40-1.14.vagrant.libvirt.box"
+    fedora.vm.box = "fedora/41-upstream"
+    fedora.vm.box_url = "https://download.fedoraproject.org/pub/fedora/linux/releases/41/Cloud/x86_64/images/Fedora-Cloud-Base-Vagrant-libvirt-41-1.4.x86_64.vagrant.libvirt.box"
     fedora.vm.provider :libvirt do |lv|
       lv.title = 'fedora'
       lv.machine_virtual_size = 16
@@ -16,7 +16,7 @@ Vagrant.configure("2") do |config|
       lv.title = 'oracle'
     end
   end
- 
+
   config.vm.provider :libvirt do |lv|
     lv.cpus = 4
     lv.memory = 4096
@@ -28,32 +28,34 @@ Vagrant.configure("2") do |config|
 
   config.vm.synced_folder "../ansible", "/vagrant", type: "rsync"
 
-  config.vm.provision "grow up root", before: :all, type: "shell", 
+  config.vm.provision "grow up root", before: :all, type: "shell",
     privileged: true,
     inline: <<-SHELL
       source /etc/os-release
-      if [[ "${PRETTY_NAME}" = "Fedora Linux 40 (Cloud Edition)" ]]; then
+      if [[ "${PRETTY_NAME}" = "Fedora Linux 41 (Cloud Edition)" ]]; then
         echo -e "resizepart\nFix\n4\nYes\n100%\nprint free\nquit" | parted /dev/vda ---pretend-input-tty
         btrfs fi resize 1:max /
-        btrfs fi show / 
+        btrfs fi show /
       fi
     SHELL
 
-   config.vm.provision "update packages", type: "shell", inline: "yum --assumeyes --quiet update", reboot: false
+   config.vm.provision "update packages", type: "shell", inline: "dnf --assumeyes --quiet update", reboot: false
 
    config.vm.provision "deploy DE", type: "shell",
      privileged: false,
      inline: <<-SHELL
+       set -e
+       set -x
        cd /vagrant
        rm -r .venv || true
        source /etc/os-release
        case "${PRETTY_NAME}" in
-       "Fedora Linux 40 (Cloud Edition)")
-         sudo yum --assumeyes --quiet install git python3-pip
+       "Fedora Linux 41 (Cloud Edition)")
+         sudo dnf --assumeyes --quiet install git python3-pip python3-libdnf5
          python -m venv --upgrade-deps .venv && source .venv/bin/activate
          ;;
        "Oracle Linux Server 9.4")
-         sudo yum --assumeyes --quiet install python3.12-pip python3.12-pip-wheel git
+         sudo dnf --assumeyes --quiet install python3.12-pip python3.12-pip-wheel git
          python3.12 -m venv --upgrade-deps .venv && source .venv/bin/activate
          ;;
        *)
@@ -68,7 +70,7 @@ Vagrant.configure("2") do |config|
        export ANSIBLE_CONFIG=ansible.cfg
        ansible-galaxy install --role-file galaxy_requirements.yml
          ansible-galaxy collection list --format yaml
-         ansible-lint 
+         ansible-lint
          ansible-inventory --graph --vars
        ansible-playbook deploy.yml
        #ansible-playbook deploy.yml --tags basic

@@ -4,12 +4,12 @@ Provisioner is an ansible playbook that allow to quickly configure Gnome DE on R
 
 Supported distributions
 -----------------------------
--   **Fedora** 40
+-   **Fedora** 41
 -   **OracleLinux** 9
 
 ## Bare metal usage
 
-Anaconda stage: [use kickstart file] (https://anaconda-installer.readthedocs.io/en/latest/boot-options.html#inst-ks) 
+Anaconda stage: [use kickstart file] (https://anaconda-installer.readthedocs.io/en/latest/boot-options.html#inst-ks)
 ```raw
 inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/[fedora,oracle].cfg
 ```
@@ -27,7 +27,7 @@ git clone https://github.com/zimmnik/provisioner.git && cd provisioner/ansible
 
 # Setup Fedora python venv
 sudo yum --assumeyes --quiet install python3-pip
-python -m venv --upgrade-deps .venv && source .venv/bin/activate
+python3 -m venv --upgrade-deps .venv && source .venv/bin/activate
 # Setup Oracle python venv
 sudo yum --assumeyes --quiet install python3.12-pip
 python3.12 -m venv --upgrade-deps .venv && source .venv/bin/activate
@@ -47,7 +47,4 @@ ansible-playbook deploy.yml --ask-become-pass --extra-vars "hostname=somename" [
 
 ```ShellSession
 git clone https://github.com/zimmnik/provisioner.git && cd provisioner/vagrant
-vagrant up --no-destroy-on-error --provision-with "grow up root","update packages" [fedora|oracle]
-vagrant ssh -c "sudo shutdown now" [fedora|oracle]; sleep 10
-vagrant up --no-destroy-on-error --provision-with "deploy DE" [fedora|oracle]
-
+vagrant up --no-destroy-on-error [fedora|oracle]

@@ -4,7 +4,7 @@
 
 - name: "Add basic apps"
   become: true
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name:
       - atop
       - lshw
@@ -22,7 +22,7 @@
 # WAREHOUSE
 # -----------------------------------------------------------------------------
 # - name: "Add power-profiles daemon"
-#   ansible.builtin.yum:
+#   ansible.builtin.dnf:
 #     name: power-profiles-daemon
 #     state: present
 # - name: "Enable power-profiles daemon"
