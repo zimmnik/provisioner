@@ -5,23 +5,21 @@
   ansible.builtin.dnf:
     state: present
     name:
-      - "@base-x"
-      - gnome-session-xsession
+      - gnome-shell
       - control-center
       - krb5-libs
-      - gnome-tweak-tool
-      - dconf-editor
+      # - gnome-tweaks
+      # - dconf-editor
       - python3-psutil
-      - dbus-x11
       - dnsmasq
+      - dbus-tools
 
-- name: "Setup Wayland"
+- name: "Remove useless gnome packages"
   become: true
   tags: basic
-  ansible.builtin.lineinfile:
-    path: /etc/gdm/custom.conf
-    regexp: 'WaylandEnable='
-    line: WaylandEnable=true
+  ansible.builtin.dnf:
+    state: absent
+    name: gnome-tour
 
 - name: "Get default systemd target"
   tags: basic
@@ -91,6 +89,12 @@
 #     mode: u=rw,g=r,o=r
 #     dest: /usr/share/backgrounds/custom
 #   become: true
+
+- name: "Set color-scheme"
+  tags: basic
+  community.general.dconf:
+    key: "/org/gnome/desktop/interface/color-scheme"
+    value: "'prefer-dark'"
 
 - name: "Setup background and screensaver"
   tags: basic
@@ -187,6 +191,8 @@
     - name: "Enable gdm autologin"
       ansible.builtin.blockinfile:
         dest: /etc/gdm/custom.conf
+        create: true
+        mode: 'u=rw,g=r,o=r'
         marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
         insertafter: "\\[daemon\\]"
         block: |

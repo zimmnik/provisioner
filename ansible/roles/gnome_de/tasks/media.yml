@@ -1,56 +1,29 @@
-- name: "Add RPM Fusion free repo"
-  ansible.builtin.include_tasks: "repos/rpmfusion.yml"
-
 - name: "Add flathub repo"
   ansible.builtin.include_tasks: "repos/flathub.yml"
 
-- name: "Add media utils"
+- name: "Add media player"
   become: true
   community.general.flatpak:
     name: "{{ item }}"
     state: present
   loop:
-#    - com.xnview.XnViewMP
-#    - org.freedesktop.Platform.VAAPI.Intel//22.08
     - info.smplayer.SMPlayer
 
-- name: "Add SMPlayer config directory"
+- name: "Downgrade to working version" # noqa risky-shell-pipe
+  become: true
+  ansible.builtin.command:
+    cmd: flatpak update -y --commit=cb30958fba2ac2304864447347808ab30f7b0e7a9585348c22b48fa27c22016d info.smplayer.SMPlayer
+  changed_when: false
+
+- name: "Add media player config directory"
   ansible.builtin.file:
     state: directory
     path: ~/.var/app/info.smplayer.SMPlayer/config/smplayer/
     mode: u+rw,g-rx,o-rx
 
 # https://blogs.gnome.org/mclasen/2019/07/12/settings-in-a-sandbox-world/
-- name: "Setup SMPlayer"
+- name: "Setup media player"
   ansible.builtin.copy:
     src: smplayer.ini
     dest: ~/.var/app/info.smplayer.SMPlayer/config/smplayer/
     mode: u=rw,g=,o=r
-
-- name: "Add eog"
-  become: true
-  tags: basic
-  ansible.builtin.dnf:
-    state: present
-    name:
-      - eog
-
-# WAREHOUSE
-# -----------------------------------------------------------------------------
-# - name: "Add celluloid config directory"
-#   ansible.builtin.file:
-#     path: ~/.var/app/io.github.celluloid_player.Celluloid/config/glib-2.0/settings/
-#     mode: u+rw,g-rx,o-rx
-#     state: directory
-#
-# # https://blogs.gnome.org/mclasen/2019/07/12/settings-in-a-sandbox-world/
-# - name: "Setup Celluloid"
-#   ansible.builtin.blockinfile:
-#     dest: ~/.var/app/io.github.celluloid_player.Celluloid/config/glib-2.0/settings/keyfile
-#     create: true
-#     mode: u+rw,g-rwx,o-rwx
-#     marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK -->"
-#     block: |-
-#       [io/github/celluloid-player/celluloid]
-#       mpv-options='hwdec=auto'
-#       csd-enable=false

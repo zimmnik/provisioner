@@ -1,8 +1,8 @@
 Vagrant.configure("2") do |config|
 
   config.vm.define "fedora", autostart: true, primary: true do |fedora|
-    fedora.vm.box = "fedora/41-upstream"
-    fedora.vm.box_url = "https://download.fedoraproject.org/pub/fedora/linux/releases/41/Cloud/x86_64/images/Fedora-Cloud-Base-Vagrant-libvirt-41-1.4.x86_64.vagrant.libvirt.box"
+    fedora.vm.box = "fedora/43-upstream"
+    fedora.vm.box_url = "https://download.fedoraproject.org/pub/fedora/linux/releases/43/Cloud/x86_64/images/Fedora-Cloud-Base-Vagrant-libvirt-43-1.6.x86_64.vagrant.libvirt.box"
     fedora.vm.provider :libvirt do |lv|
       lv.title = 'fedora'
       lv.machine_virtual_size = 16
@@ -10,8 +10,8 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "oracle", autostart: false do |oracle|
-    oracle.vm.box = "oraclelinux/9-btrfs"
-    oracle.vm.box_url = "https://oracle.github.io/vagrant-projects/boxes/oraclelinux/9-btrfs.json"
+    oracle.vm.box = "oraclelinux/10-btrfs"
+    oracle.vm.box_url = "https://oracle.github.io/vagrant-projects/boxes/oraclelinux/10-btrfs.json"
     oracle.vm.provider :libvirt do |lv|
       lv.title = 'oracle'
     end
@@ -32,47 +32,51 @@ Vagrant.configure("2") do |config|
     privileged: true,
     inline: <<-SHELL
       source /etc/os-release
-      if [[ "${PRETTY_NAME}" = "Fedora Linux 41 (Cloud Edition)" ]]; then
+      if [[ "${PRETTY_NAME}" = "Fedora Linux 43 (Cloud Edition)" ]]; then
         echo -e "resizepart\nFix\n4\nYes\n100%\nprint free\nquit" | parted /dev/vda ---pretend-input-tty
         btrfs fi resize 1:max /
         btrfs fi show /
       fi
     SHELL
 
-   config.vm.provision "update packages", type: "shell", inline: "dnf --assumeyes --quiet update", reboot: false
-
-   config.vm.provision "deploy DE", type: "shell",
-     privileged: false,
-     inline: <<-SHELL
-       set -e
-       set -x
-       cd /vagrant
-       rm -r .venv || true
-       source /etc/os-release
-       case "${PRETTY_NAME}" in
-       "Fedora Linux 41 (Cloud Edition)")
-         sudo dnf --assumeyes --quiet install git python3-pip python3-libdnf5
-         python -m venv --upgrade-deps .venv && source .venv/bin/activate
-         ;;
-       "Oracle Linux Server 9.4")
-         sudo dnf --assumeyes --quiet install python3.12-pip python3.12-pip-wheel git
-         python3.12 -m venv --upgrade-deps .venv && source .venv/bin/activate
-         ;;
-       *)
-         echo "Error, unsupported os"
-         exit 1
-         ;;
-       esac
-         python --version
-       pip install --requirement pip_requirements.txt
-         pip list --format freeze
-         ansible-lint --version
-       export ANSIBLE_CONFIG=ansible.cfg
-       ansible-galaxy install --role-file galaxy_requirements.yml
-         ansible-galaxy collection list --format yaml
-         ansible-lint
-         ansible-inventory --graph --vars
-       ansible-playbook deploy.yml
-       #ansible-playbook deploy.yml --tags basic
-     SHELL
+  config.vm.provision "update packages", type: "shell", reboot: true, privileged: true,
+    inline: <<-SHELL
+      echo 'http_proxy=socks5h://router.zimmnik.ru:8080' >> /etc/environment
+      set -a; source /etc/environment; set +a;
+      # dnf config-manager setopt fedora-cisco-openh264.enabled=0
+      dnf --assumeyes --quiet update
+    SHELL
+  config.vm.provision "deploy DE", type: "shell", privileged: false,
+    inline: <<-SHELL
+      set -e
+      set -x
+      cd /vagrant
+      rm -r .venv || true
+      source /etc/os-release
+      case "${PRETTY_NAME}" in
+      "Fedora Linux 43 (Cloud Edition)")
+        :
+        ;;
+      "Oracle Linux Server 10.0")
+        sudo dnf -y install oracle-epel-release-el10
+        ;;
+      *)
+        echo "Error, unsupported os"
+        exit 1
+        ;;
+      esac
+        sudo dnf --assumeyes --quiet install git python3.13
+        python3.13 -m venv --upgrade-deps .venv && source .venv/bin/activate
+        python --version
+      pip install --requirement pip_requirements.txt
+        pip list --format freeze
+        ansible-lint --version
+      export ANSIBLE_CONFIG=ansible.cfg
+      ansible-galaxy install --role-file galaxy_requirements.yml
+        ansible-galaxy collection list --format yaml
+        ansible-lint
+        ansible-inventory --graph --vars
+      ansible-playbook deploy.yml
+      # ansible-playbook deploy.yml --tags basic
+    SHELL
 end

@@ -6,7 +6,6 @@
   become: true
   ansible.builtin.dnf:
     name:
-      - atop
       - lshw
     state: present
 
@@ -18,15 +17,3 @@
     enabled: true
     state: started
   # when: ansible_virtualization_role != "guest"
-
-# WAREHOUSE
-# -----------------------------------------------------------------------------
-# - name: "Add power-profiles daemon"
-#   ansible.builtin.dnf:
-#     name: power-profiles-daemon
-#     state: present
-# - name: "Enable power-profiles daemon"
-#   ansible.builtin.service:
-#     name: power-profiles-daemon
-#     enabled: true
-#     state: started

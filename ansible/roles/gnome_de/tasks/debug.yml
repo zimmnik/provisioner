@@ -39,10 +39,10 @@
 #    become: true
 - name: Get user id
   ansible.builtin.command: id
-  register: out
+  register: gnome_de_user_id
   become: true
   changed_when: false
 - name: Show user id
   ansible.builtin.debug:
-    var: out.stdout_lines
+    var: gnome_de_user_id.stdout_lines
   changed_when: false

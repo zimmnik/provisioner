@@ -66,54 +66,5 @@
   become: true
   tags: basic
   ansible.builtin.dnf:
-    name: gnome-terminal
+    name: ptyxis
     state: present
-
-- name: "Setup terminal app"
-  tags: basic
-  community.general.dconf:
-    key: "{{ item.key }}"
-    value: "{{ item.value | string }}"
-  loop:
-    # - { key: "/org/gnome/terminal/legacy/theme-variant", value: "system" }
-    - { key: "/org/gnome/terminal/legacy/menu-accelerator-enabled", value: "false" }
-    - { key: "/org/gnome/terminal/legacy/profiles:/list", value: "'b1dcc9dd-5262-4d8d-a863-c897e6d979b9'" }
-    - { key: "/org/gnome/terminal/legacy/profiles:/default", value: "'b1dcc9dd-5262-4d8d-a863-c897e6d979b9'" }
-    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/font", value: "'Ubuntu Mono 16'" }
-    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/audible-bell", value: "false" }
-    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/use-system-font", value: "false" }
-    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/scroll-on-output", value: "false" }
-    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/scrollbar-policy", value: "'never'" }
-    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/scroll-on-keystroke", value: "false" }
-    - { key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/scrollback-unlimited", value: "true" }
-
-# WAREHOUSE
-# ------------------------------------------------------------------------------
-# - name: internet ssh-agent 1
-#   ansible.builtin.blockinfile:
-#     dest: ~/.ssh/rc
-#     create: true
-#     marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK internet ssh-agent 1 -->"
-#     block: |
-#       if [ ! -S ~/.ssh/ssh_auth_sock ] && [ -S "$SSH_AUTH_SOCK" ]; then
-#           ln -sf $SSH_AUTH_SOCK ~/.ssh/ssh_auth_sock
-#       fi
-#
-# - name: internet ssh-agent 2
-#   ansible.builtin.blockinfile:
-#     dest: ~/.tmux.conf
-#     create: true
-#     marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK internet ssh-agent 2 -->"
-#     block: |
-#       set-option -g update-environment "DISPLAY SSH_ASKPASS SSH_AGENT_PID SSH_CONNECTION WINDOWID XAUTHORITY"
-#       set-environment -g SSH_AUTH_SOCK $HOME/.ssh/ssh_auth_sock
-#
-# - name: internet ssh-agent 3
-#   ansible.builtin.blockinfile:
-#     dest: ~/.bashrc
-#     create: true
-#     marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK internet ssh-agent 3 -->"
-#     block: |
-#       if [ ! -S ~/.ssh/ssh_auth_sock ] && [ -S "$SSH_AUTH_SOCK" ]; then
-#           ln -sf $SSH_AUTH_SOCK ~/.ssh/ssh_auth_sock
-#       fi

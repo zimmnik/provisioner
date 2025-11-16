@@ -1,3 +1,4 @@
+user_pref("browser.translations.enable", false);
 user_pref("app.normandy.first_run", false);
 user_pref("browser.bookmarks.restore_default_bookmarks", false);
 user_pref("browser.laterrun.enabled", false);

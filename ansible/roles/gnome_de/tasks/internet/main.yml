@@ -24,7 +24,6 @@
       ansible.builtin.dnf:
         state: present
         name:
-          - arp-scan
           - iftop
           - nload
 
@@ -54,17 +53,12 @@
         enabled: true
         state: started
 
-- name: "Add Firefox"
-  tags: basic
-  ansible.builtin.include_tasks: "internet/firefox.yml"
+- name: "Add Firefox via rpm"
+  tags: [never, basic]
+  ansible.builtin.include_tasks: "internet/firefox-rpm.yml"
 
-- name: "Add seahorse"
-  become: true
-  tags: basic
-  ansible.builtin.dnf:
-    state: present
-    name:
-      - seahorse
+- name: "Add Firefox via flatpak"
+  ansible.builtin.include_tasks: "internet/firefox-flatpak.yml"
 
 - name: "Add keepassxc"
   become: true
@@ -109,7 +103,6 @@
 #   ansible.builtin.dnf:
 #     name: chromium-freeworld
 #     state: present
-
 
 # - name: internet freerdp 1
 #   ansible.builtin.dnf: name=freerdp state=latest

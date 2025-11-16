@@ -30,16 +30,3 @@
         state: absent
       when: autologin_state.changed # noqa: no-handler
       changed_when: false
-
-- name: "Workaround for stalled extenstions"
-  ansible.builtin.shell: gnome-extensions disable {{ extension_name }} && gnome-extensions enable {{ extension_name }}
-  # ansible.builtin.include_tasks: "gnome_enable_extension.yml"
-  loop:
-    - no-overview@fthx
-    - ddterm@amezin.github.com
-    - ding@rastersoft.com
-    - workspace-indicator@gnome-shell-extensions.gcampax.github.com
-    - trayIconsReloaded@selfmade.pl
-  loop_control:
-    loop_var: extension_name
-  changed_when: false

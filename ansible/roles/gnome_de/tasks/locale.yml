@@ -11,13 +11,13 @@
   tags: basic
   ansible.builtin.shell:
     cmd: locale | grep LANG | cut -d "=" -f2
-  register: env_lang
+  register: gnome_de_env_lang
   changed_when: false
 
 - name: "Setup RU locale"
   become: true
   tags: basic
-  when: env_lang.stdout != "ru_RU.UTF-8"
+  when: gnome_de_env_lang.stdout != "ru_RU.UTF-8"
   ansible.builtin.command:
     cmd: localectl set-locale "LANG=ru_RU.UTF-8"
   changed_when: true
@@ -26,13 +26,13 @@
   tags: basic
   ansible.builtin.shell:
     cmd: locale | grep LC_MESSAGES | cut -d "=" -f2
-  register: env_lc_messages
+  register: gnome_de_env_lc_messages
   changed_when: false
 
 - name: "Setup LC_MESSAGES locale"
   become: true
   tags: basic
-  when: env_lc_messages.stdout != "en_US.UTF-8"
+  when: gnome_de_env_lc_messages.stdout != "en_US.UTF-8"
   ansible.builtin.command:
     cmd: localectl set-locale "LC_MESSAGES=en_US.UTF-8"
   changed_when: true

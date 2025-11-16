@@ -1,43 +1,32 @@
-- name: "Added RPMFusion"
-  ansible.builtin.include_tasks: repos/rpmfusion.yml
-
-- name: "Add Firefox hardware acceleration"
-  when: ansible_distribution == "Fedora"
-  block:
-    - name: "Add Firefox hardware acceleration"
-      ansible.builtin.dnf:
-        state: present
-        name:
-          - ffmpeg
-          - libva
-          - libva-utils
-      become: true
-
-- name: "Add Firefox"
+- name: "Add firefox"
   become: true
-  tags: basic
-  ansible.builtin.dnf:
+  community.general.flatpak:
+    name: "{{ item }}"
     state: present
-    name: firefox
+  loop:
+    - org.mozilla.firefox//stable
+    - org.freedesktop.Platform.ffmpeg-full//24.08
 
 - name: "Add Firefox config directory"
-  tags: basic
   ansible.builtin.stat:
-    path: ~/.mozilla
+    path: ~/.var/app/org.mozilla.firefox/.mozilla
   register: mozilla
 
-- name: "Setup Firefox"
+- name: "Setup Firefox from flathub"
   when: not mozilla.stat.exists
   block:
 # https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode
-    - name: "Create Firefox default config"
-      tags: basic
-      ansible.builtin.shell: # noqa no-changed-when
-        cmd: firefox --headless -CreateProfile default && firefox --headless -P default --screenshot about:logo && rm screenshot.png
+    - name: "Create Firefox profile, stage 1"
+      ansible.builtin.command: # noqa no-changed-when
+        cmd: flatpak run org.mozilla.firefox --headless -CreateProfile default
+
+    - name: "Create Firefox profile, stage 2"
+      ansible.builtin.command: # noqa no-changed-when
+        cmd: flatpak run org.mozilla.firefox --headless -P default --screenshot about:logo
 
     - name: "Register Firefox default profile"
       ansible.builtin.shell: # noqa no-changed-when
-        cmd: find ~/.mozilla/firefox/ -maxdepth 1 -type d -name "*.default" -printf '%f\n'
+        cmd: find ~/.var/app/org.mozilla.firefox/.mozilla/firefox/ -maxdepth 1 -type d -name "*.default" -printf '%f\n'
       register: out
       ignore_errors: true
 
@@ -49,29 +38,29 @@
       ansible.builtin.copy:
         src: firefox/user.js
         mode: u=rw,g=,o=
-        dest: "~/.mozilla/firefox/{{ ff_profile }}/"
+        dest: "~/.var/app/org.mozilla.firefox/.mozilla/firefox/{{ ff_profile }}/"
 
     - name: "Made Firefox extensions directory"
       ansible.builtin.file:
-        path: "~/.mozilla/firefox/{{ ff_profile }}/extensions"
+        path: "~/.var/app/org.mozilla.firefox/.mozilla/firefox/{{ ff_profile }}/extensions"
         mode: u=rwx,g=rx,o=
         state: directory
 
     - name: "Add Firefox simple-translate extension"
       ansible.builtin.get_url:
         url: https://addons.mozilla.org/firefox/downloads/file/3561208/
-        dest: ~/.mozilla/firefox/{{ ff_profile }}/extensions/simple-translate@sienori.xpi
+        dest: ~/.var/app/org.mozilla.firefox/.mozilla/firefox/{{ ff_profile }}/extensions/simple-translate@sienori.xpi
         mode: u=rw,g=r,o=r
 
     - name: "Add Firefox uBlock extension"
       ansible.builtin.get_url:
         url: https://addons.mozilla.org/firefox/downloads/file/3579401/
-        dest: ~/.mozilla/firefox/{{ ff_profile }}/extensions/uBlock0@raymondhill.net.xpi
+        dest: ~/.var/app/org.mozilla.firefox/.mozilla/firefox/{{ ff_profile }}/extensions/uBlock0@raymondhill.net.xpi
         mode: u=rw,g=r,o=r
 
     - name: "Add Firefox Vimium extension"
       ansible.builtin.get_url:
 #       url: https://addons.mozilla.org/firefox/downloads/file/2985278/vimium_ff-1.64.6.xpi
         url: https://addons.mozilla.org/firefox/downloads/file/2985278/
-        dest: ~/.mozilla/firefox/{{ ff_profile }}/extensions/{d7742d87-e61d-4b78-b8a1-b469842139fa}.xpi
+        dest: ~/.var/app/org.mozilla.firefox/.mozilla/firefox/{{ ff_profile }}/extensions/{d7742d87-e61d-4b78-b8a1-b469842139fa}.xpi
         mode: u=rw,g=r,o=r
