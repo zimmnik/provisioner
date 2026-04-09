@@ -3,13 +3,14 @@
   ansible.builtin.include_tasks: "{{ taskslist }}"
   loop:
     # - debug.yml
+    - hardware.yml
     - gnome/main.yml
-    # - filemanager.yml
-    # - terminal.yml
-    # - internet/main.yml
-    # - office.yml
-    # - media.yml
-    # - locale.yml
+    - filemanager.yml
+    - terminal.yml
+    - internet/main.yml
+    - office.yml
+    - media.yml
+    - locale.yml
     - gnome/restart_gui.yml
   loop_control:
     loop_var: taskslist

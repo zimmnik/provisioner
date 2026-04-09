@@ -46,7 +46,6 @@
     create: true
     marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK terminal bash -->"
     block: |
-      alias df='df -x shm -x overlay -x tmpfs -x devtmpfs -x efivarfs'
       export EDITOR="vim"
       set -o vi
       bind -m vi-insert "\C-l":clear-screen
