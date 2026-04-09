@@ -1,13 +1,12 @@
-hidden bash menu
+hidden grub menu
 plymouth
 ssh keys + config
 barrier
 keepassxc db
-firefox links + proxy.pac + tor
-vpn or ssh tunnel
+firefox links + proxy
+vpn
 mta
 ssd trim (cat /etc/fstab && sudo systemctl list-timers)
-grub amd_pstate=active
 nvidia gpu drivers
 firmware (wifi, sound) 
 smart
@@ -16,10 +15,7 @@ upower
 screen flickering (https://github.com/edio/intelpwm-udev)
 screen tearing 
 disable useless devices
-printing
 battery power management 
 lockscreen
 video hardware acceleration
-qbittorent
-zenkit
 backup

@@ -1,6 +1,0 @@
-- name: "Add Oracle EPEL repo"
-  when: ansible_distribution == "OracleLinux"
-  become: true
-  ansible.builtin.dnf:
-    name: oracle-epel-release-el{{ ansible_distribution_major_version }}
-    state: present

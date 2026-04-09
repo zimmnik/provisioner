@@ -1,19 +1,10 @@
 Vagrant.configure("2") do |config|
 
-  config.vm.define "fedora", autostart: true, primary: true do |fedora|
-    fedora.vm.box = "fedora/43-upstream"
-    fedora.vm.box_url = "https://download.fedoraproject.org/pub/fedora/linux/releases/43/Cloud/x86_64/images/Fedora-Cloud-Base-Vagrant-libvirt-43-1.6.x86_64.vagrant.libvirt.box"
-    fedora.vm.provider :libvirt do |lv|
-      lv.title = 'fedora'
+  config.vm.define "debian", autostart: true, primary: true do |debian|
+    debian.vm.box = "debian/trixie64"
+    debian.vm.provider :libvirt do |lv|
+      lv.title = 'debian'
       lv.machine_virtual_size = 16
-    end
-  end
-
-  config.vm.define "oracle", autostart: false do |oracle|
-    oracle.vm.box = "oraclelinux/10-btrfs"
-    oracle.vm.box_url = "https://oracle.github.io/vagrant-projects/boxes/oraclelinux/10-btrfs.json"
-    oracle.vm.provider :libvirt do |lv|
-      lv.title = 'oracle'
     end
   end
 
@@ -28,24 +19,6 @@ Vagrant.configure("2") do |config|
 
   config.vm.synced_folder "../ansible", "/vagrant", type: "rsync"
 
-  config.vm.provision "grow up root", before: :all, type: "shell",
-    privileged: true,
-    inline: <<-SHELL
-      source /etc/os-release
-      if [[ "${PRETTY_NAME}" = "Fedora Linux 43 (Cloud Edition)" ]]; then
-        echo -e "resizepart\nFix\n4\nYes\n100%\nprint free\nquit" | parted /dev/vda ---pretend-input-tty
-        btrfs fi resize 1:max /
-        btrfs fi show /
-      fi
-    SHELL
-
-  config.vm.provision "update packages", type: "shell", reboot: true, privileged: true,
-    inline: <<-SHELL
-      echo 'http_proxy=socks5h://router.zimmnik.ru:8080' >> /etc/environment
-      set -a; source /etc/environment; set +a;
-      # dnf config-manager setopt fedora-cisco-openh264.enabled=0
-      dnf --assumeyes --quiet update
-    SHELL
   config.vm.provision "deploy DE", type: "shell", privileged: false,
     inline: <<-SHELL
       set -e
@@ -54,18 +27,14 @@ Vagrant.configure("2") do |config|
       rm -r .venv || true
       source /etc/os-release
       case "${PRETTY_NAME}" in
-      "Fedora Linux 43 (Cloud Edition)")
-        :
-        ;;
-      "Oracle Linux Server 10.0")
-        sudo dnf -y install oracle-epel-release-el10
+      "Debian GNU/Linux 13 (trixie)")
+        sudo apt -y install git python3.13-venv
         ;;
       *)
         echo "Error, unsupported os"
         exit 1
         ;;
       esac
-        sudo dnf --assumeyes --quiet install git python3.13
         python3.13 -m venv --upgrade-deps .venv && source .venv/bin/activate
         python --version
       pip install --requirement pip_requirements.txt
@@ -76,7 +45,7 @@ Vagrant.configure("2") do |config|
         ansible-galaxy collection list --format yaml
         ansible-lint
         ansible-inventory --graph --vars
-      ansible-playbook deploy.yml
-      # ansible-playbook deploy.yml --tags basic
+      ansible-playbook playbook.yml
+      # ansible-playbook playbook.yml --tags basic
     SHELL
 end

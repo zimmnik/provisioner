@@ -1,6 +1,3 @@
-- name: "Added EPEL"
-  ansible.builtin.include_tasks: repos/epel.yml
-
 - name: "Basic setup"
   become: true
   block:

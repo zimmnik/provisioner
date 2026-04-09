@@ -1,7 +1,4 @@
 ---
-- name: "Added EPEL"
-  ansible.builtin.include_tasks: "repos/epel.yml"
-
 - name: "Add flathub repo"
   ansible.builtin.include_tasks: "repos/flathub.yml"
 

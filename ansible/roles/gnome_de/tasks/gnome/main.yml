@@ -2,24 +2,13 @@
 - name: "Add gnome packages"
   become: true
   tags: basic
-  ansible.builtin.dnf:
-    state: present
+  ansible.builtin.apt:
     name:
       - gnome-shell
-      - control-center
-      - krb5-libs
-      # - gnome-tweaks
-      # - dconf-editor
+      - gnome-control-center
       - python3-psutil
       - dnsmasq
-      - dbus-tools
-
-- name: "Remove useless gnome packages"
-  become: true
-  tags: basic
-  ansible.builtin.dnf:
-    state: absent
-    name: gnome-tour
+      - dbus-bin
 
 - name: "Get default systemd target"
   tags: basic
@@ -44,9 +33,8 @@
 - name: "Add unzip"
   become: true
   tags: basic
-  ansible.builtin.dnf:
+  ansible.builtin.apt:
     name: unzip
-    state: present
 
 - name: "Add ubuntu fonts"
   tags: basic

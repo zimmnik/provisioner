@@ -5,7 +5,8 @@ Provisioner is an ansible playbook that allow to quickly configure Gnome DE on R
 Supported distributions
 -----------------------------
 -   **Fedora** 43
--   **OracleLinux** 10.0
+-   **OracleLinux** 10
+-   **Debian** 13
 
 ## Bare metal usage
 
@@ -22,7 +23,7 @@ useradd --groups wheel --create-home someusername && passwd someusername
 # WARNING! Don't use tty1 console, use tty4 instead, because playbook will start systemd's graphical.target
 logout
 
-sudo yum -y install git
+sudo [dnf|apt] -y install git
 git clone https://github.com/zimmnik/provisioner.git && cd provisioner/ansible
 
 grep 'PRETTY_NAME="Oracle Linux Server 10.0"' /etc/os-release && sudo dnf -y install oracle-epel-release-el10
@@ -32,7 +33,7 @@ pip install --requirement pip_requirements.txt
 
 export ANSIBLE_CONFIG=ansible.cfg
 ansible-galaxy install --role-file galaxy_requirements.yml
-ansible-playbook deploy.yml --ask-become-pass --extra-vars "hostname=somename" [--tags basic]
+ansible-playbook playbook.yml --ask-become-pass --extra-vars "hostname=somename" [--tags basic]
 ```
 
 ### Development
@@ -44,4 +45,4 @@ ansible-playbook deploy.yml --ask-become-pass --extra-vars "hostname=somename" [
 
 ```ShellSession
 git clone https://github.com/zimmnik/provisioner.git && cd provisioner/vagrant
-vagrant up --no-destroy-on-error [fedora|oracle]
+vagrant up --no-destroy-on-error [fedora|oracle|debian]

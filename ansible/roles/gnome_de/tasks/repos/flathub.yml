@@ -1,8 +1,8 @@
+---
 - name: "Add flatpak"
-  ansible.builtin.dnf:
-    name: flatpak
-    state: present
   become: true
+  ansible.builtin.apt:
+    name: flatpak
 
 - name: "Add flathub repo"
   community.general.flatpak_remote:
