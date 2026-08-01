@@ -47,6 +47,7 @@
     marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK terminal bash -->"
     block: |
       alias df='df -x shm -x overlay -x tmpfs -x devtmpfs -x efivarfs'
+      alias ppsa='podman ps --format "table {{.ID}}\t{{.Image}}\t{{.Command}}\t{{.Status}}\t{{.Names}}"'
       export EDITOR="vim"
       set -o vi
       bind -m vi-insert "\C-l":clear-screen
