@@ -84,29 +84,26 @@
       - 4099
 
 # ------------------------------------------------------------------------------
-# tray-icons-reloaded
-- name: "Add tray icons reloaded"
+# AppIndicator
+- name: "Add appindicator"
   ansible.builtin.import_role:
     name: jaredhocutt.gnome_extensions
   vars:
     gnome_extension_ids: # noqa: var-naming[no-role-prefix]
-      - 2890
+      - 615
 
-- name: "Setup tray icons reloaded"
+- name: "Setup appindicator"
   community.general.dconf:
     key: "{{ item.key }}"
     value: "{{ item.value | string }}"
   loop:
-    - { key: "/org/gnome/shell/extensions/trayIconsReloaded/icon-margin-horizontal", value: "0" }
-    - { key: "/org/gnome/shell/extensions/trayIconsReloaded/icon-margin-vertical", value: "0" }
-    - { key: "/org/gnome/shell/extensions/trayIconsReloaded/icon-padding-horizontal", value: "0" }
-    - { key: "/org/gnome/shell/extensions/trayIconsReloaded/icon-padding-vertical", value: "0" }
-    - { key: "/org/gnome/shell/extensions/trayIconsReloaded/icon-size", value: "20" }
-    - { key: "/org/gnome/shell/extensions/trayIconsReloaded/icons-limit", value: "4" }
-    - { key: "/org/gnome/shell/extensions/trayIconsReloaded/position-weight", value: "0" }
-    - { key: "/org/gnome/shell/extensions/trayIconsReloaded/tray-margin-left", value: "0" }
-    - { key: "/org/gnome/shell/extensions/trayIconsReloaded/tray-margin-right", value: "0" }
-    - { key: "/org/gnome/shell/extensions/trayIconsReloaded/tray-position", value: "'right'" }
+    - { key: "/org/gnome/shell/extensions/appindicator/compact-mode-enabled", value: "true" }
+    - { key: "/org/gnome/shell/extensions/appindicator/icon-brightness", value: "0.0" }
+    - { key: "/org/gnome/shell/extensions/appindicator/icon-contrast", value: "0.0" }
+    - { key: "/org/gnome/shell/extensions/appindicator/icon-opacity", value: "240" }
+    - { key: "/org/gnome/shell/extensions/appindicator/icon-saturation", value: "0.0" }
+    - { key: "/org/gnome/shell/extensions/appindicator/icon-size", value: "22" }
+    - { key: "/org/gnome/shell/extensions/appindicator/legacy-tray-enabled", value: "true" }
 
 # - name: "Restart GUI session"
 #   ansible.builtin.include_tasks: "restart_gui.yml"

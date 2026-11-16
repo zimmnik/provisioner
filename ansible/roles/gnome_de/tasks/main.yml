@@ -1,16 +1,16 @@
 - name: "Setup Gnome DE"
   tags: basic
-  ansible.builtin.include_tasks: "{{ taskslist }}"
+  ansible.builtin.include_tasks: "{{ task_file }}"
   loop:
     # - debug.yml
     - hardware.yml
     - gnome/main.yml
+    - locale.yml
     - filemanager.yml
     - terminal.yml
-    - internet/main.yml
     - office.yml
     - media.yml
-    - locale.yml
+    - internet/main.yml
     - gnome/restart_gui.yml
   loop_control:
-    loop_var: taskslist
+    loop_var: task_file

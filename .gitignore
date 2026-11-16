@@ -1,4 +1,5 @@
 /vagrant/.vagrant/
+/vagrant/http_proxy_env_variable
 
 /terraform/.terraform/
 /terraform/*.tfstate*

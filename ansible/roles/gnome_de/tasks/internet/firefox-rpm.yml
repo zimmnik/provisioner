@@ -9,11 +9,11 @@
   tags: [never, basic]
   ansible.builtin.stat:
     path: ~/.mozilla
-  register: mozilla
+  register: gnome_de_mozilla
 
 - name: "Setup Firefox"
   tags: [never, basic]
-  when: not mozilla.stat.exists
+  when: not gnome_de_mozilla.stat.exists
   block:
 # https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode
     - name: "Create Firefox default config"
@@ -23,15 +23,15 @@
     - name: "Register Firefox default profile"
       ansible.builtin.shell: # noqa no-changed-when
         cmd: find ~/.mozilla/firefox/ -maxdepth 1 -type d -name "*.default" -printf '%f\n'
-      register: out
+      register: gnome_de_firefox_profile
       ignore_errors: true
 
     - name: "Make ff_profile variable"
       ansible.builtin.set_fact:
-        ff_profile: "{{ out.stdout }}"
+        gnome_de_ff_profile: "{{ gnome_de_firefox_profile.stdout }}"
 
     - name: "Setup Firefox"
       ansible.builtin.copy:
         src: firefox/user.js
         mode: u=rw,g=,o=
-        dest: "~/.mozilla/firefox/{{ ff_profile }}/"
+        dest: "~/.mozilla/firefox/{{ gnome_de_ff_profile }}/"

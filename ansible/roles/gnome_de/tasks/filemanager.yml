@@ -5,7 +5,7 @@
 - name: "Add flathub repo"
   ansible.builtin.include_tasks: "repos/flathub.yml"
 
-- name: "Add file utilites, part 1"
+- name: "Add console file utilites, part 1"
   become: true
   tags: basic
   ansible.builtin.dnf:
@@ -21,7 +21,7 @@
       - iotop
       - sysstat
 
-- name: "Add file utilites, part 2"
+- name: "Add console file utilites, part 2"
   become: true
   ansible.builtin.dnf:
     state: present
@@ -30,7 +30,15 @@
       - p7zip
       - p7zip-plugins
 
-- name: "Add file tools, part 1"
+- name: "Setup mc"
+  tags: basic
+  ansible.builtin.blockinfile:
+    dest: ~/.bashrc
+    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK filemanager mc -->"
+    block: |
+      alias mc="mc -b"
+
+- name: "Add gui file utilites"
   become: true
   tags: basic
   ansible.builtin.dnf:
@@ -45,7 +53,7 @@
       - xdg-utils
       - xdg-user-dirs-gtk
 
-- name: "Setup file manager"
+- name: "Setup Nautilus"
   tags: basic
   community.general.dconf:
     key: "{{ item.key }}"
@@ -58,18 +66,8 @@
     - { key: "/org/gnome/nautilus/preferences/default-folder-viewer", value: "'list-view'" }
     - { key: "/org/gnome/nautilus/preferences/search-filter-time-type", value: "'last_modified'" }
 
-- name: "Add archiver"
+- name: "Add PeaZip"
   become: true
   community.general.flatpak:
-    name: "{{ item }}"
+    name: io.github.peazip.PeaZip
     state: present
-  loop:
-    - io.github.peazip.PeaZip
-
-- name: "Add bash link to mc"
-  tags: basic
-  ansible.builtin.blockinfile:
-    dest: ~/.bashrc
-    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK filemanager mc -->"
-    block: |
-      alias mc="mc -b"

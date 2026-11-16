@@ -4,11 +4,10 @@
 - name: "Add office utilities"
   become: true
   community.general.flatpak:
-    name: "{{ item }}"
+    name:
+      # - org.gnome.Papers
+      # - org.libreoffice.LibreOffice
+      - org.onlyoffice.desktopeditors
+      - org.gnome.TextEditor
+      - org.gnome.Loupe
     state: present
-  loop:
-    # - org.gnome.Papers
-    # - org.libreoffice.LibreOffice
-    - org.onlyoffice.desktopeditors
-    - org.gnome.TextEditor
-    - org.gnome.Loupe

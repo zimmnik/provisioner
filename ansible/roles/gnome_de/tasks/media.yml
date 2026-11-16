@@ -1,28 +1,26 @@
 - name: "Add flathub repo"
   ansible.builtin.include_tasks: "repos/flathub.yml"
 
-- name: "Add media player"
+- name: "Add SMPlayer"
   become: true
   community.general.flatpak:
-    name: "{{ item }}"
+    name: info.smplayer.SMPlayer
     state: present
-  loop:
-    - info.smplayer.SMPlayer
 
-- name: "Downgrade to working version" # noqa risky-shell-pipe
+- name: "Downgrade SMPlayer to working version" # noqa risky-shell-pipe
   become: true
   ansible.builtin.command:
     cmd: flatpak update -y --commit=cb30958fba2ac2304864447347808ab30f7b0e7a9585348c22b48fa27c22016d info.smplayer.SMPlayer
   changed_when: false
 
-- name: "Add media player config directory"
+- name: "Add SMPlayer config directory"
   ansible.builtin.file:
     state: directory
     path: ~/.var/app/info.smplayer.SMPlayer/config/smplayer/
     mode: u+rw,g-rx,o-rx
 
 # https://blogs.gnome.org/mclasen/2019/07/12/settings-in-a-sandbox-world/
-- name: "Setup media player"
+- name: "Setup SMPlayer"
   ansible.builtin.copy:
     src: smplayer.ini
     dest: ~/.var/app/info.smplayer.SMPlayer/config/smplayer/

@@ -1,8 +1,8 @@
 Vagrant.configure("2") do |config|
 
   config.vm.define "fedora", autostart: true, primary: true do |fedora|
-    fedora.vm.box = "fedora/43-upstream"
-    fedora.vm.box_url = "https://download.fedoraproject.org/pub/fedora/linux/releases/43/Cloud/x86_64/images/Fedora-Cloud-Base-Vagrant-libvirt-43-1.6.x86_64.vagrant.libvirt.box"
+    fedora.vm.box = "fedora/45-upstream"
+    fedora.vm.box_url = "https://download.fedoraproject.org/pub/fedora/linux/releases/45/Cloud/x86_64/images/Fedora-Cloud-Base-Vagrant-libvirt-45-1.4.x86_64.vagrant.libvirt.box"
     fedora.vm.provider :libvirt do |lv|
       lv.title = 'fedora'
       lv.machine_virtual_size = 16
@@ -32,8 +32,8 @@ Vagrant.configure("2") do |config|
     privileged: true,
     inline: <<-SHELL
       source /etc/os-release
-      if [[ "${PRETTY_NAME}" = "Fedora Linux 43 (Cloud Edition)" ]]; then
-        echo -e "resizepart\nFix\n4\nYes\n100%\nprint free\nquit" | parted /dev/vda ---pretend-input-tty
+      if [[ "${NAME}" = "Fedora Linux)" ]]; then
+        echo -e "resizepart\nFix\n3\nYes\n100%\nprint free\nquit" | parted /dev/vda ---pretend-input-tty
         btrfs fi resize 1:max /
         btrfs fi show /
       fi
@@ -41,32 +41,31 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "update packages", type: "shell", reboot: true, privileged: true,
     inline: <<-SHELL
-      echo 'http_proxy=socks5h://router.zimmnik.ru:8080' >> /etc/environment
-      set -a; source /etc/environment; set +a;
-      # dnf config-manager setopt fedora-cisco-openh264.enabled=0
+      # set -a; source /vagrant/http_proxy_env_variable; set +a;
+      dnf config-manager setopt fedora-cisco-openh264.enabled=0
       dnf --assumeyes --quiet update
     SHELL
+
   config.vm.provision "deploy DE", type: "shell", privileged: false,
     inline: <<-SHELL
       set -e
       set -x
       cd /vagrant
-      rm -r .venv || true
       source /etc/os-release
-      case "${PRETTY_NAME}" in
-      "Fedora Linux 43 (Cloud Edition)")
+      case "${NAME}" in
+      "Fedora Linux")
         :
         ;;
-      "Oracle Linux Server 10.0")
-        sudo dnf -y install oracle-epel-release-el10
+      "Oracle Linux Server")
+        :
         ;;
       *)
         echo "Error, unsupported os"
         exit 1
         ;;
       esac
-        sudo dnf --assumeyes --quiet install git python3.13
-        python3.13 -m venv --upgrade-deps .venv && source .venv/bin/activate
+        sudo dnf -y install git python3-libdnf
+        python3 -m venv --upgrade-deps .venv && source .venv/bin/activate
         python --version
       pip install --requirement pip_requirements.txt
         pip list --format freeze

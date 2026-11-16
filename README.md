@@ -4,7 +4,7 @@ Provisioner is an ansible playbook that allow to quickly configure Gnome DE on R
 
 Supported distributions
 -----------------------------
--   **Fedora** 43
+-   **Fedora** 45
 -   **OracleLinux** 10.0
 
 ## Bare metal usage

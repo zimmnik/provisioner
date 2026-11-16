@@ -12,7 +12,7 @@
         block: |
           AutomaticLoginEnable=True
           AutomaticLogin={{ ansible_user_id }}
-      register: autologin_state
+      register: gnome_de_autologin_state
       changed_when: false
     - name: "Restart gdm"
       ansible.builtin.service:
@@ -28,5 +28,5 @@
         dest: /etc/gdm/custom.conf
         marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
         state: absent
-      when: autologin_state.changed # noqa: no-handler
+      when: gnome_de_autologin_state.changed # noqa: no-handler
       changed_when: false
