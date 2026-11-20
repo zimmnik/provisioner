@@ -22,7 +22,7 @@
 
     - name: "Register Firefox default profile"
       ansible.builtin.shell: # noqa no-changed-when
-        cmd: find ~/.var/app/org.mozilla.firefox/config/mozilla/firefox/ -maxdepth 1 -type d -name "*.default-release" -printf '%f\n'
+        cmd: find ~/.var/app/org.mozilla.firefox/config/mozilla/firefox/ -maxdepth 1 -type d -name "*.default-*" -printf '%f\n'
       register: gnome_de_firefox_profile
       ignore_errors: false
 

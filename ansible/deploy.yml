@@ -1,12 +1,49 @@
 ---
 - name: "Setup Gnome DE"
   hosts: all
-  tasks:
-    - name: "Setup dnf"
+  pre_tasks:
+    - name: "RHEL specific tasks"
+      become: true
+      tags: basic
+      when: ansible_os_family == "RedHat"
       ansible.builtin.lineinfile:
         path: /etc/dnf/dnf.conf
         regexp: '^install_weak_deps='
         line: 'install_weak_deps=False'
+
+    - name: "Debian specific tasks"
       become: true
+      when: ansible_facts['os_family'] == "Debian"
+      block:
+        - name: "Setup apt"
+          become: true
+          tags: basic
+          ansible.builtin.copy:
+            dest: /etc/apt/apt.conf.d/99-no-recommends
+            mode: u=rw,g=r,o=r
+            content: |
+              APT::Install-Recommends "false";
+              APT::Install-Suggests "false";
+        - name: Disable useless frontend debconf option
+          become: true
+          tags: basic
+          ansible.builtin.lineinfile:
+            path: /etc/debconf.conf
+            line: "FrontEnd: noninteractive"
+            insertafter: '^Templates:'
+            firstmatch: true
+        # - name: Disable noisy restart apt option
+        #   become: true
+        #   tags: basic
+        #   ansible.builtin.lineinfile:
+        #     path: /etc/needrestart/needrestart.conf
+        #     line: "$nrconf{restart} = 'l';"
+        - name: Disable unattended upgrade
+          become: true
+          tags: basic
+          ansible.builtin.lineinfile:
+            path: /etc/apt/apt.conf.d/20auto-upgrades
+            regexp: '^APT::Periodic::Unattended-Upgrade'
+            line: 'APT::Periodic::Unattended-Upgrade "0";'
   roles:
     - gnome_de

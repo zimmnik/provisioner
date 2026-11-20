@@ -1,9 +1,9 @@
 - name: "Add basic apps"
   become: true
   tags: basic
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     name:
-      - man
+      - "{{ 'man-db' if ansible_os_family == 'Debian' else 'man' }}"
       - vim
       - less
       - bash-completion
@@ -67,6 +67,9 @@
 - name: "Add terminal app"
   become: true
   tags: basic
-  ansible.builtin.dnf:
-    name: ptyxis
+  ansible.builtin.package:
+    name:
+      - gir1.2-vte-2.91
+      - gir1.2-handy-1
+      - ptyxis
     state: present

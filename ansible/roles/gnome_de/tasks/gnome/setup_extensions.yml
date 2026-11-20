@@ -108,28 +108,28 @@
 # - name: "Restart GUI session"
 #   ansible.builtin.include_tasks: "restart_gui.yml"
 
-# ------------------------------------------------------------------------------
-# extension manager
+- name: "Enable extensions"
+  community.general.dconf:
+    key: /org/gnome/shell/enabled-extensions
+    value: "['{{ gnome_extensions | join(\"', '\") }}']"
+    state: present
+  changed_when: false
+  vars:
+    gnome_extensions:
+      - ddterm@amezin.github.com
+      - ding@rastersoft.com
+      - workspace-indicator@gnome-shell-extensions.gcampax.github.com
+      - no-overview@fthx
+      - appindicatorsupport@rgcjonas.gmail.com
+
 - name: "Add ExtensionsManager app"
   community.general.flatpak:
     name: com.mattjakeman.ExtensionManager
     state: present
   become: true
 
-# WAREHOUSE
-# ------------------------------------------------------------------------------
-# - name: "Enable extensions"
-#   ansible.builtin.include_tasks: "gnome_enable_extension.yml"
-#   loop:
-#     #- no-overview@fthx
-#     - ding@rastersoft.com
-#     #- quake-mode@repsac-by.github.com
-#     #- ddterm@amezin.github.com
-#     #- unite@hardpixel.eu
-#     - workspace-indicator@gnome-shell-extensions.gcampax.github.com
-#   loop_control:
-#     loop_var: extension_name
 
+# WAREHOUSE
 # ------------------------------------------------------------------------------
 # quake-mode
 # - name: "Add quake-mode extenstion"

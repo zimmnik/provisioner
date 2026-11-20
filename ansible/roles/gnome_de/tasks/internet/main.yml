@@ -1,5 +1,6 @@
 - name: "Added EPEL"
   ansible.builtin.include_tasks: repos/epel.yml
+  when: ansible_os_family == "RedHat"
 
 - name: "Basic setup"
   become: true
@@ -11,17 +12,17 @@
 
     - name: "Add network utilites, part 1"
       tags: basic
-      ansible.builtin.dnf:
+      ansible.builtin.package:
         state: present
         name:
-          - bind-utils
+          - "{{ 'dnsutils' if ansible_os_family == 'Debian' else 'bind-utils' }}"
           - curl
           - nmap
           - iperf3
           - traceroute
 
     - name: "Add network utilites, part 2"
-      ansible.builtin.dnf:
+      ansible.builtin.package:
         state: present
         name:
           - iftop
@@ -29,7 +30,7 @@
 
     - name: "Add SSH server"
       tags: basic
-      ansible.builtin.dnf:
+      ansible.builtin.package:
         name: openssh-server
         state: present
 
@@ -42,7 +43,7 @@
 
     - name: "Add Chrony"
       tags: basic
-      ansible.builtin.dnf:
+      ansible.builtin.package:
         name: chrony
         state: present
 
@@ -62,10 +63,9 @@
 
 - name: "Add keepassxc"
   become: true
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     state: present
-    name:
-      - keepassxc
+    name: "{{ 'keepassxc-full' if (ansible_distribution == 'Debian') else 'keepassxc' }}"
 
 - name: "Add keepassxc config directory"
   ansible.builtin.file:

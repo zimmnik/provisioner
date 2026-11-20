@@ -2,21 +2,37 @@
 - name: "Add gnome packages"
   become: true
   tags: basic
-  ansible.builtin.dnf:
+  ansible.builtin.package:
+    name: "{{ packages_by_distro[ansible_distribution] }}"
     state: present
-    name:
-      - gnome-shell
-      - control-center
-      - krb5-libs
-      # - gnome-tweaks
-      # - dconf-editor
-      - python3-psutil
-      - dnsmasq
-      - dbus-tools
+  vars:
+    packages_by_distro:
+      Fedora: &rhel
+        - gnome-shell
+        - control-center
+        - krb5-libs
+        # - gnome-tweaks
+        # - dconf-editor
+        - python3-psutil
+        - dnsmasq
+        - dbus-tools
+        - dconf
+      Oracle: *rhel
+      Debian:
+        - gdm3
+        - gnome-session
+        - gnome-shell
+        - gnome-control-center
+        - python3-psutil
+        - dnsmasq
+        - dbus-bin
+        - dconf-cli
+        - gir1.2-gnomedesktop-3.0
 
 - name: "Remove useless gnome packages"
   become: true
   tags: basic
+  when: ansible_os_family == "RedHat"
   ansible.builtin.dnf:
     state: absent
     name: gnome-tour
@@ -28,10 +44,10 @@
   changed_when: false
 
 - name: "Set default systemd target"
-  tags: basic
-  ansible.builtin.command: systemctl set-default graphical.target
-  when: gnome_de_contents.stdout != "graphical.target"
   become: true
+  tags: basic
+  when: gnome_de_contents.stdout != "graphical.target"
+  ansible.builtin.command: systemctl set-default graphical.target
   changed_when: false
 
 - name: "Create personal fonts directory"
@@ -44,7 +60,7 @@
 - name: "Add unzip"
   become: true
   tags: basic
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     name: unzip
     state: present
 
@@ -191,7 +207,7 @@
 
     - name: "Enable gdm autologin"
       ansible.builtin.blockinfile:
-        dest: /etc/gdm/custom.conf
+        dest: "{{ '/etc/gdm3/daemon.conf' if ansible_facts['os_family'] == 'Debian' else '/etc/gdm/custom.conf' }}"
         create: true
         mode: 'u=rw,g=r,o=r'
         marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"

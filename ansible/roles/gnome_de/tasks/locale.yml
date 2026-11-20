@@ -1,49 +1,50 @@
-- name: "Add locale packages"
+- name: "Add rhel locale"
   become: true
   tags: basic
+  when: ansible_os_family == "RedHat"
   ansible.builtin.dnf:
     state: present
     name:
       - langpacks-ru
       - glibc-langpack-ru
 
-- name: "Get LANG locale" # noqa risky-shell-pipe
-  tags: basic
-  ansible.builtin.shell:
-    cmd: locale | grep LANG | cut -d "=" -f2
-  register: gnome_de_env_lang
-  changed_when: false
-
-- name: "Setup RU locale"
+- name: "Add debian locale"
   become: true
   tags: basic
-  when: gnome_de_env_lang.stdout != "ru_RU.UTF-8"
-  ansible.builtin.command:
-    cmd: localectl set-locale "LANG=ru_RU.UTF-8"
-  changed_when: true
+  when: ansible_facts['os_family'] == "Debian"
+  block:
+    - name: "Install locales package"
+      ansible.builtin.apt:
+        name: locales
+        state: present
 
-- name: "Get LC_MESSAGES locale" # noqa risky-shell-pipe
-  tags: basic
-  ansible.builtin.shell:
-    cmd: locale | grep LC_MESSAGES | cut -d "=" -f2
-  register: gnome_de_env_lc_messages
-  changed_when: false
+    - name: "Generate ru_RU.UTF-8 locale"
+      community.general.locale_gen:
+        name:
+          - ru_RU.UTF-8
+          - en_US.UTF-8
+        state: present
 
-- name: "Setup LC_MESSAGES locale"
+# FYI See Debian's /usr/share/dbus-1/system.d/systemd-localed-read-only.conf
+- name: "Set LANG and LC_MESSAGES"
   become: true
-  tags: basic
-  when: gnome_de_env_lc_messages.stdout != "en_US.UTF-8"
-  ansible.builtin.command:
-    cmd: localectl set-locale "LC_MESSAGES=en_US.UTF-8"
-  changed_when: true
+  ansible.builtin.lineinfile:
+    path: "{{ '/etc/default/locale' if ansible_facts['os_family'] == 'Debian' else '/etc/locale.conf' }}"
+    regexp: "^{{ item.key }}="
+    line: "{{ item.key }}={{ item.value }}"
+    create: true
+    mode: "0644"
+  loop:
+    - { key: "LANG", value: "ru_RU.UTF-8" }
+    - { key: "LC_MESSAGES", value: "en_US.UTF-8" }
 
-- name: "Setup Moscow timezone"
+- name: "Setup timezone"
   become: true
   tags: basic
   community.general.timezone:
     name: Europe/Moscow
 
-- name: "Setup locale switcher"
+- name: "Setup Gnome locale switcher"
   tags: basic
   community.general.dconf:
     key: "{{ item.key }}"
@@ -53,7 +54,7 @@
     - { key: "/org/gnome/desktop/input-sources/xkb-options", value: "['grp:ctrl_space_toggle']" }
     - { key: "/org/gnome/desktop/input-sources/per-window", value: "true" }
 
-- name: "Setup gnome region"
+- name: "Setup Gnome region"
   tags: basic
   community.general.dconf:
     key: "/system/locale/region"

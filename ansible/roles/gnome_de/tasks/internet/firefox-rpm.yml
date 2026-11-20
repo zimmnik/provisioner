@@ -1,9 +1,9 @@
 - name: "Add Firefox"
   tags: [never, basic]
   become: true
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     state: present
-    name: firefox
+    name: "{{ 'firefox-esr' if ansible_os_family == 'Debian' else 'firefox' }}"
 
 - name: "Add Firefox config directory"
   tags: [never, basic]
@@ -16,15 +16,16 @@
   when: not gnome_de_mozilla.stat.exists
   block:
 # https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode
-    - name: "Create Firefox default config"
-      ansible.builtin.shell: # noqa no-changed-when
-        cmd: firefox --headless -CreateProfile default && firefox --headless -P default --screenshot about:logo && rm screenshot.png
+
+    - name: "Create Firefox profile"
+      ansible.builtin.command: # noqa no-changed-when
+        cmd: firefox --headless --screenshot about:logo
 
     - name: "Register Firefox default profile"
       ansible.builtin.shell: # noqa no-changed-when
-        cmd: find ~/.mozilla/firefox/ -maxdepth 1 -type d -name "*.default" -printf '%f\n'
+        cmd: find ~/.config/mozilla/firefox/ -maxdepth 1 -type d -name "*.default-*" -printf '%f\n'
       register: gnome_de_firefox_profile
-      ignore_errors: true
+      ignore_errors: false
 
     - name: "Make ff_profile variable"
       ansible.builtin.set_fact:
@@ -34,4 +35,4 @@
       ansible.builtin.copy:
         src: firefox/user.js
         mode: u=rw,g=,o=
-        dest: "~/.mozilla/firefox/{{ gnome_de_ff_profile }}/"
+        dest: "~/.config/mozilla/firefox/{{ gnome_de_ff_profile }}/"

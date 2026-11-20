@@ -5,15 +5,17 @@
   tags: basic
   block:
     - name: "Enable gdm autologin"
+      become: true
       ansible.builtin.blockinfile:
-        dest: /etc/gdm/custom.conf
+        dest: "{{ '/etc/gdm3/daemon.conf' if ansible_facts['os_family'] == 'Debian' else '/etc/gdm/custom.conf' }}"
+        create: true
+        mode: 'u=rw,g=r,o=r'
         marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
         insertafter: "\\[daemon\\]"
         block: |
           AutomaticLoginEnable=True
           AutomaticLogin={{ ansible_user_id }}
       register: gnome_de_autologin_state
-      changed_when: false
     - name: "Restart gdm"
       ansible.builtin.service:
         name: gdm
@@ -25,7 +27,7 @@
       changed_when: false
     - name: "Disable gdm autologin"
       ansible.builtin.blockinfile:
-        dest: /etc/gdm/custom.conf
+        dest: "{{ '/etc/gdm3/daemon.conf' if ansible_facts['os_family'] == 'Debian' else '/etc/gdm/custom.conf' }}"
         marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK gnome autologin -->"
         state: absent
       when: gnome_de_autologin_state.changed # noqa: no-handler

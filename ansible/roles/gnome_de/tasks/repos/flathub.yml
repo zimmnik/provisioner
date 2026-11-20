@@ -1,5 +1,5 @@
 - name: "Add flatpak"
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     name: flatpak
     state: present
   become: true

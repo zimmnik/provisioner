@@ -1,6 +1,7 @@
 ---
 - name: "Added EPEL"
   ansible.builtin.include_tasks: "repos/epel.yml"
+  when: ansible_os_family == "RedHat"
 
 - name: "Add flathub repo"
   ansible.builtin.include_tasks: "repos/flathub.yml"
@@ -8,7 +9,7 @@
 - name: "Add console file utilites, part 1"
   become: true
   tags: basic
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     state: present
     name:
       - tree
@@ -23,12 +24,19 @@
 
 - name: "Add console file utilites, part 2"
   become: true
-  ansible.builtin.dnf:
+  ansible.builtin.package:
+    name: "{{ packages_by_distro[ansible_distribution] }}"
     state: present
-    name:
-      - ncdu
-      - p7zip
-      - p7zip-plugins
+  vars:
+    packages_by_distro:
+      Fedora: &rhel
+        - ncdu
+        - p7zip
+        - p7zip-plugins
+      Oracle: *rhel
+      Debian:
+        - ncdu
+        - p7zip-full
 
 - name: "Setup mc"
   tags: basic
@@ -41,17 +49,28 @@
 - name: "Add gui file utilites"
   become: true
   tags: basic
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     state: present
-    name:
-      - nautilus
-      - seahorse
-      - gvfs-mtp
-      - gvfs-smb
-      - gvfs-gphoto2
-      - gvfs-fuse
-      - xdg-utils
-      - xdg-user-dirs-gtk
+    name: "{{ packages_by_distro[ansible_distribution] }}"
+  vars:
+    packages_by_distro:
+      Fedora: &rhel2
+        - nautilus
+        - seahorse
+        - gvfs-mtp
+        - gvfs-smb
+        - gvfs-gphoto2
+        - gvfs-fuse
+        - xdg-utils
+        - xdg-user-dirs-gtk
+      Oracle: *rhel2
+      Debian:
+        - nautilus
+        - seahorse
+        - gvfs-backends
+        - gvfs-fuse
+        - xdg-utils
+        - xdg-user-dirs-gtk
 
 - name: "Setup Nautilus"
   tags: basic

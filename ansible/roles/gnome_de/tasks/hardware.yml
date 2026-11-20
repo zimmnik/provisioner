@@ -1,12 +1,12 @@
 ---
 - name: "Added EPEL"
+  when: ansible_os_family == "RedHat"
   ansible.builtin.include_tasks: repos/epel.yml
 
 - name: "Add basic apps"
   become: true
-  ansible.builtin.dnf:
-    name:
-      - lshw
+  ansible.builtin.package:
+    name: lshw
     state: present
 
 - name: "Enable fstrim timer"

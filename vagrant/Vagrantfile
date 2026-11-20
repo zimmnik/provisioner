@@ -17,6 +17,15 @@ Vagrant.configure("2") do |config|
     end
   end
 
+  config.vm.define "debian", autostart: false do |debian|
+    #debian.vm.box = "debian/trixie64"
+    debian.vm.box = "cloud-image/debian-13"
+    debian.vm.provider :libvirt do |lv|
+      lv.title = 'debian'
+      lv.machine_virtual_size = 16
+    end
+  end
+
   config.vm.provider :libvirt do |lv|
     lv.cpus = 4
     lv.memory = 4096
@@ -41,9 +50,22 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "update packages", type: "shell", reboot: true, privileged: true,
     inline: <<-SHELL
-      # set -a; source /vagrant/http_proxy_env_variable; set +a;
-      dnf config-manager setopt fedora-cisco-openh264.enabled=0
-      dnf --assumeyes --quiet update
+      source /etc/os-release
+      case "${NAME}" in
+      "Fedora Linux" | "Oracle Linux Server")
+        # set -a; source /vagrant/http_proxy_env_variable; set +a;
+        dnf config-manager setopt fedora-cisco-openh264.enabled=0
+        dnf --assumeyes --quiet update
+        ;;
+      "Debian GNU/Linux")
+        apt-get update -qq
+        apt-get upgrade -qq
+        ;;
+      *)
+        echo "Error, unsupported os"
+        exit 1
+        ;;
+      esac
     SHELL
 
   config.vm.provision "deploy DE", type: "shell", privileged: false,
@@ -53,18 +75,18 @@ Vagrant.configure("2") do |config|
       cd /vagrant
       source /etc/os-release
       case "${NAME}" in
-      "Fedora Linux")
-        :
+      "Fedora Linux" | "Oracle Linux Server")
+        sudo dnf -y install git python3-libdnf
         ;;
-      "Oracle Linux Server")
-        :
+      "Debian GNU/Linux")
+        echo 'vagrant:vagrant' | sudo chpasswd
+        sudo apt-get -qq install git python3-venv
         ;;
       *)
         echo "Error, unsupported os"
         exit 1
         ;;
       esac
-        sudo dnf -y install git python3-libdnf
         python3 -m venv --upgrade-deps .venv && source .venv/bin/activate
         python --version
       pip install --requirement pip_requirements.txt
