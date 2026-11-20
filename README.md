@@ -28,17 +28,17 @@ useradd --groups [wheel|sudo] --shell /bin/bash --create-home someusername && pa
 # WARNING! Don't use tty1 console, use tty4 instead, because playbook will start systemd's graphical.target
 logout
 
-sudo [dnf|apt] -y install git
+sudo [dnf|apt] -y install git ca-certificates
 git clone https://github.com/zimmnik/provisioner.git && cd provisioner/ansible
 
-grep 'PRETTY_NAME="Oracle Linux Server 10.0"' /etc/os-release && sudo dnf -y install oracle-epel-release-el10
-sudo dnf --assumeyes --quiet install git python3.13
-ppython3.13 -m venv --upgrade-deps .venv && source .venv/bin/activate
+grep 'NAME="Debian GNU/Linux"' /etc/os-release && sudo apt -yy install python3-venv git
+grep -Eq '^NAME="(Fedora Linux|Oracle Linux Server)"$' /etc/os-release && sudo dnf -yq install python3-libdnf git
+python3 -m venv --upgrade-deps .venv && source .venv/bin/activate
 pip install --requirement pip_requirements.txt
 
 export ANSIBLE_CONFIG=ansible.cfg
 ansible-galaxy install --role-file galaxy_requirements.yml
-ansible-playbook playbook.yml --ask-become-pass --extra-vars "hostname=somename" [--tags basic]
+ansible-playbook deploy.yml --ask-become-pass --extra-vars "hostname=somename" [--tags basic]
 ```
 
 ### Development

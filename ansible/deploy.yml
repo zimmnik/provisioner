@@ -32,15 +32,27 @@
             line: "FrontEnd: noninteractive"
             insertafter: '^Templates:'
             firstmatch: true
-        # - name: Disable noisy restart apt option
-        #   become: true
-        #   tags: basic
-        #   ansible.builtin.lineinfile:
-        #     path: /etc/needrestart/needrestart.conf
-        #     line: "$nrconf{restart} = 'l';"
+        - name: Check noisy restart apt option
+          tags: basic
+          ansible.builtin.stat:
+            path: /etc/needrestart/needrestart.conf
+          register: needrestart_conf
+        - name: Disable noisy restart apt option
+          become: true
+          tags: basic
+          when: needrestart_conf.stat.exists
+          ansible.builtin.lineinfile:
+            path: /etc/needrestart/needrestart.conf
+            line: "$nrconf{restart} = 'l';"
+        - name: Check unattended upgrade
+          tags: basic
+          ansible.builtin.stat:
+            path: /etc/apt/apt.conf.d/20auto-upgrades
+          register: auto_upgrades_file
         - name: Disable unattended upgrade
           become: true
           tags: basic
+          when: auto_upgrades_file.stat.exists
           ansible.builtin.lineinfile:
             path: /etc/apt/apt.conf.d/20auto-upgrades
             regexp: '^APT::Periodic::Unattended-Upgrade'
