@@ -22,7 +22,7 @@ auto=true priority=critical preseed/url=https://raw.githubusercontent.com/zimmni
 System stage:
 ```ShellSession
 passwd
-useradd --groups wheel --create-home someusername && passwd someusername
+useradd --groups [wheel|sudo] --shell /bin/bash --create-home someusername && passwd someusername
 
 # logout and login as sudo user
 # WARNING! Don't use tty1 console, use tty4 instead, because playbook will start systemd's graphical.target
@@ -33,7 +33,7 @@ git clone https://github.com/zimmnik/provisioner.git && cd provisioner/ansible
 
 grep 'PRETTY_NAME="Oracle Linux Server 10.0"' /etc/os-release && sudo dnf -y install oracle-epel-release-el10
 sudo dnf --assumeyes --quiet install git python3.13
-python3.13 -m venv --upgrade-deps .venv && source .venv/bin/activate
+ppython3.13 -m venv --upgrade-deps .venv && source .venv/bin/activate
 pip install --requirement pip_requirements.txt
 
 export ANSIBLE_CONFIG=ansible.cfg
