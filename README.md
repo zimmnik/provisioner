@@ -48,6 +48,16 @@ ansible-playbook deploy.yml --ask-become-pass --extra-vars "hostname=somename" [
 - **vagrant-libvirt v0.7**
 - **4GB RAM free for guest**
 
+libvirt:
+```ShellSession
+virt-install --name fedora --osinfo fedora-unknown --boot uefi,firmware.feature0.name=secure-boot,firmware.feature0.enabled=no --vcpus 4 --ram 16384 --location "Fedora-Everything-netinst.iso,kernel=images/pxeboot/vmlinuz,initrd=images/pxeboot/initrd.img" --extra-args "inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/fedora.cfg" && virsh start fedora
+
+virt-install --name oracle --osinfo ol9-unknown --boot uefi,firmware.feature0.name=secure-boot,firmware.feature0.enabled=no --vcpus 4 --ram 16384 --location "OracleLinux-boot-uek.iso,kernel=images/pxeboot/vmlinuz,initrd=images/pxeboot/initrd.img" --extra-args "inst.ks=https://raw.githubusercontent.com/zimmnik/provisioner/master/kickstart/oracle.cfg" --disk size=10 && virsh start oracle
+
+virt-install --name debian --osinfo debianunstable --boot uefi,firmware.feature0.name=secure-boot,firmware.feature0.enabled=no --vcpus 4 --ram 16384 --location "debian-netinst.iso,kernel=install.amd/gtk/vmlinuz,initrd=install.amd/gtk/initrd.gz" --extra-args "auto=true priority=critical preseed/url=https://raw.githubusercontent.com/zimmnik/provisioner/refs/heads/master/preceed/debian.cfg" && virsh start debian
+```
+vagrant:
 ```ShellSession
 git clone https://github.com/zimmnik/provisioner.git && cd provisioner/vagrant
 vagrant up --no-destroy-on-error [fedora|oracle|debian]
+```
